@@ -74,20 +74,3 @@ class SdpSLNEventReceiver(EventReceiver):
         new_value = event.attr_value.value
         self._component_manager.update_device_obs_state(new_value)
         self._logger.info("ObsState value is updated to %s", new_value)
-
-    def handle_pointing_offsets_event(self, event):
-        """
-        Method to handle and update the latest value of
-        pointingOffsets attribute.
-        Args:
-            event (tango.EventType): to flag the
-            change in event.
-        """
-        if event.err:
-            error = event.errors[0]
-            self._logger.error("%s %s", error.reason, error.desc)
-            self._component_manager.update_event_failure()
-            return
-        new_value = event.attr_value.value
-        self._component_manager.update_device_pointing_calibrations(new_value)
-        self._logger.info(f"Updated Pointing Offsets are : {new_value}")
