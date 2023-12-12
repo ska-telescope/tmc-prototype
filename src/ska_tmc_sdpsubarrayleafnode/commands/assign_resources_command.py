@@ -76,9 +76,8 @@ class AssignResources(SdpSLNCommand):
                 timeout_id=self.timeout_id,
                 timeout_callback=self.timeout_callback,
                 command_id=self.component_manager.assign_id,
-                lrcr_callback=(
-                    self.component_manager.long_running_result_callback,
-                ),
+                # pylint: disable=line-too-long
+                lrcr_callback=self.component_manager.long_running_result_callback,
             )
 
     def do(self, argin=None):
