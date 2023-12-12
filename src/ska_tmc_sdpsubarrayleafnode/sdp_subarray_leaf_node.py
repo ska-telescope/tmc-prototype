@@ -36,7 +36,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         self.set_change_event("longRunningCommandResult", True)
         self._issubsystemavailable = False
         self.set_change_event("isSubsystemAvailable", True, False)
-        self.set_change_event("pointingCalibrations", True, False)
 
     # -----------------
     # Device Properties
@@ -71,11 +70,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     sdpSubarrayObsState = attribute(
         dtype=ObsState,
-        access=AttrWriteType.READ,
-    )
-
-    pointingCalibrations = attribute(
-        dtype="DevString",
         access=AttrWriteType.READ,
     )
 
@@ -137,7 +131,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device._health_state = HealthState.OK
             device._version_id = release.version
             device.set_change_event("healthState", True, False)
-            device.set_change_event("pointingCalibrations", True, False)
             device._isSubsystemAvailable = False
             ApiUtil.instance().set_asynch_cb_sub_model(
                 tango.cb_sub_model.PUSH_CALLBACK
