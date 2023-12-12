@@ -58,7 +58,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         logger=None,
         communication_state_callback=None,
         component_state_callback=None,
-        pointing_calibrations_callback: Optional[Callable] = None,
         _liveliness_probe=None,
         _event_receiver=True,
         _update_sdp_subarray_obs_state_callback=None,
@@ -115,35 +114,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.on_command = On(self, self.logger)
         self.off_command = Off(self, self.logger)
         self.command_in_progress: str = ""
-        self._pointing_calibrations = []
-        self.pointing_calibrations_callback = pointing_calibrations_callback
-
-    @property
-    def pointing_calibrations(self) -> list:
-        """Gives the current pointing offsets informed by SDP subarray"""
-        return self._pointing_calibrations
-
-    @pointing_calibrations.setter
-    def pointing_calibrations(self, pointing_calibrations: list) -> None:
-        """Update the pointing calibration offset values of the dish device.
-
-        :param pointing_calibrations: The list containing cross_elevation,
-        elevation offsets values.
-
-        :pointing_calibrations dtype: list
-        """
-        cross_elevation_offset, elevation_offset = pointing_calibrations
-        self.logger.info(
-            "The updated pointing offsets values are: %s, %s",
-            cross_elevation_offset,
-            elevation_offset,
-        )
-        self._pointing_calibrations = [
-            cross_elevation_offset,
-            elevation_offset,
-        ]
-        if self.pointing_calibrations_callback:
-            self.pointing_calibrations_callback()
 
     def stop(self):
         """

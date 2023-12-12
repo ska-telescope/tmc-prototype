@@ -5,7 +5,6 @@ actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
 
-import json
 from typing import List, Tuple
 
 # pylint: disable=attribute-defined-outside-init
@@ -110,17 +109,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 "isSubsystemAvailable", self._issubsystemavailable
             )
 
-    def pointing_calibrations_callback(self) -> None:
-        """Push an event for the pointingCalibrations attribute."""
-        self.push_change_event(
-            "pointingCalibrations",
-            json.dumps(self.component_manager.pointing_calibrations),
-        )
-        self.logger.info(
-            "Pointing calibration offsets are : %s",
-            self.component_manager.pointing_calibrations,
-        )
-
     class InitCommand(
         SKABaseDevice.InitCommand
     ):  # pylint: disable=too-few-public-methods
@@ -189,10 +177,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     def read_sdpSubarrayObsState(self):
         """Reads the current observation state of the SDP subarray"""
         return self._sdp_subarray_obs_state
-
-    def read_pointingCalibrations(self) -> str:
-        """Returns the pointingCalibrations attribute value."""
-        return json.dumps(self.component_manager.pointing_calibrations)
 
     # --------
     # Commands
@@ -471,7 +455,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             logger=self.logger,
             communication_state_callback=None,
             component_state_callback=None,
-            pointing_calibrations_callback=self.pointing_calibrations_callback,
             _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
             _event_receiver=True,
             _update_sdp_subarray_obs_state_callback=(
