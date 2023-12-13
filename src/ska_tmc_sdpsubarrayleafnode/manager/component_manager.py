@@ -13,7 +13,6 @@ from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.device_info import SubArrayDeviceInfo
-from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_common.exceptions import (
     CommandNotAllowed,
     DeviceUnresponsive,
