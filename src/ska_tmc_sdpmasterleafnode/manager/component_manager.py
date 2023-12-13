@@ -72,6 +72,9 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         self.standby_command = Standby(self, logger)
         self.disable_command = Disable(self, logger)
 
+        if _liveliness_probe:
+            self.start_liveliness_probe(_liveliness_probe)
+
     @property
     def sdp_master_device_name(self) -> str:
         """Returns device name for the SDP Master Device."""
@@ -91,17 +94,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: DeviceInfo
         """
         return DeviceInfo(self.sdp_master_device_name)
-
-    def start_liveliness_probe(self, lp: LivelinessProbeType) -> None:
-        """Need to override this method here because in super self._device
-        is setting to None so overriden here to set self._device
-
-        :param lp : Specifes the type of the liveliness probe that is used for
-        single device or myltiple devices
-        :type lp: enum
-        """
-        self._device = DeviceInfo(self.sdp_master_device_name)
-        super().start_liveliness_probe(lp)
 
     def update_ping_info(self, ping: int, device_name: str) -> None:
         """
