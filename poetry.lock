@@ -402,11 +402,14 @@ test_extra = ["curio", "matplotlib (!=3.2.0)", "nbformat", "numpy (>=1.19)", "pa
 
 [[package]]
 name = "isort"
-version = "5.13.1"
+version = "5.13.2"
 description = "A Python utility / library to sort Python imports."
 category = "dev"
 optional = false
 python-versions = ">=3.8.0"
+
+[package.extras]
+colors = ["colorama (>=0.4.6)"]
 
 [[package]]
 name = "jedi"
@@ -760,7 +763,7 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "prompt-toolkit"
-version = "3.0.42"
+version = "3.0.43"
 description = "Library for building powerful interactive command lines in Python"
 category = "main"
 optional = false
@@ -1210,14 +1213,11 @@ reference = 'ska-nexus'
 
 [[package]]
 name = "ska-ser-logging"
-version = "0.4.1+0a677a67"
+version = "0.4.2"
 description = "Square Kilometre Array logging configuration library"
 category = "main"
 optional = false
-python-versions = ">=3.5"
-
-[package.extras]
-dev = ["black", "isort", "prospector[with_pyroma]"]
+python-versions = ">=3.10,<3.11"
 
 [package.source]
 type = "legacy"
@@ -1363,34 +1363,32 @@ reference = 'ska-nexus'
 
 [[package]]
 name = "ska-tmc-common"
-version = "0.10.5"
+version = "0.10.6"
 description = "SKA TMC common contains common classes required for Telescope Monitoring and Control(TMC)."
 category = "main"
 optional = false
-python-versions = "~3.10"
-develop = false
+python-versions = ">=3.10,<3.11"
 
 [package.dependencies]
-black = "^23.3.0"
-fire = "^0.4.0"
-jsonschema = "^4.0.1"
+black = ">=23.3.0,<24.0.0"
+fire = ">=0.4.0,<0.5.0"
+jsonschema = ">=4.0.1,<5.0.0"
 katpoint = "1.0a2"
-marshmallow = "^3.14.1"
-mock = "^4.0.3"
+marshmallow = ">=3.14.1,<4.0.0"
+mock = ">=4.0.3,<5.0.0"
 msgpack = "1.0.7"
 msgpack_numpy = "0.4.8"
-numpy = "^1.23.0"
+numpy = ">=1.23.0,<2.0.0"
 pytango = "9.3.3"
-ska-ser-logging = "^0.4.1"
+ska-ser-logging = ">=0.4.1,<0.5.0"
 ska-tango-base = "0.18.1"
 ska-tango-testing = "0.6.0"
 ska-telmodel = "1.9.0"
 
 [package.source]
-type = "git"
-url = "https://gitlab.com/ska-telescope/ska-tmc/ska-tmc-common.git"
-reference = "hm-349"
-resolved_reference = "27642b32155c6c3f20fbae1f91b4365ad3902023"
+type = "legacy"
+url = "https://artefact.skao.int/repository/pypi-internal/simple"
+reference = 'ska-nexus'
 
 [[package]]
 name = "snowballstemmer"
@@ -1740,7 +1738,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.10"
-content-hash = "d6cc81673750d79699d812f8fe36dddda1972a65556bda85b43f70bc963d844d"
+content-hash = "cf341c4f952011a08e55983227cf8561be47b8e8155213d7ce5feae8211016d3"
 
 [metadata.files]
 alabaster = [
@@ -2085,8 +2083,8 @@ ipython = [
     {file = "ipython-8.5.0.tar.gz", hash = "sha256:097bdf5cd87576fd066179c9f7f208004f7a6864ee1b20f37d346c0bcb099f84"},
 ]
 isort = [
-    {file = "isort-5.13.1-py3-none-any.whl", hash = "sha256:56a51732c25f94ca96f6721be206dd96a95f42950502eb26c1015d333bc6edb7"},
-    {file = "isort-5.13.1.tar.gz", hash = "sha256:aaed790b463e8703fb1eddb831dfa8e8616bacde2c083bd557ef73c8189b7263"},
+    {file = "isort-5.13.2-py3-none-any.whl", hash = "sha256:8ca5e72a8d85860d5a3fa69b8745237f2939afe12dbf656afbcb47fe72d947a6"},
+    {file = "isort-5.13.2.tar.gz", hash = "sha256:48fdfcb9face5d58a4f6dde2e72a1fb8dcaf8ab26f95ab49fab84c2ddefb0109"},
 ]
 jedi = [
     {file = "jedi-0.19.1-py2.py3-none-any.whl", hash = "sha256:e983c654fe5c02867aef4cdfce5a2fbb4a50adc0af145f70504238f18ef5e7e0"},
@@ -2379,8 +2377,8 @@ pluggy = [
     {file = "pluggy-1.3.0.tar.gz", hash = "sha256:cf61ae8f126ac6f7c451172cf30e3e43d3ca77615509771b3a984a0730651e12"},
 ]
 prompt-toolkit = [
-    {file = "prompt_toolkit-3.0.42-py3-none-any.whl", hash = "sha256:3b50b5fc50660dc8e39dfe464b170959ad82ff185ffa53bfd3be02222e7156a1"},
-    {file = "prompt_toolkit-3.0.42.tar.gz", hash = "sha256:bfbf7d6ea9744e4ec94c9a69539e8106c77a2a607d728ded87c9182a4aec39be"},
+    {file = "prompt_toolkit-3.0.43-py3-none-any.whl", hash = "sha256:a11a29cb3bf0a28a387fe5122cdb649816a957cd9261dcedf8c9f1fef33eacf6"},
+    {file = "prompt_toolkit-3.0.43.tar.gz", hash = "sha256:3527b7af26106cbc65a040bcc84839a3566ec1b051bb0bfe953631e704b0ff7d"},
 ]
 ptyprocess = [
     {file = "ptyprocess-0.7.0-py2.py3-none-any.whl", hash = "sha256:4b41f3967fce3af57cc7e94b888626c18bf37a083e3651ca8feeb66d492fef35"},
@@ -2828,8 +2826,8 @@ ska-ser-log-transactions = [
     {file = "ska_ser_log_transactions-0.2.2+ae0f5c92.tar.gz", hash = "sha256:383fb54f9d5c5a2c7f5a9e6747d7b6feec7631c8dbc580444a48c782967ff7e4"},
 ]
 ska-ser-logging = [
-    {file = "ska_ser_logging-0.4.1+0a677a67-py3-none-any.whl", hash = "sha256:8b2bf14e9981966c22503b6b6477b6386dec1def1f71295579f0686d55b83841"},
-    {file = "ska_ser_logging-0.4.1+0a677a67.tar.gz", hash = "sha256:558622000db39668d3a35b6986af9d70dac36635826636ef2c07f816a149a06d"},
+    {file = "ska_ser_logging-0.4.2-py3-none-any.whl", hash = "sha256:86c66cbbe0ccc5b35e13704ce3e3121ef4fa2c0f35423635b77ffce80da70578"},
+    {file = "ska_ser_logging-0.4.2.tar.gz", hash = "sha256:3626b5f04ff32e547100bc771549544a8efda3730ff7b96c9b3e05e1d16adc16"},
 ]
 ska-ser-skuid = [
     {file = "ska-ser-skuid-3.3.3.tar.gz", hash = "sha256:91ad1dda3e3a397e39dbb362046888f5a80e4f5ef022628cde7ccc93c4d9b057"},
@@ -2859,7 +2857,10 @@ ska-tmc-cdm = [
     {file = "ska_tmc_cdm-8.0.1-py3-none-any.whl", hash = "sha256:68edac5cd54bf9dd05dbdcd2e5689d6dec7690682ce1ece837680e9ddb00446f"},
     {file = "ska_tmc_cdm-8.0.1.tar.gz", hash = "sha256:53a36bfbc58c83644637770c4b11075ab3b37ffe95d196a4488e4931d825ac73"},
 ]
-ska-tmc-common = []
+ska-tmc-common = [
+    {file = "ska_tmc_common-0.10.6-py3-none-any.whl", hash = "sha256:99882b478ef1ec5373acd09302a4571a97bab6b027d5be9185ffec93b59cef2e"},
+    {file = "ska_tmc_common-0.10.6.tar.gz", hash = "sha256:2e51b878754c86899ea05373eb8beab7762a582b1bdce3582dc94a9b9081fa11"},
+]
 snowballstemmer = [
     {file = "snowballstemmer-2.2.0-py2.py3-none-any.whl", hash = "sha256:c8e1716e83cc398ae16824e5572ae04e0d9fc2c6b985fb0f900f5f0c96ecba1a"},
     {file = "snowballstemmer-2.2.0.tar.gz", hash = "sha256:09b16deb8547d3412ad7b590689584cd0fe25ec8db3be37788be3810cbf19cb1"},
