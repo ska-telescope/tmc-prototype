@@ -13,6 +13,7 @@ from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.device_info import SubArrayDeviceInfo
+from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_common.exceptions import (
     CommandNotAllowed,
     DeviceUnresponsive,
@@ -57,7 +58,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         logger=None,
         communication_state_callback=None,
         component_state_callback=None,
-        _liveliness_probe=None,
+        _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
         _event_receiver=True,
         _update_sdp_subarray_obs_state_callback=None,
         _update_lrcr_callback=None,
