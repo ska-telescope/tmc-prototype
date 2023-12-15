@@ -58,7 +58,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         logger=None,
         communication_state_callback=None,
         component_state_callback=None,
-        _liveliness_probe=None,
+        _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
         _event_receiver=True,
         _update_sdp_subarray_obs_state_callback=None,
         _update_lrcr_callback=None,
@@ -90,6 +90,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             sleep_time=sleep_time,
         )
         self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
+
+        if _liveliness_probe:
+            self.start_liveliness_probe(_liveliness_probe)
 
         if _event_receiver:
             self.event_receiver = SdpSLNEventReceiver(
@@ -132,17 +135,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: DeviceInfo
         """
         return self._device
-
-    def start_liveliness_probe(self, lp: LivelinessProbeType) -> None:
-        """Need to override this method here because in super self._device is
-        setting to None so overriden here to set self._device
-
-        :param lp : Specifes the type of the liveliness probe that is used for
-        single device or myltiple devices
-        :type lp: enum
-        """
-        self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name)
-        super().start_liveliness_probe(lp)
 
     def update_event_failure(self):
         """Update event failures"""
