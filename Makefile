@@ -52,7 +52,7 @@ THIS_HOST := $(shell ip a 2> /dev/null | sed -En 's/127.0.0.1//;s/.*inet (addr:)
 DISPLAY ?= $(THIS_HOST):0
 JIVE ?= false# Enable jive
 TARANTA ?= false
-MINIKUBE ?= true ## Minikube or not
+MINIKUBE ?= false ## Minikube or not
 FAKE_DEVICES ?= true ## Install fake devices or not
 TANGO_HOST ?= tango-databaseds:10000## TANGO_HOST connection to the Tango DS
 COUNT ?= 1
@@ -93,6 +93,8 @@ K8S_CHART_PARAMS = --set global.minikube=$(MINIKUBE) \
 	--set tmc-sdpleafnodes.telescope=$(TELESCOPE) \
 	--set tmc-sdpleafnodes.deviceServers.mocks.enabled=$(FAKE_DEVICES) \
 	--set ska-taranta.enabled=$(TARANTA) \
+	--set global.exposeAllDS=false \
+	--set global.operator=true \
 	$(CUSTOM_VALUES) \
 	--values gitlab_values.yaml
 
