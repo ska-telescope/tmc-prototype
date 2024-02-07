@@ -4,7 +4,7 @@ ReleaseAllResources command class for SdpSubarrayLeafNode.
 import threading
 import time
 from logging import Logger
-from typing import Callable, Optional, Tuple
+from typing import Callable, Tuple
 
 from ska_control_model.task_status import TaskStatus
 from ska_tango_base.commands import ResultCode
@@ -29,13 +29,13 @@ class ReleaseAllResources(SdpSLNCommand):
         self.timeout_id = f"{time.time()}_{__class__.__name__}"
         self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
         self.task_callback: Callable
-
+    
+    # pylint: disable=unused-argument
     def release_resources(
         self,
-        logger: Logger,
-        task_callback: Callable = None,
-        # pylint: disable=unused-argument
-        task_abort_event: Optional[threading.Event] = None,
+        logger,
+        task_callback: Callable,
+        task_abort_event: threading.Event,
     ) -> None:
         """This is a long running method for ReleaseAllResources command, it
         executes do hook, invokes ReleaseAllResources command on SdpSubarray.
@@ -43,10 +43,11 @@ class ReleaseAllResources(SdpSLNCommand):
         :param logger: logger
         :type logger: logging.Logger
         :param task_callback: Update task state, defaults to None
-        :type task_callback: Callable, optional
+        :type task_callback: Callable
         :param task_abort_event: Check for abort, defaults to None
-        :type task_abort_event: Event, optional
+        :type task_abort_event: Event
         """
+        self.component_manager.abort_event = task_abort_event
         self.component_manager.command_in_progress = "ReleaseAllResources"
         self.task_callback = task_callback
         task_callback(status=TaskStatus.IN_PROGRESS)

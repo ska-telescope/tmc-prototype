@@ -8,6 +8,7 @@ package.
 """
 import time
 from typing import Callable, Optional, Tuple
+import threading
 
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
@@ -112,6 +113,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._update_sdp_subarray_obs_state_callback = (
             _update_sdp_subarray_obs_state_callback
         )
+        self.abort_event = threading.Event()
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
         self.on_command = On(self, self.logger)
@@ -419,7 +421,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.assign_id = f"{time.time()}-{AssignResources.__name__}"
         task_status, response = self.submit_task(
             assign_resources_command.assign_resources,
-            args=[argin],
+            args=[argin, self.logger],
             task_callback=task_callback,
         )
         return task_status, response
@@ -554,7 +556,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             self,
             logger=self.logger,
         )
+        self.abort_event.set()
         result_code, message = abort_command.do()
+        self.abort_event.clear()
         return result_code, message
 
     def restart(self, task_callback: Optional[Callable] = None) -> tuple:
