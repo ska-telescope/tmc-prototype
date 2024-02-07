@@ -6,9 +6,9 @@ This module provided a reference implementation of a BaseComponentManager.
 It is provided for explanatory purposes, and to support testing of this
 package.
 """
+import threading
 import time
 from typing import Callable, Optional, Tuple
-import threading
 
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState

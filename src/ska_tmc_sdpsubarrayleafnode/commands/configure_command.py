@@ -6,7 +6,6 @@ import json
 import threading
 import time
 from json import JSONDecodeError
-from logging import Logger
 from typing import Callable
 
 from ska_tango_base.commands import ResultCode
@@ -33,7 +32,7 @@ class Configure(SdpSLNCommand):
         self.timeout_id = f"{time.time()}_{__class__.__name__}"
         self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
         self.task_callback: Callable
-    
+
     # pylint: disable=unused-argument
     def configure(
         self,
@@ -63,7 +62,7 @@ class Configure(SdpSLNCommand):
         )
         result_code, message = self.do(argin)
         logger.info(message)
-        
+
         if result_code == ResultCode.FAILED:
             self.update_task_status(result=result_code, message=message)
             self.component_manager.stop_timer()

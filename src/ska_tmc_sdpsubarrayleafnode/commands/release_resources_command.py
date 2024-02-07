@@ -3,7 +3,6 @@ ReleaseAllResources command class for SdpSubarrayLeafNode.
 """
 import threading
 import time
-from logging import Logger
 from typing import Callable, Tuple
 
 from ska_control_model.task_status import TaskStatus
@@ -29,7 +28,7 @@ class ReleaseAllResources(SdpSLNCommand):
         self.timeout_id = f"{time.time()}_{__class__.__name__}"
         self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
         self.task_callback: Callable
-    
+
     # pylint: disable=unused-argument
     def release_resources(
         self,
@@ -57,6 +56,7 @@ class ReleaseAllResources(SdpSLNCommand):
             self.timeout_callback,
         )
         result_code, message = self.do()
+        logger.info(message)
         if result_code == ResultCode.FAILED:
             self.update_task_status(result=result_code, message=message)
             self.component_manager.stop_timer()
