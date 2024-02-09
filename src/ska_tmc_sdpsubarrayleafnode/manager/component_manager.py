@@ -6,7 +6,6 @@ This module provided a reference implementation of a BaseComponentManager.
 It is provided for explanatory purposes, and to support testing of this
 package.
 """
-import threading
 import time
 from typing import Callable, Optional, Tuple
 
@@ -113,7 +112,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._update_sdp_subarray_obs_state_callback = (
             _update_sdp_subarray_obs_state_callback
         )
-        self.abort_event = threading.Event()
+        self.abort_event = None
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
         self.on_command = On(self, self.logger)
