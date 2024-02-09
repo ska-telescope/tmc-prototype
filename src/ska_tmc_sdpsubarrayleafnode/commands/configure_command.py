@@ -6,8 +6,7 @@ import json
 import threading
 import time
 from json import JSONDecodeError
-from logging import Logger
-from typing import Callable, Optional
+from typing import Callable
 
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
@@ -37,21 +36,18 @@ class Configure(SdpSLNCommand):
     def configure(
         self,
         argin: str,
-        logger: Logger,
-        task_callback: Callable = None,
-        # pylint: disable=unused-argument
-        task_abort_event: Optional[threading.Event] = None,
+        task_callback: Callable,
+        task_abort_event: threading.Event,
     ) -> None:
         """This is a long running method for Configure command, it
         executes do hook, invokes Configure command on SdpSubarray.
 
-        :param logger: logger
-        :type logger: logging.Logger
         :param task_callback: Update task state, defaults to None
-        :type task_callback: Callable, optional
+        :type task_callback: Callable
         :param task_abort_event: Check for abort, defaults to None
-        :type task_abort_event: Event, optional
+        :type task_abort_event: Event
         """
+        self.component_manager.abort_event = task_abort_event
         self.component_manager.command_in_progress = "Configure"
         self.task_callback = task_callback
         task_callback(status=TaskStatus.IN_PROGRESS)
@@ -61,6 +57,7 @@ class Configure(SdpSLNCommand):
             self.timeout_callback,
         )
         result_code, message = self.do(argin)
+
         if result_code == ResultCode.FAILED:
             self.update_task_status(result=result_code, message=message)
             self.component_manager.stop_timer()

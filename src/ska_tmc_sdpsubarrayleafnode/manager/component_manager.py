@@ -112,6 +112,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._update_sdp_subarray_obs_state_callback = (
             _update_sdp_subarray_obs_state_callback
         )
+        self.abort_event = None
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
         self.on_command = On(self, self.logger)
@@ -435,7 +436,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.configure_id = f"{time.time()}-{Configure.__name__}"
         task_status, response = self.submit_task(
             configure_command.configure,
-            args=[argin, self.logger],
+            args=[argin],
             task_callback=task_callback,
         )
         self.logger.info(
@@ -491,7 +492,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.release_id = f"{time.time()}-{ReleaseAllResources.__name__}"
         task_status, response = self.submit_task(
             release_command.release_resources,
-            args=[self.logger],
             task_callback=task_callback,
         )
         self.logger.info(
@@ -554,7 +554,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             self,
             logger=self.logger,
         )
+        self.abort_event.set()
         result_code, message = abort_command.do()
+        self.abort_event.clear()
         return result_code, message
 
     def restart(self, task_callback: Optional[Callable] = None) -> tuple:

@@ -63,7 +63,7 @@ def test_telescope_release_resources_command_fail_subarray(
     )
     release_command = ReleaseAllResources(cm, logger)
     release_command.adapter_factory = adapter_factory
-    release_command.release_resources(logger, task_callback)
+    release_command.release_resources(task_callback, None)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )

@@ -6,7 +6,7 @@ import json
 import threading
 import time
 from json import JSONDecodeError
-from typing import Callable, Optional
+from typing import Callable
 
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
@@ -35,26 +35,23 @@ class AssignResources(SdpSLNCommand):
         self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
         self.task_callback: Callable
 
-    # pylint: disable=unused-argument
     def assign_resources(
         self,
         argin: str,
-        logger=None,
-        task_callback: Callable = None,
-        task_abort_event: Optional[threading.Event] = None,
+        task_callback: Callable,
+        task_abort_event: threading.Event,
     ) -> None:
         """This is a long running method for AssignResources command, it
         executes do hook, invokes AssignResources command on Sdp Subarray.
 
         :param argin: Input JSON string
         :type argin : str
-        :param logger: logger
-        :type logger: logging.Logger
         :param task_callback: Update task state, defaults to None
-        :type task_callback: Callable, optional
+        :type task_callback: Callable
         :param task_abort_event: Check for abort, defaults to None
-        :type task_abort_event: Event, optional
+        :type task_abort_event: Event
         """
+        self.component_manager.abort_event = task_abort_event
         self.component_manager.command_in_progress = "AssignResources"
         self.task_callback = task_callback
         task_callback(status=TaskStatus.IN_PROGRESS)
