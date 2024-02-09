@@ -31,15 +31,12 @@ class ReleaseAllResources(SdpSLNCommand):
 
     def release_resources(
         self,
-        logger,
         task_callback: Callable,
         task_abort_event: threading.Event,
     ) -> None:
         """This is a long running method for ReleaseAllResources command, it
         executes do hook, invokes ReleaseAllResources command on SdpSubarray.
 
-        :param logger: logger
-        :type logger: logging.Logger
         :param task_callback: Update task state, defaults to None
         :type task_callback: Callable
         :param task_abort_event: Check for abort, defaults to None
@@ -55,7 +52,6 @@ class ReleaseAllResources(SdpSLNCommand):
             self.timeout_callback,
         )
         result_code, message = self.do()
-        logger.info(message)
         if result_code == ResultCode.FAILED:
             self.update_task_status(result=result_code, message=message)
             self.component_manager.stop_timer()
