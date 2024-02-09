@@ -492,7 +492,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.release_id = f"{time.time()}-{ReleaseAllResources.__name__}"
         task_status, response = self.submit_task(
             release_command.release_resources,
-            args=[self.logger],
             task_callback=task_callback,
         )
         self.logger.info(

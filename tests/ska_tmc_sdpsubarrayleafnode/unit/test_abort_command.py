@@ -1,3 +1,5 @@
+import threading
+
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
@@ -39,6 +41,8 @@ def test_abort_command(tango_context, devices, obsstate):
     cm.update_device_obs_state(obsstate)
     cm.is_command_allowed("Abort")
     logger.info(f"Abort command is allowed in {obsstate}.")
+    abort_event = threading.Event()
+    cm.abort_event = abort_event
     result_code, _ = cm.abort_commands()
     assert result_code == ResultCode.OK
 
