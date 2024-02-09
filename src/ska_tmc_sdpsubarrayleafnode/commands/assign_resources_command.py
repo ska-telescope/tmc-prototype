@@ -35,7 +35,6 @@ class AssignResources(SdpSLNCommand):
         self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
         self.task_callback: Callable
 
-    # pylint: disable=unused-argument
     def assign_resources(
         self,
         argin: str,

@@ -33,7 +33,6 @@ class Configure(SdpSLNCommand):
         self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
         self.task_callback: Callable
 
-    # pylint: disable=unused-argument
     def configure(
         self,
         argin: str,

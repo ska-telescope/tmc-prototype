@@ -69,9 +69,8 @@ def test_assign_resources_command_fail_subarray(
     )
     assign_command = AssignResources(cm, logger)
     assign_command.adapter_factory = adapter_factory
-    task_abort_event = None
     assign_command.assign_resources(
-        assign_input_str, logger, task_callback, task_abort_event
+        assign_input_str, logger, task_callback, None
     )
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
