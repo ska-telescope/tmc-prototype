@@ -34,7 +34,7 @@ def release_resources(
         change_event_callbacks[
             "longRunningCommandsInQueue"
         ].assert_change_event(
-            None,
+            (),
             lookahead=2,
         )
         result, unique_id = sdp_subarray_ln_proxy.On()

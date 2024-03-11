@@ -45,7 +45,7 @@ def end(
         change_event_callbacks[
             "longRunningCommandsInQueue"
         ].assert_change_event(
-            None,
+            (),
         )
         result, unique_id = sdp_subarray_ln_proxy.On()
         logger.info(f"Command ID: {unique_id} Returned result: {result}")

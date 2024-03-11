@@ -71,7 +71,7 @@ def check_command(sdpmasterleaf_node, group_callback):
     )
 
     group_callback["longRunningCommandsInQueue"].assert_change_event(
-        None,
+        (),
         lookahead=2,
     )
     event_remover(

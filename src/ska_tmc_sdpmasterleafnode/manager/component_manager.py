@@ -111,7 +111,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
                 )
                 self.update_availablity_callback(True)
 
-    def device_failed(
+    def update_device_ping_failure(
         self, device_info, exception
     ):  # pylint: disable=arguments-differ
         """

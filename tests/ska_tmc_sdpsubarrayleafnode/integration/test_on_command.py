@@ -30,7 +30,7 @@ def on_command(
         change_event_callbacks[
             "longRunningCommandsInQueue"
         ].assert_change_event(
-            None,
+            (),
         )
         result, unique_id = sdp_subarray_ln_proxy.On()
         change_event_callbacks[
@@ -53,7 +53,7 @@ def on_command(
         change_event_callbacks[
             "longRunningCommandsInQueue"
         ].assert_change_event(
-            None,
+            (),
             lookahead=2,
         )
         event_remover(
