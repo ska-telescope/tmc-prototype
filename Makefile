@@ -57,7 +57,7 @@ FAKE_DEVICES ?= true ## Install fake devices or not
 TANGO_HOST ?= tango-databaseds:10000## TANGO_HOST connection to the Tango DS
 COUNT ?= 1
 
-ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.3.9
+ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.4.3
 
 # Test runner - run to completion job in K8s
 # name of the pod running the k8s_tests
