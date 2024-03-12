@@ -6,7 +6,6 @@ enabled: true
 system: SW-infrastructure
 subsystem: ska-tmc-sdpleafnodes
 telescope: SKA-mid
-legacy_compatibility: true
 
 subarray_count: 1
 dishes: ["01"]
@@ -27,14 +26,14 @@ dsconfig:
   image:
     registry: artefact.skao.int
     image: ska-tango-images-tango-dsconfig
-    tag: 1.5.5
+    tag: 1.5.12
     pullPolicy: IfNotPresent
 
 itango:
   image:
     registry: artefact.skao.int
     image: ska-tango-images-tango-itango
-    tag: 9.3.9
+    tag: 9.4.3
     pullPolicy: IfNotPresent
 
 sdpleafnodes:
