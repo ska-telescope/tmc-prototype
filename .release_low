@@ -1,0 +1,13 @@
+"""Release information for Python Package"""
+
+name="""ska-tmc-sdpleafnodes"""
+version="0.15.0"
+version_info=version.split(".")
+description="""SKA-TMC-SDPLEAFNODES"""
+author="Team Himalaya, Team Sahyadri"
+author_email="telmgt-internal@googlegroups.com"
+license="""BSD-3-Clause"""
+url="""https://www.skaobservatory.org"""
+copyright=""""""
+release=0.15.0
+tag=0.15.0
