@@ -118,3 +118,6 @@ test-requirements:
 
 k8s-pre-test: python-pre-test test-requirements
 
+cred:
+	make k8s-namespace
+	make k8s-namespace-credentials

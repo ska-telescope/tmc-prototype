@@ -93,12 +93,13 @@ k8s-low-test:
     TELESCOPE: 'SKA-low'
     CONFIG: 'low'
     KUBE_NAMESPACE: 'ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CONFIG'
-
+    SERVICE_ACCOUNT: 'ci-svc-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CONFIG'
   before_script:
     - '[ -f .make/k8s.mk ] || (echo "File k8s.mk not included in Makefile; exit 1")'
     - 'make help | grep k8s-test'
     - make k8s-install-chart
     - make k8s-wait
+    - make cred SERVICE_ACCOUNT=$SERVICE_ACCOUNT
   script:
     - make k8s-test
   artifacts:
