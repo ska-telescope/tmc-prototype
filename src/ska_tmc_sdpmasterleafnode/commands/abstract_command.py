@@ -1,11 +1,16 @@
 """Abstract Command module for SDP Master Leaf Node"""
+import logging
 import time
+from typing import Tuple
 
 from ska_tango_base.commands import ResultCode
+from ska_tmc_common import DeviceInfo
 from ska_tmc_common.adapters import AdapterType
 from ska_tmc_common.exceptions import DeviceUnresponsive
 from ska_tmc_common.tmc_command import TmcLeafNodeCommand
 from tango import ConnectionFailed, DevFailed
+
+LOGGER = logging.getLogger(__name__)
 
 
 class SdpMLNCommand(TmcLeafNodeCommand):
@@ -14,14 +19,14 @@ class SdpMLNCommand(TmcLeafNodeCommand):
     def __init__(
         self,
         component_manager,
-        logger=None,
+        logger: logging.Logger = LOGGER,
     ):
         super().__init__(component_manager, logger)
         self.sdp_master_adapter = None
 
     def check_unresponsive(self):
         """Checks whether the device is unresponsive"""
-        dev_info = self.component_manager.get_device()
+        dev_info: DeviceInfo = self.component_manager.get_device()
         if dev_info is None or dev_info.unresponsive:
             raise DeviceUnresponsive(
                 """Command invocation failed as the SDP subarray device is not
@@ -29,9 +34,27 @@ class SdpMLNCommand(TmcLeafNodeCommand):
                 This device will continue with normal operation."""
             )
 
-    def init_adapter(self) -> tuple:
-        dev_name = self.component_manager.sdp_master_device_name
-        timeout = self.component_manager.timeout
+    def init_adapter_low(self):
+        self.init_adapter()
+
+    def init_adapter_mid(self):
+        self.init_adapter()
+
+    def do_mid(self, argin=None):
+        pass
+
+    def do_low(self, argin=None):
+        pass
+
+    def do(self, argin=None):
+        pass
+
+    def update_task_status(self, **kwargs):
+        pass
+
+    def init_adapter(self) -> Tuple[ResultCode, str]:
+        dev_name: str = self.component_manager.sdp_master_device_name
+        timeout: int = self.component_manager.timeout
         elapsed_time = 0
         start_time = time.time()
         while self.sdp_master_adapter is None and elapsed_time < timeout:
@@ -41,22 +64,27 @@ class SdpMLNCommand(TmcLeafNodeCommand):
                         dev_name, AdapterType.BASE
                     )
                 )
-            except ConnectionFailed as cf:
+            except ConnectionFailed as connection_failed:
                 elapsed_time = time.time() - start_time
                 if elapsed_time > timeout:
                     message = (
-                        f"Error in creating adapter for " f"{dev_name}: {cf}"
+                        f"Error in creating adapter for "
+                        f"{dev_name}: {connection_failed}"
                     )
                     return ResultCode.FAILED, message
-            except DevFailed as df:
+            except DevFailed as dev_failed:
                 elapsed_time = time.time() - start_time
                 if elapsed_time > timeout:
                     message = (
-                        f"Error in creating adapter for " f"{dev_name}: {df}"
+                        f"Error in creating adapter for "
+                        f"{dev_name}: {dev_failed}"
                     )
                     return ResultCode.FAILED, message
-            except (AttributeError, ValueError, TypeError) as e:
-                message = f"Error in creating adapter for " f"{dev_name}: {e}"
+            except (AttributeError, ValueError, TypeError) as exception:
+                message = (
+                    f"Error in creating adapter for "
+                    f"{dev_name}: {exception}"
+                )
                 return ResultCode.FAILED, message
 
         return (ResultCode.OK, "")

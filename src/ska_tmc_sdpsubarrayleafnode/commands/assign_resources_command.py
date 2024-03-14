@@ -2,12 +2,16 @@
 """
 AssignResouces command class for SDPSubarrayLeafNode.
 """
+from __future__ import annotations
+
 import json
+import logging
 import threading
 import time
 from json import JSONDecodeError
-from typing import Callable
+from typing import TYPE_CHECKING, Callable, Optional, Tuple
 
+from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
@@ -15,6 +19,11 @@ from ska_tmc_common.timeout_callback import TimeoutCallback
 from tango import DevFailed
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
+
+LOGGER = logging.getLogger(__name__)
+
+if TYPE_CHECKING:
+    from ..manager.component_manager import SdpSLNComponentManager
 
 
 class AssignResources(SdpSLNCommand):
@@ -26,19 +35,20 @@ class AssignResources(SdpSLNCommand):
 
     def __init__(
         self,
-        component_manager,
-        logger=None,
+        component_manager: SdpSLNComponentManager,
+        logger: logging.Logger = LOGGER,
     ):
         super().__init__(component_manager, logger)
         self.component_manager = component_manager
-        self.timeout_id = f"{time.time()}_{__class__.__name__}"
-        self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
-        self.task_callback: Callable
+        self.timeout_id: str = f"{time.time()}_{__class__.__name__}"
+        self.timeout_callback: Optional[
+            Callable[[str, logging.Logger], None]
+        ] = TimeoutCallback(self.timeout_id, self.logger)
 
     def assign_resources(
         self,
         argin: str,
-        task_callback: Callable,
+        task_callback: TaskCallbackType,
         task_abort_event: threading.Event,
     ) -> None:
         """This is a long running method for AssignResources command, it
@@ -77,7 +87,7 @@ class AssignResources(SdpSLNCommand):
                 lrcr_callback=self.component_manager.long_running_result_callback,
             )
 
-    def do(self, argin=None):
+    def do(self, argin: str = "") -> Tuple[ResultCode, str]:
         """
         Method to invoke AssignResources command on SDP Subarray.
 
@@ -179,8 +189,10 @@ class AssignResources(SdpSLNCommand):
                 json.dumps(json_argument), self.component_manager.cmd_ended_cb
             )
 
-        except (AttributeError, ValueError, TypeError, DevFailed) as e:
-            self.logger.exception("AssignResources Command failed: %s", e)
+        except (AttributeError, ValueError, TypeError, DevFailed) as exception:
+            self.logger.exception(
+                "AssignResources Command failed: %s", exception
+            )
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "The invocation of the AssignResources command is failed on"

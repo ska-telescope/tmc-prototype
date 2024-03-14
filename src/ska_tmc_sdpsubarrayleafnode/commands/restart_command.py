@@ -2,10 +2,12 @@
 
 import threading
 from logging import Logger
-from typing import Callable, Optional, Tuple
+from typing import Optional, Tuple
 
+from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.executor import TaskStatus
+from tango import DevFailed
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
@@ -20,7 +22,7 @@ class Restart(SdpSLNCommand):
     def restart(
         self,
         logger: Logger,
-        task_callback: Callable,
+        task_callback: TaskCallbackType,
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
         """This is a long-running method for a Restart command, it
@@ -69,19 +71,26 @@ class Restart(SdpSLNCommand):
                 self.sdp_subarray_adapter.dev_name,
             )
             self.sdp_subarray_adapter.Restart()
-        except Exception as e:
+        except (AttributeError, ValueError, TypeError, DevFailed) as exception:
             self.logger.exception(
                 "Execution of Restart command is failed."
                 + "Reason: Error in invoking Restart\
                  command on Sdp Subarray - "
-                + f"{self.sdp_subarray_adapter.dev_name}: {e}",
+                + f"{self.sdp_subarray_adapter.dev_name}: {exception}",
+            )
+        except BaseException as exception:
+            self.logger.exception(
+                "Execution of Restart command is failed."
+                + "Reason: Error in invoking Restart\
+                 command on Sdp Subarray - "
+                + f"{self.sdp_subarray_adapter.dev_name}: {exception}",
             )
             return (
                 ResultCode.FAILED,
                 "Execution of Restart command is failed."
                 + "Reason: Error in invoking Restart\
                  command on Sdp Subarray - "
-                + f"{self.sdp_subarray_adapter.dev_name}: {e}",
+                + f"{self.sdp_subarray_adapter.dev_name}: {exception}",
             )
 
         self.logger.info(

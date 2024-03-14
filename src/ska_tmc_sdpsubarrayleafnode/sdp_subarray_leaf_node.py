@@ -5,7 +5,7 @@ actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
 
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 # pylint: disable=attribute-defined-outside-init
 import tango
@@ -13,7 +13,14 @@ from ska_control_model import HealthState
 from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
 from ska_tango_base.control_model import ObsState
+from ska_tango_base.executor import TaskStatus
+from ska_tmc_common.device_info import SdpSubarrayDeviceInfo
 from ska_tmc_common.enum import LivelinessProbeType
+from ska_tmc_common.exceptions import (
+    CommandNotAllowed,
+    DeviceUnresponsive,
+    InvalidObsStateError,
+)
 from tango import ApiUtil, AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
@@ -77,7 +84,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # General methods
     # ---------------
 
-    def update_device_callback(self, dev_info):
+    def update_device_callback(self, dev_info: SdpSubarrayDeviceInfo) -> None:
         """Updates device callback info"""
         self._LastDeviceInfoChanged = dev_info.to_json()
         self.push_change_event("lastDeviceInfoChanged", dev_info.to_json())
@@ -91,7 +98,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             "sdpSubarrayObsState", self._sdp_subarray_obs_state
         )
 
-    def update_lrcr_callback(self, lrc_result):
+    def update_lrcr_callback(
+        self,
+        lrc_result: Tuple[str, Union[ResultCode, TaskStatus, Exception, str]],
+    ):
         """Change event callback for longRunningCommandResult"""
         self.push_change_event("longRunningCommandResult", lrc_result)
 
@@ -110,7 +120,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         A class for the TMC SdpSubarrayLeafNode's init_device() method.
         """
 
-        def do(self, *args, **kwargs) -> tuple:
+        def do(self, *args, **kwargs) -> Tuple[ResultCode, str]:
             """
             Initializes the attributes and properties of the
             SdpSubarrayLeafNode.
@@ -141,7 +151,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     def always_executed_hook(self):
         pass
 
-    def delete_device(self):
+    def delete_device(self) -> None:
         # if the init is called more than once
         # I need to stop all threads
         if hasattr(self, "component_manager"):
@@ -151,23 +161,23 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # Attributes methods
     # ------------------
 
-    def read_sdpSubarrayDevName(self):
+    def read_sdpSubarrayDevName(self) -> str:
         """Return the sdpsubarraydevname attribute."""
         return self.component_manager._sdp_subarray_dev_name
 
-    def write_sdpSubarrayDevName(self, value):
+    def write_sdpSubarrayDevName(self, value: str) -> None:
         """Set the sdpsubarraydevname attribute."""
         self.component_manager._sdp_subarray_dev_name = value
 
-    def read_isSubsystemAvailable(self):
+    def read_isSubsystemAvailable(self) -> bool:
         """Read method for issubsystemavailable"""
         return self._issubsystemavailable
 
-    def read_lastDeviceInfoChanged(self):
+    def read_lastDeviceInfoChanged(self) -> str:
         """Return the last device info change"""
         return self._LastDeviceInfoChanged
 
-    def read_sdpSubarrayObsState(self):
+    def read_sdpSubarrayObsState(self) -> ObsState:
         """Reads the current observation state of the SDP subarray"""
         return self._sdp_subarray_obs_state
 
@@ -175,7 +185,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # Commands
     # --------
 
-    def is_On_allowed(self):
+    def is_On_allowed(
+        self,
+    ) -> Union[
+        bool, InvalidObsStateError, DeviceUnresponsive, CommandNotAllowed
+    ]:
         """
         Checks whether this command is allowed to be run in current device \
         state. \
@@ -189,7 +203,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     @command(dtype_out="DevVarLongStringArray")
     @DebugIt()
-    def On(self):
+    def On(self) -> Tuple[List[ResultCode], List[str]]:
         """
         This command invokes On() command on SDP Subarray.
         """
@@ -217,7 +231,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         doc_out="information-only string",
     )
     @DebugIt()
-    def AssignResources(self, argin: str) -> tuple:
+    def AssignResources(
+        self, argin: str
+    ) -> Tuple[List[ResultCode], List[str]]:
         """
         This command invokes the AssignResources() command on Sdp Subarray.
         """
@@ -244,7 +260,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         doc_out="information-only string",
     )
     @DebugIt()
-    def Configure(self, argin: str) -> tuple:
+    def Configure(self, argin: str) -> Tuple[List[ResultCode], List[str]]:
         """
         This command invokes the Configure() command on Sdp Subarray.
         """
@@ -271,7 +287,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         doc_out="information-only string",
     )
     @DebugIt()
-    def Scan(self, argin: str) -> tuple:
+    def Scan(self, argin: str) -> Tuple[List[ResultCode], List[str]]:
         """
         This command invokes the Scan() command on Sdp Subarray.
         """
@@ -293,7 +309,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     @command(dtype_out="DevVarLongStringArray")
     @DebugIt()
-    def Off(self):
+    def Off(self) -> Tuple[List[ResultCode], List[str]]:
         """
         This command invokes Off() command on SDP Subarray.
         """
@@ -319,7 +335,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         doc_out="information-only string",
     )
     @DebugIt()
-    def ReleaseAllResources(self):
+    def ReleaseAllResources(self) -> Tuple[List[ResultCode], List[str]]:
         """
         This command invokes ReleaseAllResources() command on Sdp
         Subarray.
@@ -347,7 +363,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         doc_out="information-only string",
     )
     @DebugIt()
-    def End(self):
+    def End(self) -> Tuple[List[ResultCode], List[str]]:
         """
         This command invokes End() command on Sdp
         Subarray.
@@ -376,7 +392,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         doc_out="information-only string",
     )
     @DebugIt()
-    def EndScan(self):
+    def EndScan(self) -> Tuple[List[ResultCode], List[str]]:
         """
         Invokes EndScan command on Sdp Subarray.
 

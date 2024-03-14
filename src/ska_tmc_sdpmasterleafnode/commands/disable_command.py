@@ -4,10 +4,12 @@ Disable command class for SdpMasterLeafNode.
 
 import threading
 from logging import Logger
-from typing import Callable, Optional
+from typing import Any, Optional, Tuple
 
+from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.executor import TaskStatus
+from tango.server import DevFailed
 
 from ska_tmc_sdpmasterleafnode.commands.abstract_command import SdpMLNCommand
 
@@ -25,7 +27,7 @@ class Disable(SdpMLNCommand):
     def disable(
         self,
         logger: Logger,
-        task_callback: Callable = None,
+        task_callback: TaskCallbackType,
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
         """A method to invoke the Disable command.
@@ -67,7 +69,7 @@ class Disable(SdpMLNCommand):
                 result=result_code,
             )
 
-    def do(self, argin=None):
+    def do(self, argin: Optional[Any] = None) -> Tuple[ResultCode, str]:
         """
         Method to invoke Disable command on Sdp Master.
 
@@ -77,8 +79,15 @@ class Disable(SdpMLNCommand):
             return result_code, message
         try:
             self.sdp_master_adapter.Disable()
-        except Exception as e:
-            self.logger.exception(f"Command invocation failed: {e}")
+        except (
+            AttributeError,
+            ValueError,
+            TypeError,
+            DevFailed,
+        ) as exception:
+            self.logger.exception(f"Command invocation failed: {exception}")
+        except BaseException as exception:
+            self.logger.exception(f"Command invocation failed: {exception}")
             return (
                 ResultCode.FAILED,
                 f"The invocation of the Disable"

@@ -2,8 +2,11 @@
 """
 This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
-from typing import Tuple
+import logging
+from logging import Logger
+from typing import Callable, Optional, Tuple
 
+from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.enum import LivelinessProbeType
@@ -12,6 +15,8 @@ from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 from tango import DevState
 
 from ska_tmc_sdpmasterleafnode.commands import Disable, Off, On, Standby
+
+LOGGER = logging.getLogger(__name__)
 
 
 class SdpMLNComponentManager(TmcLeafNodeComponentManager):
@@ -27,15 +32,17 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
 
     def __init__(
         self,
-        sdp_master_device_name,
-        logger=None,
-        _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
-        _event_receiver=False,
-        max_workers=1,
-        proxy_timeout=500,
-        sleep_time=1,
-        timeout=30,
-        _update_availablity_callback=None,
+        sdp_master_device_name: str,
+        logger: Logger = LOGGER,
+        _liveliness_probe: LivelinessProbeType = (
+            LivelinessProbeType.SINGLE_DEVICE
+        ),
+        _event_receiver: bool = False,
+        max_workers: int = 1,
+        proxy_timeout: int = 500,
+        sleep_time: int = 1,
+        timeout: int = 30,
+        _update_availablity_callback: Optional[Callable[[bool], None]] = None,
     ):
         """
         Initialise a new ComponentManager instance.
@@ -63,7 +70,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             proxy_timeout=proxy_timeout,
             sleep_time=sleep_time,
         )
-        self._device = DeviceInfo(sdp_master_device_name)
+        self._device: DeviceInfo = DeviceInfo(sdp_master_device_name)
 
         self.timeout = timeout
         self.update_availablity_callback = _update_availablity_callback
@@ -112,8 +119,8 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
                 self.update_availablity_callback(True)
 
     def update_device_ping_failure(
-        self, device_info, exception
-    ):  # pylint: disable=arguments-differ
+        self, device_info: DeviceInfo, exception: str
+    ) -> None:  # pylint: disable=arguments-differ
         """
         Set a device to failed and call the relative callback if available
 
@@ -127,7 +134,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             if self.update_availablity_callback is not None:
                 self.update_availablity_callback(False)
 
-    def _check_if_sdp_master_is_responsive(self) -> None:
+    def check_if_sdp_master_is_responsive(self) -> None:
         """Checks if SDP Master device is responsive."""
 
         if self._device is None or self._device.unresponsive:
@@ -162,11 +169,13 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
                     + "The command has NOT been executed."
                     + "This device will continue with normal operation."
                 )
-            self._check_if_sdp_master_is_responsive()
+            self.check_if_sdp_master_is_responsive()
             return True
         return False
 
-    def submit_on_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
+    def submit_on_command(
+        self, task_callback: TaskCallbackType
+    ) -> Tuple[TaskStatus, str]:
         """Submits the On command for execution.
 
         :rtype: tuple
@@ -183,7 +192,9 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         )
         return task_status, response
 
-    def submit_off_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
+    def submit_off_command(
+        self, task_callback: TaskCallbackType
+    ) -> Tuple[TaskStatus, str]:
         """Submits the Off command for execution.
 
         :rtype: tuple
@@ -201,7 +212,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         return task_status, response
 
     def submit_standby_command(
-        self, task_callback=None
+        self, task_callback: TaskCallbackType
     ) -> Tuple[TaskStatus, str]:
         """Submits the Standby command for execution.
 
@@ -216,7 +227,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         return task_status, response
 
     def submit_disable_command(
-        self, task_callback=None
+        self, task_callback: TaskCallbackType
     ) -> Tuple[TaskStatus, str]:
         """Submits the Disable command for execution.
 

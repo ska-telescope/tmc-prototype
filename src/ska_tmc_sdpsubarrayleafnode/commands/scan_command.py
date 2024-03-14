@@ -5,8 +5,9 @@ import json
 import threading
 from json import JSONDecodeError
 from logging import Logger
-from typing import Callable, Optional
+from typing import Optional, Tuple
 
+from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.executor import TaskStatus
 from tango import DevFailed
@@ -27,7 +28,7 @@ class Scan(SdpSLNCommand):
         self,
         argin: str,
         logger: Logger,
-        task_callback: Callable = None,
+        task_callback: TaskCallbackType,
         # pylint: disable=unused-argument
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
@@ -55,7 +56,7 @@ class Scan(SdpSLNCommand):
             exception=message,
         )
 
-    def do(self, argin=None):
+    def do(self, argin: str = "") -> Tuple[ResultCode, str]:
         """
         Method to invoke Scan command on SDP Subarray. \
 
@@ -76,10 +77,12 @@ class Scan(SdpSLNCommand):
             return result_code, message
         try:
             json_argument = json.loads(argin)
-        except JSONDecodeError as e:
+        except JSONDecodeError as json_error:
             log_msg = (
                 "Execution of Scan command is failed."
-                + "Reason: JSON parsing failed with exception: {}".format(e)
+                + "Reason: JSON parsing failed with exception: {}".format(
+                    json_error
+                )
                 + "The command is not executed successfully."
                 + "The device will continue with normal operation"
             )
@@ -115,8 +118,8 @@ class Scan(SdpSLNCommand):
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.Scan(json.dumps(json_argument))
-        except (AttributeError, ValueError, TypeError, DevFailed) as e:
-            self.logger.exception("Command invocation failed: %s", e)
+        except (AttributeError, ValueError, TypeError, DevFailed) as exception:
+            self.logger.exception("Command invocation failed: %s", exception)
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "The invocation of the Scan command is failed on Sdp"

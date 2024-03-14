@@ -130,8 +130,8 @@ def get_input_str(path):
     Returns input json string
     :rtype: String
     """
-    with open(path, "r", encoding="utf-8") as f:
-        input_arg = json.load(f)
+    with open(path, "r", encoding="utf-8") as file:
+        input_arg = json.load(file)
     return json.dumps(input_arg)
 
 

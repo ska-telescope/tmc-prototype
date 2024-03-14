@@ -60,10 +60,10 @@ RESET_DEFECT = json.dumps(
 )
 
 
-def count_faulty_devices(cm):
+def count_faulty_devices(component_manager):
     """Count faulty devices"""
     result = 0
-    for dev_info in cm.checked_devices:
+    for dev_info in component_manager.checked_devices:
         if dev_info.unresponsive:
             result += 1
     return result
@@ -72,19 +72,19 @@ def count_faulty_devices(cm):
 def create_cm(cm_class, device):
     """Create Component Manager"""
     if cm_class == "SdpMLNComponentManager":
-        cm = SdpMLNComponentManager(
+        component_manager = SdpMLNComponentManager(
             device,
             logger=logger,
         )
     if cm_class == "SdpSLNComponentManager":
-        cm = SdpSLNComponentManager(
+        component_manager = SdpSLNComponentManager(
             device, logger=logger, _liveliness_probe=LivelinessProbeType.NONE
         )
     else:
         log_msg = f"Unknown component manager class {cm_class}"
         logger.error(log_msg)
 
-    return cm
+    return component_manager
 
 
 def event_remover(change_event_callbacks, attributes: List[str]) -> None:

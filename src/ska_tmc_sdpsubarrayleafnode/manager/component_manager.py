@@ -6,9 +6,12 @@ This module provided a reference implementation of a BaseComponentManager.
 It is provided for explanatory purposes, and to support testing of this
 package.
 """
+import logging
+import threading
 import time
-from typing import Callable, Optional, Tuple
+from typing import Callable, Optional, Tuple, Union
 
+from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
@@ -41,6 +44,8 @@ from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
 )
 
+LOGGER: logging.Logger = logging.getLogger(__name__)
+
 
 class SdpSLNComponentManager(TmcLeafNodeComponentManager):
     """
@@ -54,19 +59,23 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
     def __init__(
         self,
-        sdp_subarray_dev_name,
-        logger=None,
-        communication_state_callback=None,
-        component_state_callback=None,
-        _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
-        _event_receiver=True,
-        _update_sdp_subarray_obs_state_callback=None,
-        _update_lrcr_callback=None,
-        max_workers=5,
-        proxy_timeout=500,
-        sleep_time=1,
-        timeout=30,
-        _update_availablity_callback=None,
+        sdp_subarray_dev_name: str,
+        logger: logging.Logger = LOGGER,
+        communication_state_callback: Optional[Callable[..., None]] = None,
+        component_state_callback: Optional[Callable[..., None]] = None,
+        _liveliness_probe: LivelinessProbeType = (
+            LivelinessProbeType.SINGLE_DEVICE
+        ),
+        _event_receiver: bool = True,
+        _update_sdp_subarray_obs_state_callback: Optional[
+            Callable[..., None]
+        ] = None,
+        _update_lrcr_callback: Optional[Callable[..., None]] = None,
+        max_workers: int = 5,
+        proxy_timeout: int = 500,
+        sleep_time: int = 1,
+        timeout: int = 30,
+        _update_availablity_callback: Optional[Callable[..., None]] = None,
         command_timeout: int = 15,
     ):
         """
@@ -89,7 +98,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             proxy_timeout=proxy_timeout,
             sleep_time=sleep_time,
         )
-        self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
+        self._device: SubArrayDeviceInfo = SubArrayDeviceInfo(
+            self._sdp_subarray_dev_name, False
+        )
 
         if _liveliness_probe:
             self.start_liveliness_probe(_liveliness_probe)
@@ -112,7 +123,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._update_sdp_subarray_obs_state_callback = (
             _update_sdp_subarray_obs_state_callback
         )
-        self.abort_event = None
+        self.abort_event = threading.Event()
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
         self.on_command = On(self, self.logger)
@@ -127,7 +138,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.stop_liveliness_probe()
         self._event_receiver.stop()
 
-    def get_device(self):
+    def get_device(self) -> SubArrayDeviceInfo:
         """
         Return the device info our of the monitoring loop with name dev_name
 
@@ -137,14 +148,14 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         return self._device
 
-    def update_event_failure(self):
+    def update_event_failure(self) -> None:
         """Update event failures"""
         with self.lock:
             dev_info = self.get_device()
             dev_info.last_event_arrived = time.time()
             dev_info.update_unresponsive(False)
 
-    def update_device_obs_state(self, obs_state):
+    def update_device_obs_state(self, obs_state: ObsState) -> None:
         """
         Update a monitored device obs state,
         and call the relative callbacks if available
@@ -162,7 +173,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             if self._update_sdp_subarray_obs_state_callback:
                 self._update_sdp_subarray_obs_state_callback(obs_state)
 
-    def device_failed(self, device_info, exception):
+    def update_device_ping_failure(
+        self, device_info: SubArrayDeviceInfo, exception: str
+    ) -> None:
         """
         Set a device to failed and call the relative callback if available
 
@@ -199,7 +212,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         return self.get_device().obs_state
 
-    def update_command_result(self, command_name, value: str):
+    def update_command_result(self, command_name: str, value: str) -> None:
         """Updates the long running command result callback"""
         self.logger.info(
             "Received longRunningCommandResult event with value: %s",
@@ -240,7 +253,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 )
 
     @property
-    def lrc_result(self) -> tuple[str, str]:
+    def lrc_result(self) -> Tuple[str, str]:
         """
         Returns the longRunningCommandResult attribute.
 
@@ -250,7 +263,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         return self._lrc_result
 
     @lrc_result.setter
-    def lrc_result(self, value: str) -> None:
+    def lrc_result(self, value: Tuple[str, str]) -> None:
         """
         Sets the longRunningCommandResult value
 
@@ -261,7 +274,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             self._lrc_result = value
             self._invoke_lrcr_callback()
 
-    def _invoke_lrcr_callback(self):
+    def _invoke_lrcr_callback(self) -> None:
         """This method calls longRunningCommandResult callback"""
         if self.update_lrcr_callback is not None:
             self.update_lrcr_callback(self._lrc_result)
@@ -271,14 +284,18 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         if self._device is None or self._device.unresponsive:
             raise DeviceUnresponsive(f"{self._device} not available")
 
-    def generate_command_result(self, result_code, message):
+    def generate_command_result(
+        self, result_code: ResultCode, message: str
+    ) -> Tuple[ResultCode, str]:
         """This method is used for generating command result"""
         if result_code == ResultCode.FAILED:
             self.logger.error(message)
         self.logger.info(message)
         return result_code, message
 
-    def raise_invalid_obsstate_error(self, command_name: str):
+    def raise_invalid_obsstate_error(
+        self, command_name: str
+    ) -> InvalidObsStateError:
         """
         checking the InvalidObsState of SdpSubarray device
         :param command_name: The name of command
@@ -295,7 +312,11 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         raise InvalidObsStateError(message)
 
-    def is_command_allowed(self, command_name: str):
+    def is_command_allowed(
+        self, command_name: str
+    ) -> Union[
+        bool, InvalidObsStateError, DeviceUnresponsive, CommandNotAllowed
+    ]:
         """
         Checks whether this command is allowed
         It checks that the device is in the right state
@@ -395,7 +416,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             log_message = f"Command {event.cmd_name} invoked successfully."
             self.logger.info(log_message)
 
-    def on(self, task_callback=None) -> Tuple[TaskStatus, str]:
+    # pylint: disable= signature-differs
+    def on(self, task_callback: TaskCallbackType) -> Tuple[TaskStatus, str]:
         """Submits the On command for execution.
 
         :rtype: tuple
@@ -409,8 +431,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         return task_status, response
 
     def assign_resources(
-        self, argin: str, task_callback: Optional[Callable] = None
-    ) -> tuple:
+        self, argin: str, task_callback: TaskCallbackType
+    ) -> Tuple[TaskStatus, str]:
         """
         Submit the AssignResources command in queue.
 
@@ -426,7 +448,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         return task_status, response
 
     def configure(
-        self, argin: str, task_callback: Optional[Callable] = None
+        self, argin: str, task_callback: TaskCallbackType
     ) -> Tuple[TaskStatus, str]:
         """Submits the Configure command for execution.
 
@@ -448,7 +470,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         return task_status, response
 
     def scan(
-        self, argin: str, task_callback: Optional[Callable] = None
+        self, argin: str, task_callback: TaskCallbackType
     ) -> Tuple[TaskStatus, str]:
         """Submits the Scan command for execution.
 
@@ -468,7 +490,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         return task_status, response
 
-    def off(self, task_callback=None) -> Tuple[TaskStatus, str]:
+    # pylint: disable= signature-differs
+    def off(self, task_callback: TaskCallbackType) -> Tuple[TaskStatus, str]:
         """Submits the Off command for execution.
 
         :rtype: tuple
@@ -482,7 +505,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         return task_status, response
 
     def release_all_resources(
-        self, task_callback=None
+        self, task_callback: TaskCallbackType
     ) -> Tuple[TaskStatus, str]:
         """Submits the ReleaseAllResources command for execution.
 
@@ -502,7 +525,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         return task_status, response
 
-    def end(self, task_callback=None) -> Tuple[TaskStatus, str]:
+    def end(self, task_callback: TaskCallbackType) -> Tuple[TaskStatus, str]:
         """Submits the End command for execution.
 
         :rtype: tuple
@@ -522,7 +545,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         return task_status, response
 
     def end_scan(
-        self, task_callback: Optional[Callable] = None
+        self, task_callback: TaskCallbackType
     ) -> Tuple[TaskStatus, str]:
         """Submits the EndScan command for execution.
 

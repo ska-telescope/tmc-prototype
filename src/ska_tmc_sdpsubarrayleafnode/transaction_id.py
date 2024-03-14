@@ -23,11 +23,11 @@ def identify_with_id(name: str, arg_name: str):
                 )
             try:
                 parameters = json.loads(argin)
-            except JSONDecodeError as e:
+            except JSONDecodeError as json_error:
                 logging.warning(
                     """unable to use transaction id as not able to parse input
                     arguments into a dictionary: %s""",
-                    e,
+                    json_error,
                 )
                 return func(obj, argin)
             with transaction(

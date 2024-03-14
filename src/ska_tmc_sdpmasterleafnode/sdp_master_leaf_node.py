@@ -2,10 +2,13 @@
 SDP Master Leaf node acts as a SDP contact point for the Master Node and also
 monitors and issues commands to the SDP Master.
 """
+from typing import Union
+
 from ska_control_model import HealthState
 from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
 from ska_tmc_common.enum import LivelinessProbeType
+from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
 from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
@@ -84,17 +87,11 @@ class SdpMasterLeafNode(SKABaseDevice):
     def always_executed_hook(self):
         pass
 
-    def delete_device(self):
-        # if the init is called more than once
-        # I need to stop all threads
-        if hasattr(self, "component_manager"):
-            self.component_manager.stop()
-
     # ------------------
     # Attributes methods
     # ------------------
     # pylint: disable=access-member-before-definition
-    def update_availablity_callback(self, availablity):
+    def update_availablity_callback(self, availablity: bool) -> None:
         """Change event callback for isSubsystemAvailable"""
         if availablity != self._issubsystemavailable:
             self._issubsystemavailable = availablity  # pylint: disable=W0201
@@ -102,16 +99,16 @@ class SdpMasterLeafNode(SKABaseDevice):
                 "isSubsystemAvailable", self._issubsystemavailable
             )
 
-    def read_isSubsystemAvailable(self):
+    def read_isSubsystemAvailable(self) -> bool:
         """Returns the TMC Sdp MasterLeafNode
         isSubsystemAvailable attribute."""
         return self._issubsystemavailable
 
-    def read_sdpMasterDevName(self):
+    def read_sdpMasterDevName(self) -> str:
         """Return the sdpmasterdevname attribute."""
         return self.component_manager.sdp_master_device_name
 
-    def write_sdpMasterDevName(self, value):
+    def write_sdpMasterDevName(self, value: str) -> None:
         """Set the sdpmasterdevname attribute."""
         self.component_manager.sdp_master_device_name = value
 
@@ -119,7 +116,9 @@ class SdpMasterLeafNode(SKABaseDevice):
     # Commands
     # --------
 
-    def is_Off_allowed(self):
+    def is_Off_allowed(
+        self,
+    ) -> Union[bool, CommandNotAllowed, DeviceUnresponsive]:
         """
         Checks whether this command is allowed to be run in current \
         device state. \
@@ -127,7 +126,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device \
         state. \
 
-        :rtype: boolean
+        :rtype: bool,CommandNotAllowed,DeviceUnresponsive
         """
         return self.component_manager.is_command_allowed("Off")
 
@@ -140,7 +139,9 @@ class SdpMasterLeafNode(SKABaseDevice):
         return_code, unique_id = handler()
         return [[return_code], [str(unique_id)]]
 
-    def is_On_allowed(self):
+    def is_On_allowed(
+        self,
+    ) -> Union[bool, CommandNotAllowed, DeviceUnresponsive]:
         """
         Checks whether this command is allowed to be run in current device \
         state. \
@@ -148,7 +149,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device \
         state. \
 
-        :rtype: boolean
+        :rtype: bool,CommandNotAllowed,DeviceUnresponsive
         """
         return self.component_manager.is_command_allowed("On")
 
@@ -162,7 +163,9 @@ class SdpMasterLeafNode(SKABaseDevice):
         return_code, unique_id = handler()
         return [[return_code], [str(unique_id)]]
 
-    def is_Standby_allowed(self):
+    def is_Standby_allowed(
+        self,
+    ) -> Union[bool, CommandNotAllowed, DeviceUnresponsive]:
         """
         Checks whether this command is allowed to be run in current device \
         state. \
@@ -170,7 +173,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     #     :return: True if this command is allowed to be  \
     #     run in current device state. \
 
-        :rtype: boolean
+        :rtype: bool,CommandNotAllowed,DeviceUnresponsive
         """
         return self.component_manager.is_command_allowed("Standby")
 
@@ -184,7 +187,9 @@ class SdpMasterLeafNode(SKABaseDevice):
         return_code, unique_id = handler()
         return [[return_code], [str(unique_id)]]
 
-    def is_Disable_allowed(self):
+    def is_Disable_allowed(
+        self,
+    ) -> Union[bool, CommandNotAllowed, DeviceUnresponsive]:
         """
         Checks whether this command is allowed to be run in current device \
         state. \
@@ -192,7 +197,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be  \
         run in current device state. \
 
-        :rtype: boolean
+        :rtype: bool,CommandNotAllowed,DeviceUnresponsive
         """
         return self.component_manager.is_command_allowed("Disable")
 
@@ -212,7 +217,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     # pylint: disable=attribute-defined-outside-init
     def create_component_manager(self):
         """Returns Sdp Master Leaf Node component manager object"""
-        cm = SdpMLNComponentManager(
+        component_manager = SdpMLNComponentManager(
             self.SdpMasterFQDN,
             logger=self.logger,
             _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
@@ -221,8 +226,8 @@ class SdpMasterLeafNode(SKABaseDevice):
             timeout=self.TimeOut,
             _update_availablity_callback=self.update_availablity_callback,
         )
-        cm.sdp_master_device_name = self.SdpMasterFQDN or ""
-        return cm
+        component_manager.sdp_master_device_name = self.SdpMasterFQDN or ""
+        return component_manager
 
     # pylint: enable=attribute-defined-outside-init
 

@@ -2,8 +2,10 @@
 Off command class for SdpSubarrayLeafNode.
 """
 import threading
-from typing import Callable, Optional
+from logging import Logger
+from typing import Any, Optional, Tuple
 
+from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.executor import TaskStatus
 
@@ -20,8 +22,8 @@ class Off(SdpSLNCommand):
     # pylint: disable=unused-argument
     def off(
         self,
-        logger,
-        task_callback: Callable = None,
+        logger: Logger,
+        task_callback: TaskCallbackType,
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
         """A method to invoke the Off command.
@@ -51,7 +53,7 @@ class Off(SdpSLNCommand):
 
     # pylint: enable=unused-argument
 
-    def do(self, argin=None):
+    def do(self, argin: Optional[Any] = None) -> Tuple[ResultCode, str]:
         """
         Method to invoke Off command on SdpSubarray.
 
@@ -62,8 +64,8 @@ class Off(SdpSLNCommand):
 
         try:
             self.sdp_subarray_adapter.Off()
-        except Exception as e:
-            self.logger.exception(f"Command invocation failed: {e}")
+        except BaseException as exception:
+            self.logger.exception(f"Command invocation failed: {exception}")
             return (
                 ResultCode.FAILED,
                 f"The invocation of the Off"

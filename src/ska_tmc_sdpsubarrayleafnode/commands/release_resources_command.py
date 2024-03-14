@@ -3,9 +3,10 @@ ReleaseAllResources command class for SdpSubarrayLeafNode.
 """
 import threading
 import time
-from typing import Callable, Tuple
+from typing import Tuple
 
 from ska_control_model.task_status import TaskStatus
+from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.timeout_callback import TimeoutCallback
@@ -27,11 +28,10 @@ class ReleaseAllResources(SdpSLNCommand):
         super().__init__(component_manager, logger)
         self.timeout_id = f"{time.time()}_{__class__.__name__}"
         self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
-        self.task_callback: Callable
 
     def release_resources(
         self,
-        task_callback: Callable,
+        task_callback: TaskCallbackType,
         task_abort_event: threading.Event,
     ) -> None:
         """This is a long running method for ReleaseAllResources command, it
