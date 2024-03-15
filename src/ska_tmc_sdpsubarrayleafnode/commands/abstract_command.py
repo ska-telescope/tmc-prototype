@@ -12,7 +12,7 @@ from ska_tmc_common import SdpSubArrayAdapter
 from ska_tmc_common.adapters import AdapterType
 from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
 from ska_tmc_common.tmc_command import TmcLeafNodeCommand
-from tango import ConnectionFailed, DevFailed, DevState
+from tango import DevState
 
 LOGGER = logging.getLogger(__name__)
 
@@ -89,20 +89,7 @@ class SdpSLNCommand(TmcLeafNodeCommand):
                     device,
                     AdapterType.SDPSUBARRAY,
                 )
-            except ConnectionFailed as connection_failed:
-                elapsed_time = time.time() - start_time
-                if elapsed_time > timeout:
-                    message = f"Error in creating adapter for {device}: \
-                        {connection_failed}"
-                    return ResultCode.FAILED, message
-            except DevFailed as dev_failed:
-                elapsed_time = time.time() - start_time
-                if elapsed_time > timeout:
-                    message = (
-                        f"Error in creating adapter for {device}: {dev_failed}"
-                    )
-                    return ResultCode.FAILED, message
-            except (AttributeError, ValueError, TypeError) as exception:
+            except Exception as exception:
                 message = (
                     f"Error in creating adapter for {device}: {exception}"
                 )

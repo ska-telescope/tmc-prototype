@@ -7,7 +7,6 @@ from typing import Optional, Tuple
 from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.executor import TaskStatus
-from tango import DevFailed
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
@@ -71,13 +70,6 @@ class Restart(SdpSLNCommand):
                 self.sdp_subarray_adapter.dev_name,
             )
             self.sdp_subarray_adapter.Restart()
-        except (AttributeError, ValueError, TypeError, DevFailed) as exception:
-            self.logger.exception(
-                "Execution of Restart command is failed."
-                + "Reason: Error in invoking Restart\
-                 command on Sdp Subarray - "
-                + f"{self.sdp_subarray_adapter.dev_name}: {exception}",
-            )
         except Exception as exception:
             self.logger.exception(
                 "Execution of Restart command is failed."

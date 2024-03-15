@@ -9,7 +9,6 @@ from typing import Any, Optional, Tuple
 from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.executor import TaskStatus
-from tango.server import DevFailed
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
@@ -69,8 +68,6 @@ class End(SdpSLNCommand):
             return return_code, message
         try:
             self.sdp_subarray_adapter.End()
-        except (AttributeError, ValueError, TypeError, DevFailed) as exception:
-            self.logger.exception(f"Command invocation failed: {exception}")
         except Exception as exception:
             self.logger.exception(f"Command invocation failed: {exception}")
             return (

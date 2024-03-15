@@ -10,7 +10,6 @@ from typing import Optional, Tuple
 from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.executor import TaskStatus
-from tango import DevFailed
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
@@ -118,7 +117,7 @@ class Scan(SdpSLNCommand):
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.Scan(json.dumps(json_argument))
-        except (AttributeError, ValueError, TypeError, DevFailed) as exception:
+        except Exception as exception:
             self.logger.exception("Command invocation failed: %s", exception)
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,

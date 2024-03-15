@@ -7,7 +7,6 @@ from typing import Dict, Optional
 import tango
 from ska_tmc_common.device_info import SubArrayDeviceInfo
 from ska_tmc_common.event_receiver import EventReceiver
-from tango import DevFailed
 
 LOGGER: logging.Logger = logging.getLogger(__name__)
 
@@ -66,7 +65,7 @@ class SdpSLNEventReceiver(EventReceiver):
                 self.handle_obs_state_event,
                 stateless=True,
             )
-        except (AttributeError, ValueError, TypeError, DevFailed) as exception:
+        except Exception as exception:
             self._logger.debug(
                 "Event not working for the device %s, %s",
                 proxy.dev_name,

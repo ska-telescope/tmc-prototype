@@ -16,7 +16,6 @@ from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.timeout_callback import TimeoutCallback
-from tango import DevFailed
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
@@ -191,7 +190,7 @@ class AssignResources(SdpSLNCommand):
                 json.dumps(json_argument), self.component_manager.cmd_ended_cb
             )
 
-        except (AttributeError, ValueError, TypeError, DevFailed) as exception:
+        except Exception as exception:
             self.logger.exception(
                 "AssignResources Command failed: %s", exception
             )
