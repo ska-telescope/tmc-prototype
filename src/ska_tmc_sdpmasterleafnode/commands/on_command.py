@@ -85,7 +85,7 @@ class On(SdpMLNCommand):
             DevFailed,
         ) as exception:
             self.logger.exception(f"Command invocation failed: {exception}")
-        except BaseException as exception:
+        except Exception as exception:
             self.logger.exception(f"Command invocation failed: {exception}")
             return (
                 ResultCode.FAILED,

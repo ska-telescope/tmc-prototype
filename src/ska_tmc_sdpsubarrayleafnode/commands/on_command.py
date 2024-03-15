@@ -65,7 +65,7 @@ class On(SdpSLNCommand):
             self.sdp_subarray_adapter.On()
         except (AttributeError, ValueError, TypeError, DevFailed) as exception:
             self.logger.exception(f"Command invocation failed: {exception}")
-        except BaseException as exception:
+        except Exception as exception:
             self.logger.exception(f"Command invocation failed: {exception}")
             return (
                 ResultCode.FAILED,

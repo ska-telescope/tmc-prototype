@@ -52,7 +52,7 @@ class Abort(SdpSLNCommand):
                 + "Reason: Error in invoking Abort command on Sdp Subarray -"
                 + f"{self.sdp_subarray_adapter.dev_name}: {exception}"
             )
-        except BaseException as exception:
+        except Exception as exception:
             self.logger.exception(
                 "Execution of Abort command is failed."
                 + "Reason: Error in invoking Abort command on Sdp Subarray -"

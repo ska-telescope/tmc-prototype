@@ -248,5 +248,5 @@ max-public-methods=40
 [EXCEPTIONS]
 
 # Exceptions that will emit a warning when being caught. Defaults to
-# "Exception"
-overgeneral-exceptions=builtins.Exception
+# "BaseException"
+overgeneral-exceptions=builtins.BaseException

@@ -64,7 +64,7 @@ class Off(SdpSLNCommand):
 
         try:
             self.sdp_subarray_adapter.Off()
-        except BaseException as exception:
+        except Exception as exception:
             self.logger.exception(f"Command invocation failed: {exception}")
             return (
                 ResultCode.FAILED,
