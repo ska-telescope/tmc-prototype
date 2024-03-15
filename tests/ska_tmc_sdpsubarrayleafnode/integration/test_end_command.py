@@ -130,9 +130,9 @@ def end(
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
         tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
-    except Exception as e:
+    except Exception as exception:
         tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
-        raise Exception(e)
+        raise Exception(exception)
 
 
 @pytest.mark.post_deployment

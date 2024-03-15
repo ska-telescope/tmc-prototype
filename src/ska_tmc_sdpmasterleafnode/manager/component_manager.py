@@ -134,7 +134,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             if self.update_availablity_callback is not None:
                 self.update_availablity_callback(False)
 
-    def check_if_sdp_master_is_responsive(self) -> None:
+    def _check_if_sdp_master_is_responsive(self) -> None:
         """Checks if SDP Master device is responsive."""
 
         if self._device is None or self._device.unresponsive:
@@ -169,7 +169,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
                     + "The command has NOT been executed."
                     + "This device will continue with normal operation."
                 )
-            self.check_if_sdp_master_is_responsive()
+            self._check_if_sdp_master_is_responsive()
             return True
         return False
 

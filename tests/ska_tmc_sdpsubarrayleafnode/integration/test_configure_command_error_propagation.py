@@ -81,9 +81,9 @@ def configure_error_propogation(
         )
         tear_down(dev_factory, sdp_subarray, sdpsln_device)
 
-    except Exception as e:
+    except Exception as exception:
         tear_down(dev_factory, sdp_subarray, sdpsln_device)
-        raise Exception(e)
+        raise Exception(exception)
 
 
 @pytest.mark.post_deployment

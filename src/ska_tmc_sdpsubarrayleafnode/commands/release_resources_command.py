@@ -89,9 +89,10 @@ class ReleaseAllResources(SdpSLNCommand):
             self.sdp_subarray_adapter.ReleaseAllResources(
                 self.component_manager.cmd_ended_cb
             )
-        except (AttributeError, ValueError, TypeError, DevFailed) as e:
+        except (AttributeError, ValueError, TypeError, DevFailed) as exception:
             self.logger.exception(
-                "Command invocation failed on ReleaseAllResources: %s", e
+                "Command invocation failed on ReleaseAllResources: %s",
+                exception,
             )
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,

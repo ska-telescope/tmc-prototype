@@ -85,9 +85,9 @@ def abort_restart_command(
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
 
-    except Exception as e:
+    except Exception as exception:
         tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
-        raise Exception(e)
+        raise Exception(exception)
 
 
 @pytest.mark.post_deployment

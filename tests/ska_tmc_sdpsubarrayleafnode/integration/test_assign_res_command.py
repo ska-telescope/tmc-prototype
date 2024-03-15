@@ -58,9 +58,9 @@ def assign_resources(
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
         tear_down(dev_factory, sdp_subarray, sdpsal_node)
-    except Exception as e:
+    except Exception as exception:
         tear_down(dev_factory, sdp_subarray, sdpsal_node)
-        raise Exception(e)
+        raise Exception(exception)
 
 
 @pytest.mark.post_deployment
