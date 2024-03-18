@@ -29,10 +29,19 @@ def task_callback_default(
     :param result: result of the task.
     :param exception: an exception raised from the task.
     """
-    LOGGER.info("long running command status %s", status)
-    LOGGER.info("long running command progress %s", progress)
-    LOGGER.info("long running command result %s", result)
-    LOGGER.info("long running command exception %s", exception)
+    LOGGER.warning(
+        "This is default task callback."
+        + "There is no action taken under this callback."
+        + "Please provide task callback."
+    )
+    LOGGER.info(
+        "long running command status: %s, progress: %s ,result:%s ,"
+        + "exception %s",
+        status,
+        progress,
+        result,
+        exception,
+    )
 
 
 class SdpSLNCommand(TmcLeafNodeCommand):

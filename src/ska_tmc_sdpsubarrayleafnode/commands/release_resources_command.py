@@ -1,9 +1,12 @@
 """
 ReleaseAllResources command class for SdpSubarrayLeafNode.
 """
+from __future__ import annotations
+
+import logging
 import threading
 import time
-from typing import Tuple
+from typing import TYPE_CHECKING, Tuple
 
 from ska_control_model.task_status import TaskStatus
 from ska_tango_base.base import TaskCallbackType
@@ -12,6 +15,10 @@ from ska_tango_base.control_model import ObsState
 from ska_tmc_common.timeout_callback import TimeoutCallback
 
 from ska_tmc_sdpsubarrayleafnode.commands.sdp_sln_command import SdpSLNCommand
+
+LOGGER = logging.getLogger(__name__)
+if TYPE_CHECKING:
+    from ..manager.component_manager import SdpSLNComponentManager
 
 
 class ReleaseAllResources(SdpSLNCommand):
@@ -23,10 +30,15 @@ class ReleaseAllResources(SdpSLNCommand):
     JSON string format.
     """
 
-    def __init__(self, component_manager, logger=None) -> None:
+    def __init__(
+        self,
+        component_manager: SdpSLNComponentManager,
+        logger: logging.Logger = LOGGER,
+    ) -> None:
         super().__init__(component_manager, logger)
         self.timeout_id = f"{time.time()}_{__class__.__name__}"
         self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
+        self.component_manager = component_manager
 
     def release_resources(
         self,
