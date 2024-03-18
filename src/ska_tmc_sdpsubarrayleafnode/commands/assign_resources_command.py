@@ -76,7 +76,7 @@ class AssignResources(SdpSLNCommand):
             self.component_manager.stop_timer()
         else:
             self.start_tracker_thread(
-                state_function=self.component_manager.get_obs_state,
+                state_function="get_obs_state",
                 expected_state=[ObsState.RESOURCING, ObsState.IDLE],
                 abort_event=task_abort_event,
                 timeout_id=self.timeout_id,

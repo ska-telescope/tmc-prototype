@@ -69,7 +69,7 @@ class ReleaseAllResources(SdpSLNCommand):
         else:
             lrcr_callback = self.component_manager.long_running_result_callback
             self.start_tracker_thread(
-                state_function=self.component_manager.get_obs_state,
+                state_function="get_obs_state",
                 expected_state=[ObsState.EMPTY],
                 abort_event=task_abort_event,
                 timeout_id=self.timeout_id,
