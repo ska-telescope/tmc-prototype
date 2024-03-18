@@ -23,9 +23,6 @@ dependencies:
     version: 0.15.0
     repository: file://../ska-tmc-sdpleafnodes
     alias: tmc-sdpleafnodes
-  - name: ska-ser-skuid
-    version: 0.3.3
-    repository: https://artefact.skao.int/repository/helm-internal
   - name: ska-taranta
     version: 1.0.29
     repository: https://artefact.skao.int/repository/helm-internal
