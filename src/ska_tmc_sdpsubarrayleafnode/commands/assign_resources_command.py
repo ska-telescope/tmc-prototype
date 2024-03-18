@@ -17,7 +17,7 @@ from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.timeout_callback import TimeoutCallback
 
-from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
+from ska_tmc_sdpsubarrayleafnode.commands.sdp_sln_command import SdpSLNCommand
 
 LOGGER = logging.getLogger(__name__)
 

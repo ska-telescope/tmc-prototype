@@ -5,7 +5,7 @@ from typing import Tuple
 
 from ska_tango_base.commands import ResultCode
 
-from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
+from ska_tmc_sdpsubarrayleafnode.commands.sdp_sln_command import SdpSLNCommand
 
 
 class Abort(SdpSLNCommand):

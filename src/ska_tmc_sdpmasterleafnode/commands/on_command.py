@@ -10,7 +10,7 @@ from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.executor import TaskStatus
 
-from ska_tmc_sdpmasterleafnode.commands.abstract_command import SdpMLNCommand
+from ska_tmc_sdpmasterleafnode.commands.sdp_mln_command import SdpMLNCommand
 
 
 class On(SdpMLNCommand):
