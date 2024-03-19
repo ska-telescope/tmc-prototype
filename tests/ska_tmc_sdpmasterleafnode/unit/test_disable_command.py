@@ -23,7 +23,7 @@ from tests.settings import (
 def test_disable_command(tango_context, sdp_master_device, task_callback):
     cm = create_cm("SdpMLNComponentManager", sdp_master_device)
     assert cm.is_command_allowed("Disable")
-    cm.submit_disable_command(task_callback=task_callback)
+    cm.disable(task_callback=task_callback)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.QUEUED}
     )
