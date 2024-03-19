@@ -1,5 +1,4 @@
-# pylint: disable=no-member, arguments-renamed, arguments-differ
-# pylint: disable=abstract-method
+# pylint: disable=, arguments-differ
 """
 This module provided a reference implementation of a BaseComponentManager.
 
@@ -138,7 +137,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         for given devices.
         """
         self.stop_liveliness_probe()
-        self._event_receiver.stop()
+        self.event_receiver.stop()
 
     def get_device(self) -> SubArrayDeviceInfo:
         """
@@ -584,7 +583,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.abort_event.clear()
         return result_code, message
 
-    def restart(self, task_callback: Optional[Callable] = None) -> tuple:
+    def restart(
+        self, task_callback: Optional[TaskCallbackType] = None
+    ) -> Tuple[TaskStatus, str]:
         """
         Submit the Restart command in queue.
 
@@ -603,3 +604,33 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             response,
         )
         return task_status, response
+
+    def standby(self, task_callback: Optional[Callable] = None) -> None:
+        """
+        Standby command is not implemented by SDP Subarray Leaf Node device.
+        """
+
+    def start_communicating(self: TmcLeafNodeComponentManager) -> None:
+        """
+        Establish communication with the component, then start monitoring.
+
+        This is the place to do things like:
+
+        * Initiate a connection to the component (if your communication
+          is connection-oriented)
+        * Subscribe to component events (if using "pull" model)
+        * Start a polling loop to monitor the component (if using a
+          "push" model)
+        """
+
+    def stop_communicating(self: TmcLeafNodeComponentManager) -> None:
+        """
+        Cease monitoring the component, and break off all
+        communication with it.
+
+        For example,
+
+        * If you are communicating over a connection, disconnect.
+        * If you have subscribed to events, unsubscribe.
+        * If you are running a polling loop, stop it.
+        """

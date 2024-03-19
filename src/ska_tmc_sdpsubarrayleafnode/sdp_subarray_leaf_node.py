@@ -1,4 +1,4 @@
-# pylint: disable=arguments-differ, no-value-for-parameter
+# pylint: disable=arguments-differ
 """
 SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
 actions during an observation.
@@ -7,7 +7,6 @@ It also acts as a SDP contact point for Subarray Node for observation execution
 
 from typing import List, Tuple, Union
 
-# pylint: disable=attribute-defined-outside-init
 import tango
 from ska_control_model import HealthState
 from ska_tango_base import SKABaseDevice
@@ -33,6 +32,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
     actions during an observation.
     """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._sdp_subarray_obs_state: ObsState = ObsState.EMPTY
+        self._LastDeviceInfoChanged: str = ""
+        self._issubsystemavailable: bool = False
 
     def init_device(self):
         super().init_device()

@@ -85,8 +85,9 @@ class Configure(SdpSLNCommand):
                 timeout_id=self.timeout_id,
                 timeout_callback=self.timeout_callback,
                 command_id=self.component_manager.configure_id,
-                # pylint: disable=line-too-long
-                lrcr_callback=self.component_manager.long_running_result_callback,
+                lrcr_callback=(
+                    self.component_manager.long_running_result_callback
+                ),
             )
 
     def do(self, argin: str = "") -> Tuple[ResultCode, str]:

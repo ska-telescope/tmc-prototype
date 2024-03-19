@@ -1,4 +1,4 @@
-# pylint: disable=abstract-method, arguments-differ
+# pylint: disable= arguments-differ
 """
 This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
@@ -8,6 +8,7 @@ from typing import Callable, Optional, Tuple
 
 from ska_ser_logging import configure_logging
 from ska_tango_base.base import TaskCallbackType
+from ska_tango_base.base.component_manager import BaseComponentManager
 from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.enum import LivelinessProbeType
@@ -175,9 +176,8 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             return True
         return False
 
-    def submit_on_command(
-        self, task_callback: TaskCallbackType
-    ) -> Tuple[TaskStatus, str]:
+    # pylint: disable = signature-differs
+    def on(self, task_callback: TaskCallbackType) -> Tuple[TaskStatus, str]:
         """Submits the On command for execution.
 
         :rtype: tuple
@@ -194,9 +194,8 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         )
         return task_status, response
 
-    def submit_off_command(
-        self, task_callback: TaskCallbackType
-    ) -> Tuple[TaskStatus, str]:
+    # pylint: disable = signature-differs
+    def off(self, task_callback: TaskCallbackType) -> Tuple[TaskStatus, str]:
         """Submits the Off command for execution.
 
         :rtype: tuple
@@ -213,7 +212,8 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         )
         return task_status, response
 
-    def submit_standby_command(
+    # pylint: disable = signature-differs
+    def standby(
         self, task_callback: TaskCallbackType
     ) -> Tuple[TaskStatus, str]:
         """Submits the Standby command for execution.
@@ -228,7 +228,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         self.logger.info("Standby command queued for execution")
         return task_status, response
 
-    def submit_disable_command(
+    def disable(
         self, task_callback: TaskCallbackType
     ) -> Tuple[TaskStatus, str]:
         """Submits the Disable command for execution.
@@ -242,3 +242,28 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.logger.info("Disable command queued for execution")
         return task_status, response
+
+    def start_communicating(self: BaseComponentManager) -> None:
+        """
+        Establish communication with the component, then start monitoring.
+
+        This is the place to do things like:
+
+        * Initiate a connection to the component (if your communication
+          is connection-oriented)
+        * Subscribe to component events (if using "pull" model)
+        * Start a polling loop to monitor the component (if using a
+          "push" model)
+        """
+
+    def stop_communicating(self: BaseComponentManager) -> None:
+        """
+        Cease monitoring the component, and break off all
+        communication with it.
+
+        For example,
+
+        * If you are communicating over a connection, disconnect.
+        * If you have subscribed to events, unsubscribe.
+        * If you are running a polling loop, stop it.
+        """

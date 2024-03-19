@@ -109,7 +109,6 @@ def scan(
     result, unique_id = sdp_subarray_ln_proxy.EndScan()
 
     logger.info(
-        # pylint: disable=line-too-long
         f"EndScan Command ID: \
             {unique_id} ResultCode received: {result}"
     )

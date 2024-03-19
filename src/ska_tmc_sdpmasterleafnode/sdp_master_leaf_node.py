@@ -48,9 +48,14 @@ class SdpMasterLeafNode(SKABaseDevice):
     )
     SleepTime = device_property(dtype="DevFloat", default_value=1)
     TimeOut = device_property(dtype="DevFloat", default_value=2)
+
     # ---------------
     # General methods
     # ---------------
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._issubsystemavailable: bool = False
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -90,11 +95,10 @@ class SdpMasterLeafNode(SKABaseDevice):
     # ------------------
     # Attributes methods
     # ------------------
-    # pylint: disable=access-member-before-definition
     def update_availablity_callback(self, availablity: bool) -> None:
         """Change event callback for isSubsystemAvailable"""
         if availablity != self._issubsystemavailable:
-            self._issubsystemavailable = availablity  # pylint: disable=W0201
+            self._issubsystemavailable = availablity
             self.push_change_event(
                 "isSubsystemAvailable", self._issubsystemavailable
             )
@@ -229,18 +233,16 @@ class SdpMasterLeafNode(SKABaseDevice):
         component_manager.sdp_master_device_name = self.SdpMasterFQDN or ""
         return component_manager
 
-    # pylint: enable=attribute-defined-outside-init
-
     def init_command_objects(self):
         """
         Initialises the command handlers for commands supported by this device.
         """
         super().init_command_objects()
         for command_name, method_name in [
-            ("On", "submit_on_command"),
-            ("Off", "submit_off_command"),
-            ("Standby", "submit_standby_command"),
-            ("Disable", "submit_disable_command"),
+            ("On", "on"),
+            ("Off", "off"),
+            ("Standby", "standby"),
+            ("Disable", "disable"),
         ]:
             self.register_command_object(
                 command_name,
