@@ -59,7 +59,7 @@ class Configure(SdpSLNCommand):
         executes do hook, invokes Configure command on SdpSubarray.
 
         :param task_callback: Update task state, defaults to None
-        :type task_callback: Callable
+        :type task_callback: TaskCallbackType
         :param task_abort_event: Check for abort, defaults to None
         :type task_abort_event: Event
         """

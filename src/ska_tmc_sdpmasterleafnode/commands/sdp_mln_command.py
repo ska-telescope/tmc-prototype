@@ -1,7 +1,9 @@
 """SDP Master Leaf Node Base Command Class for SDP Master Leaf Node"""
+from __future__ import annotations
+
 import logging
 import time
-from typing import Any, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Optional, Tuple
 
 from ska_ser_logging import configure_logging
 from ska_tango_base.commands import ResultCode
@@ -14,13 +16,16 @@ from tango import ConnectionFailed, DevFailed
 configure_logging()
 LOGGER = logging.getLogger(__name__)
 
+if TYPE_CHECKING:
+    from ..manager.component_manager import SdpMLNComponentManager
+
 
 class SdpMLNCommand(TmcLeafNodeCommand):
     """Abstract command class for all SdpMasterLeafNode"""
 
     def __init__(
         self,
-        component_manager,
+        component_manager: SdpMLNComponentManager,
         logger: logging.Logger = LOGGER,
     ):
         super().__init__(component_manager, logger)

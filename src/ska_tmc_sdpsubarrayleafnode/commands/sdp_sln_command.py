@@ -1,7 +1,9 @@
 """SDP Subarray Leaf Node Base Command Class for SDP Subarray Leaf Node"""
+from __future__ import annotations
+
 import logging
 import time
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Union
 
 from ska_control_model.task_status import TaskStatus
 from ska_ser_logging import configure_logging
@@ -13,6 +15,8 @@ from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
 from ska_tmc_common.tmc_command import TmcLeafNodeCommand
 from tango import ConnectionFailed, DevFailed, DevState
 
+if TYPE_CHECKING:
+    from ..manager.component_manager import SdpSLNComponentManager
 configure_logging()
 LOGGER = logging.getLogger(__name__)
 
@@ -51,7 +55,7 @@ class SdpSLNCommand(TmcLeafNodeCommand):
 
     def __init__(
         self,
-        component_manager,
+        component_manager: SdpSLNComponentManager,
         logger: logging.Logger = LOGGER,
     ) -> None:
         super().__init__(component_manager, logger=logger)

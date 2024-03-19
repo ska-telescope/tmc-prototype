@@ -58,7 +58,7 @@ class AssignResources(SdpSLNCommand):
         :param argin: Input JSON string
         :type argin : str
         :param task_callback: Update task state, defaults to None
-        :type task_callback: Callable
+        :type task_callback: TaskCallbackTyp
         :param task_abort_event: Check for abort, defaults to None
         :type task_abort_event: Event
         """
