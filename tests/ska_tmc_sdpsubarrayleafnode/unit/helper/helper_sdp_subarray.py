@@ -12,10 +12,7 @@ from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.subarray import SKASubarray
 from ska_tmc_common import CommandNotAllowed, FaultType, HelperSubArrayDevice
-from tango import AttrWriteType, DevState
-from tango.server import attribute, command, run
-
-from .constants import (
+from ska_tmc_common.test_helpers.constants import (
     ABORT,
     ASSIGN_RESOURCES,
     CONFIGURE,
@@ -28,6 +25,8 @@ from .constants import (
     RESTART,
     SCAN,
 )
+from tango import AttrWriteType, DevState
+from tango.server import attribute, command, run
 
 logger = logging.getLogger(__name__)
 
