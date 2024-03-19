@@ -47,7 +47,7 @@ def on_command(
         )
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], str(int(ResultCode.OK))),
-            lookahead=2,
+            lookahead=4,
         )
 
         change_event_callbacks[

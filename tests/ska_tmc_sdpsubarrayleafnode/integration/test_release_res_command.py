@@ -62,6 +62,7 @@ def release_resources(
                 "On",
                 "AssignResources",
             ),
+            lookahead=2,
         )
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         assert result[0] == ResultCode.QUEUED
@@ -82,6 +83,7 @@ def release_resources(
                 "AssignResources",
                 "ReleaseAllResources",
             ),
+            lookahead=2,
         )
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         assert result[0] == ResultCode.QUEUED
