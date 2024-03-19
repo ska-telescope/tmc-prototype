@@ -76,9 +76,6 @@ include:
 # Release Automation
 - project: 'ska-telescope/templates-repository'
   file: 'gitlab-ci/includes/release.gitlab-ci.yml'
-# retry to template job for python-test
-python-test:
-  retry: 2
 
 
 # k8s test stage template
