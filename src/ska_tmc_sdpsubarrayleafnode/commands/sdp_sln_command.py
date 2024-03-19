@@ -4,6 +4,7 @@ import time
 from typing import Any, Dict, Optional, Tuple, Union
 
 from ska_control_model.task_status import TaskStatus
+from ska_ser_logging import configure_logging
 from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common import SdpSubArrayAdapter
@@ -12,6 +13,7 @@ from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
 from ska_tmc_common.tmc_command import TmcLeafNodeCommand
 from tango import ConnectionFailed, DevFailed, DevState
 
+configure_logging()
 LOGGER = logging.getLogger(__name__)
 
 

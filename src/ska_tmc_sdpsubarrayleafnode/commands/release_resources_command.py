@@ -9,6 +9,7 @@ import time
 from typing import TYPE_CHECKING, Tuple
 
 from ska_control_model.task_status import TaskStatus
+from ska_ser_logging import configure_logging
 from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
@@ -16,6 +17,7 @@ from ska_tmc_common.timeout_callback import TimeoutCallback
 
 from ska_tmc_sdpsubarrayleafnode.commands.sdp_sln_command import SdpSLNCommand
 
+configure_logging()
 LOGGER = logging.getLogger(__name__)
 if TYPE_CHECKING:
     from ..manager.component_manager import SdpSLNComponentManager

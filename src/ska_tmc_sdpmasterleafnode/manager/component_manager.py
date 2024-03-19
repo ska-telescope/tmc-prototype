@@ -6,6 +6,7 @@ import logging
 from logging import Logger
 from typing import Callable, Optional, Tuple
 
+from ska_ser_logging import configure_logging
 from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.device_info import DeviceInfo
@@ -16,6 +17,7 @@ from tango import DevState
 
 from ska_tmc_sdpmasterleafnode.commands import Disable, Off, On, Standby
 
+configure_logging()
 LOGGER = logging.getLogger(__name__)
 
 

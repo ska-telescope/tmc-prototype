@@ -3,6 +3,7 @@ import logging
 import time
 from typing import Any, Optional, Tuple
 
+from ska_ser_logging import configure_logging
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common import DeviceInfo
 from ska_tmc_common.adapters import AdapterType
@@ -10,6 +11,7 @@ from ska_tmc_common.exceptions import DeviceUnresponsive
 from ska_tmc_common.tmc_command import TmcLeafNodeCommand
 from tango import ConnectionFailed, DevFailed
 
+configure_logging()
 LOGGER = logging.getLogger(__name__)
 
 

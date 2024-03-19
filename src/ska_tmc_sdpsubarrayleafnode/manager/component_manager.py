@@ -11,6 +11,7 @@ import threading
 import time
 from typing import Callable, Optional, Tuple, Union
 
+from ska_ser_logging import configure_logging
 from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
@@ -44,6 +45,7 @@ from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
 )
 
+configure_logging()
 LOGGER: logging.Logger = logging.getLogger(__name__)
 
 
