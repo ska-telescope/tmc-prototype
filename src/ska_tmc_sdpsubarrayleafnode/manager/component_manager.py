@@ -117,9 +117,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._update_availablity_callback = _update_availablity_callback
         self.timeout = timeout
         self.command_timeout = command_timeout
-        self.assign_id: str
-        self.configure_id: str
-        self.release_id: str
+        self.assign_id: str = ""
+        self.configure_id: str = ""
+        self.release_id: str = ""
         self.long_running_result_callback = LRCRCallback(self.logger)
         self._update_sdp_subarray_obs_state_callback = (
             _update_sdp_subarray_obs_state_callback

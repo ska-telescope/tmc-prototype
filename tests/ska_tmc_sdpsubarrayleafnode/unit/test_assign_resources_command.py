@@ -1,3 +1,4 @@
+import threading
 from os.path import dirname, join
 
 import pytest
@@ -30,25 +31,29 @@ def get_assign_input_str(assign_input_file="command_AssignResources.json"):
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
-def test_telescope_assign_resources_command(
-    tango_context, devices, task_callback
-):
-    logger.info("%s", tango_context)
+def test_telescope_assign_resources_command(devices, task_callback):
+    adapter_factory = HelperAdapterFactory()
+
     cm = create_cm("SdpSLNComponentManager", devices)
     assert cm.is_command_allowed("AssignResources")
     assign_input_str = get_assign_input_str()
-    cm.assign_resources(assign_input_str, task_callback=task_callback)
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.QUEUED}
+    adapter_factory.get_or_create_adapter(
+        devices,
+        AdapterType.SDPSUBARRAY,
+    )
+    assign_command = AssignResources(cm, logger)
+    assign_command.adapter_factory = adapter_factory
+    assign_command.assign_resources(
+        assign_input_str, task_callback, threading.Event()
     )
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
+    cm.update_device_obs_state(ObsState.RESOURCING)
+    cm.update_device_obs_state(ObsState.IDLE)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK},
-        lookahead=4,
     )
-    assert cm.command_in_progress == ""
 
 
 @pytest.mark.sdpsln
