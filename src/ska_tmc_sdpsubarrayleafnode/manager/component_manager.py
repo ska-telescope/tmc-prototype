@@ -77,7 +77,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         sleep_time: int = 1,
         timeout: int = 30,
         _update_availablity_callback: Optional[Callable[..., None]] = None,
-        command_timeout: int = 15,
+        command_timeout: int = 30,
     ):
         """
         Initialise a new ComponentManager instance.
