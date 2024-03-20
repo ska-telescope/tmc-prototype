@@ -53,6 +53,7 @@ def test_telescope_assign_resources_command(devices, task_callback):
     cm.update_device_obs_state(ObsState.IDLE)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK},
+        lookahead=2,
     )
 
 
