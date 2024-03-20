@@ -384,7 +384,7 @@ class HelperSdpSubarray(HelperSubArrayDevice):
         else:
             self._obs_state = ObsState.RESOURCING
             self.push_obs_state_event(self._obs_state)
-           
+
             thread = threading.Timer(
                 self._command_delay_info[RELEASE_ALL_RESOURCES],
                 self.update_device_obsstate,
@@ -603,7 +603,6 @@ class HelperSdpSubarray(HelperSubArrayDevice):
             if self._state_duration_info:
                 self._follow_state_duration()
             else:
-
                 thread = threading.Timer(
                     self._command_delay_info[END],
                     self.update_device_obsstate,
@@ -647,7 +646,7 @@ class HelperSdpSubarray(HelperSubArrayDevice):
         else:
             self._obs_state = ObsState.ABORTING
             self.push_obs_state_event(self._obs_state)
-            
+
             thread = threading.Timer(
                 self._command_delay_info[ABORT],
                 self.update_device_obsstate,
