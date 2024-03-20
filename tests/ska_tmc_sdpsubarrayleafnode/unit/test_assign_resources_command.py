@@ -48,6 +48,7 @@ def test_telescope_assign_resources_command(
         call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK},
         lookahead=4,
     )
+    assert cm.command_in_progress == ""
 
 
 @pytest.mark.sdpsln

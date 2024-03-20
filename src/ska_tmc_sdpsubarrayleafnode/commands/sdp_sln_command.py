@@ -102,18 +102,30 @@ class SdpSLNCommand(TmcLeafNodeCommand):
                     device,
                     AdapterType.SDPSUBARRAY,
                 )
-            except ConnectionFailed as cf:
+            except ConnectionFailed as connection_failed:
                 elapsed_time = time.time() - start_time
                 if elapsed_time > timeout:
-                    message = f"Error in creating adapter for {device}: {cf}"
+                    message = (
+                        "Error in creating adapter for %s : %s",
+                        device,
+                        connection_failed,
+                    )
                     return ResultCode.FAILED, message
-            except DevFailed as df:
+            except DevFailed as device_failed:
                 elapsed_time = time.time() - start_time
                 if elapsed_time > timeout:
-                    message = f"Error in creating adapter for {device}: {df}"
+                    message = (
+                        "Error in creating adapter for %s : %s",
+                        device,
+                        device_failed,
+                    )
                     return ResultCode.FAILED, message
-            except (AttributeError, ValueError, TypeError) as e:
-                message = f"Error in creating adapter for {device}: {e}"
+            except (AttributeError, ValueError, TypeError) as exception:
+                message = (
+                    "Error in creating adapter for %s : %s",
+                    device,
+                    exception,
+                )
                 return ResultCode.FAILED, message
         return (ResultCode.OK, "")
 
