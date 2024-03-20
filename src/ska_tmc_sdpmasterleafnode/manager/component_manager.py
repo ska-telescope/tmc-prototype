@@ -176,9 +176,9 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             return True
         return False
 
-    # pylint: disable = signature-differs #The signature is different what is present in base classes and what is present at our end.
-    
-    def on(self, task_callback: TaskCallbackType) -> Tuple[TaskStatus, str]:
+    def on(
+        self, task_callback: TaskCallbackType | None = None
+    ) -> Tuple[TaskStatus, str]:
         """Submits the On command for execution.
 
         :rtype: tuple
@@ -195,8 +195,9 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         )
         return task_status, response
 
-    # pylint: disable = signature-differs
-    def off(self, task_callback: TaskCallbackType) -> Tuple[TaskStatus, str]:
+    def off(
+        self, task_callback: TaskCallbackType | None = None
+    ) -> Tuple[TaskStatus, str]:
         """Submits the Off command for execution.
 
         :rtype: tuple
@@ -213,9 +214,8 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         )
         return task_status, response
 
-    # pylint: disable = signature-differs
     def standby(
-        self, task_callback: TaskCallbackType
+        self, task_callback: TaskCallbackType | None = None
     ) -> Tuple[TaskStatus, str]:
         """Submits the Standby command for execution.
 
