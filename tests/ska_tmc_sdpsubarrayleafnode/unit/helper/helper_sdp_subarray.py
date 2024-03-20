@@ -139,15 +139,16 @@ class HelperSdpSubarray(HelperSubArrayDevice):
     def push_obs_state_event(self, obs_state: ObsState):
         """Place holder method. This method will be implemented in the child
         classes."""
-        self._obs_state = obs_state
-        self.push_change_event("obsState", self._obs_state)
+        with self.lock:
+            self._obs_state = obs_state
+            self.push_change_event("obsState", self._obs_state)
 
     def update_device_obsstate(self, obs_state: ObsState):
         """Updates the device obsState"""
-        with self.lock:
-            self._obs_state = obs_state
-            time.sleep(0.1)
-            self.push_obs_state_event(self._obs_state)
+        with tango.EnsureOmniThread():
+            with self.lock:
+                self._obs_state = obs_state
+                self.push_obs_state_event(self._obs_state)
 
     def is_On_allowed(self) -> bool:
         """
@@ -295,14 +296,14 @@ class HelperSdpSubarray(HelperSubArrayDevice):
             return self.induce_fault(
                 "AssignResources",
             )
-        with tango.EnsureOmniThread():
-            thread = threading.Timer(
-                self._command_delay_info[ASSIGN_RESOURCES],
-                self.update_device_obsstate,
-                args=[ObsState.IDLE],
-            )
 
-            thread.start()
+        thread = threading.Timer(
+            self._command_delay_info[ASSIGN_RESOURCES],
+            self.update_device_obsstate,
+            args=[ObsState.IDLE],
+        )
+
+        thread.start()
         self.push_command_result(ResultCode.OK, "AssignResources")
         return None
 
@@ -336,13 +337,13 @@ class HelperSdpSubarray(HelperSubArrayDevice):
         else:
             self._obs_state = ObsState.RESOURCING
             self.push_obs_state_event(self._obs_state)
-            with tango.EnsureOmniThread():
-                thread = threading.Timer(
-                    self._command_delay_info[RELEASE_RESOURCES],
-                    self.update_device_obsstate,
-                    args=[ObsState.IDLE],
-                )
-                thread.start()
+
+            thread = threading.Timer(
+                self._command_delay_info[RELEASE_RESOURCES],
+                self.update_device_obsstate,
+                args=[ObsState.IDLE],
+            )
+            thread.start()
             self.logger.debug(
                 "ReleaseResources command invoked, obsState will transition to"
                 + "IDLE, current obsState is %s",
@@ -383,13 +384,13 @@ class HelperSdpSubarray(HelperSubArrayDevice):
         else:
             self._obs_state = ObsState.RESOURCING
             self.push_obs_state_event(self._obs_state)
-            with tango.EnsureOmniThread():
-                thread = threading.Timer(
-                    self._command_delay_info[RELEASE_ALL_RESOURCES],
-                    self.update_device_obsstate,
-                    args=[ObsState.EMPTY],
-                )
-                thread.start()
+           
+            thread = threading.Timer(
+                self._command_delay_info[RELEASE_ALL_RESOURCES],
+                self.update_device_obsstate,
+                args=[ObsState.EMPTY],
+            )
+            thread.start()
             self.push_command_result(ResultCode.OK, "ReleaseAllResources")
 
     def is_Configure_allowed(self):
@@ -481,13 +482,13 @@ class HelperSdpSubarray(HelperSubArrayDevice):
             else:
                 self._obs_state = ObsState.CONFIGURING
                 self.push_obs_state_event(self._obs_state)
-                with tango.EnsureOmniThread():
-                    thread = threading.Timer(
-                        self._command_delay_info[CONFIGURE],
-                        self.update_device_obsstate,
-                        args=[ObsState.READY],
-                    )
-                    thread.start()
+
+                thread = threading.Timer(
+                    self._command_delay_info[CONFIGURE],
+                    self.update_device_obsstate,
+                    args=[ObsState.READY],
+                )
+                thread.start()
                 self.push_command_result(ResultCode.OK, "Configure")
 
     def is_Scan_allowed(self):
@@ -602,13 +603,13 @@ class HelperSdpSubarray(HelperSubArrayDevice):
             if self._state_duration_info:
                 self._follow_state_duration()
             else:
-                with tango.EnsureOmniThread():
-                    thread = threading.Timer(
-                        self._command_delay_info[END],
-                        self.update_device_obsstate,
-                        args=[ObsState.IDLE],
-                    )
-                    thread.start()
+
+                thread = threading.Timer(
+                    self._command_delay_info[END],
+                    self.update_device_obsstate,
+                    args=[ObsState.IDLE],
+                )
+                thread.start()
                 self.logger.debug(
                     "End command invoked, obsState will transition to IDLE,"
                     + "current obsState is %s",
@@ -646,13 +647,13 @@ class HelperSdpSubarray(HelperSubArrayDevice):
         else:
             self._obs_state = ObsState.ABORTING
             self.push_obs_state_event(self._obs_state)
-            with tango.EnsureOmniThread():
-                thread = threading.Timer(
-                    self._command_delay_info[ABORT],
-                    self.update_device_obsstate,
-                    args=[ObsState.ABORTED],
-                )
-                thread.start()
+            
+            thread = threading.Timer(
+                self._command_delay_info[ABORT],
+                self.update_device_obsstate,
+                args=[ObsState.ABORTED],
+            )
+            thread.start()
             self.push_command_result(ResultCode.OK, "Abort")
 
     def is_Restart_allowed(self):
@@ -685,13 +686,13 @@ class HelperSdpSubarray(HelperSubArrayDevice):
         else:
             self._obs_state = ObsState.RESTARTING
             self.push_obs_state_event(self._obs_state)
-            with tango.EnsureOmniThread():
-                thread = threading.Timer(
-                    self._command_delay_info[RESTART],
-                    self.update_device_obsstate,
-                    args=[ObsState.EMPTY],
-                )
-                thread.start()
+
+            thread = threading.Timer(
+                self._command_delay_info[RESTART],
+                self.update_device_obsstate,
+                args=[ObsState.EMPTY],
+            )
+            thread.start()
             self.logger.debug(
                 "Restart command invoked, obsState will transition to EMPTY,"
                 + "current obsState is %s",
