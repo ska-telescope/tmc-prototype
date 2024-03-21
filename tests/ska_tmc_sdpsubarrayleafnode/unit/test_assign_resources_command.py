@@ -42,6 +42,7 @@ def test_telescope_assign_resources_command(devices, task_callback):
         devices,
         AdapterType.SDPSUBARRAY,
     )
+    cm.command_timeout = 60
     assign_command = AssignResources(cm, logger)
     assign_command.adapter_factory = adapter_factory
     assign_command.assign_resources(

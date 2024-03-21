@@ -135,7 +135,6 @@ class SdpSLNCommand(TmcLeafNodeCommand):
         result: Optional[ResultCode] = kwargs.get("result")
         status: TaskStatus = kwargs.get("status", TaskStatus.COMPLETED)
         message: str = kwargs.get("message")
-        self.logger.info(f"updating callback {result} {status} {message}")
         if result == ResultCode.FAILED:
             self.task_callback(
                 status=status,
