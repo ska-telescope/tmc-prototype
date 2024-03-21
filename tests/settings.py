@@ -123,7 +123,7 @@ def wait_for_attribute_value(
 def wait_for_cm_obstate_attribute_value(cm, obs_state: ObsState) -> bool:
     """Waits for attribute value to change on the given device."""
     start_time = time.time()
-    while cm.get_obs_state() == obs_state:
+    while cm.get_obs_state() != obs_state:
         time.sleep(0.5)
         if time.time() - start_time >= 100:
             logger.info(
