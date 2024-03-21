@@ -17,6 +17,7 @@ from tests.settings import (
     SDP_SUBARRAY_DEVICE_MID,
     create_cm,
     logger,
+    wait_for_cm_obstate_attribute_value,
 )
 
 
@@ -50,7 +51,9 @@ def test_telescope_assign_resources_command(devices, task_callback):
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     cm.update_device_obs_state(ObsState.RESOURCING)
+    assert wait_for_cm_obstate_attribute_value(cm, ObsState.RESOURCING)
     cm.update_device_obs_state(ObsState.IDLE)
+    assert wait_for_cm_obstate_attribute_value(cm, ObsState.IDLE)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK},
         lookahead=2,
