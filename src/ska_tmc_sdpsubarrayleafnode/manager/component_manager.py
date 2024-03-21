@@ -130,7 +130,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.on_command = On(self, self.logger)
         self.off_command = Off(self, self.logger)
         self.command_in_progress: str = ""
-        self.lock = threading.RLock()
 
     def stop(self):
         """
