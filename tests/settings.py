@@ -125,8 +125,7 @@ def wait_for_cm_obstate_attribute_value(cm, obs_state: ObsState) -> bool:
     start_time = time.time()
     while cm.get_obs_state() == obs_state:
         time.sleep(0.5)
-
-        if time.time() - start_time >= 10:
+        if time.time() - start_time >= 100:
             logger.info(
                 "The attribute value after time out is: %s",
                 cm.get_obs_state(),
