@@ -1,4 +1,5 @@
 import threading
+import time
 from os.path import dirname, join
 
 import pytest
@@ -28,6 +29,7 @@ def get_assign_input_str(assign_input_file="command_AssignResources.json"):
     return assign_input_str
 
 
+@pytest.mark.test
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
@@ -53,6 +55,7 @@ def test_telescope_assign_resources_command(devices, task_callback):
     )
     cm.update_device_obs_state(ObsState.RESOURCING)
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.RESOURCING)
+    time.sleep(3)
     cm.update_device_obs_state(ObsState.IDLE)
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.IDLE)
     task_callback.assert_against_call(
