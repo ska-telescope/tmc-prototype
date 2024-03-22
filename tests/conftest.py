@@ -93,30 +93,12 @@ def tango_context(devices_to_load, request):
     true_context = request.config.getoption("--true-context")
     logging.info("true context: %s", true_context)
     if not true_context:
-        with MultiDeviceTestContext(devices_to_load, process=False) as context:
+        with MultiDeviceTestContext(devices_to_load, process=True) as context:
             DevFactory._test_context = context
             logging.info("test context set")
             yield context
     else:
         yield None
-
-
-# pylint: enable=redefined-outer-name
-# @pytest.fixture
-# def sdpsln_device(request):
-#     """Create DeviceProxy for tests"""
-#     true_context = request.config.getoption("--true-context")
-#     if not true_context:
-#         with DeviceTestContext(SdpSubarrayLeafNode) as proxy:
-#             yield proxy
-#     else:
-#         database = tango.Database()
-#         instance_list = database.get_device_exported_for_class(
-#             "SdpSubarrayLeafNode"
-#         )
-#         for instance in instance_list.value_string:
-#             yield tango.DeviceProxy(instance)
-#             break
 
 
 @pytest.fixture(scope="session")
@@ -130,8 +112,8 @@ def get_input_str(path):
     Returns input json string
     :rtype: String
     """
-    with open(path, "r", encoding="utf-8") as f:
-        input_arg = json.load(f)
+    with open(path, "r", encoding="utf-8") as file:
+        input_arg = json.load(file)
     return json.dumps(input_arg)
 
 
@@ -141,7 +123,7 @@ def task_callback() -> MockCallable:
 
     :rtype: MockCallable
     """
-    task_callback = MockCallable(15)  # pylint:disable=redefined-outer-name
+    task_callback = MockCallable(30)  # pylint:disable=redefined-outer-name
     return task_callback
 
 

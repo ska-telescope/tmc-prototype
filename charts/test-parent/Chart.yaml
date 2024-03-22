@@ -14,18 +14,15 @@ maintainers:
     email: shraddhab.ska@gmail.com
 dependencies:
   - name: ska-tango-base
-    version: 0.3.9
+    version: 0.4.9
     repository: https://artefact.skao.int/repository/helm-internal
   - name: ska-tango-util
-    version: 0.3.9
+    version: 0.4.10
     repository: https://artefact.skao.int/repository/helm-internal
   - name: ska-tmc-sdpleafnodes
-    version: 0.14.3
+    version: 0.15.0
     repository: file://../ska-tmc-sdpleafnodes
     alias: tmc-sdpleafnodes
-  - name: ska-ser-skuid
-    version: 0.3.0
-    repository: https://artefact.skao.int/repository/helm-internal
   - name: ska-taranta
     version: 1.0.29
     repository: https://artefact.skao.int/repository/helm-internal

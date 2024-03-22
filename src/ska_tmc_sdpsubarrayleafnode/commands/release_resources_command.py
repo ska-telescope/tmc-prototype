@@ -1,17 +1,26 @@
 """
 ReleaseAllResources command class for SdpSubarrayLeafNode.
 """
+from __future__ import annotations
+
+import logging
 import threading
 import time
-from typing import Callable, Tuple
+from typing import TYPE_CHECKING, Tuple
 
 from ska_control_model.task_status import TaskStatus
+from ska_ser_logging import configure_logging
+from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.timeout_callback import TimeoutCallback
-from tango import DevFailed
 
-from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
+from ska_tmc_sdpsubarrayleafnode.commands.sdp_sln_command import SdpSLNCommand
+
+configure_logging()
+LOGGER = logging.getLogger(__name__)
+if TYPE_CHECKING:
+    from ..manager.component_manager import SdpSLNComponentManager
 
 
 class ReleaseAllResources(SdpSLNCommand):
@@ -23,22 +32,26 @@ class ReleaseAllResources(SdpSLNCommand):
     JSON string format.
     """
 
-    def __init__(self, component_manager, logger=None) -> None:
+    def __init__(
+        self,
+        component_manager: SdpSLNComponentManager,
+        logger: logging.Logger = LOGGER,
+    ) -> None:
         super().__init__(component_manager, logger)
         self.timeout_id = f"{time.time()}_{__class__.__name__}"
         self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
-        self.task_callback: Callable
+        self.component_manager = component_manager
 
     def release_resources(
         self,
-        task_callback: Callable,
+        task_callback: TaskCallbackType,
         task_abort_event: threading.Event,
     ) -> None:
         """This is a long running method for ReleaseAllResources command, it
         executes do hook, invokes ReleaseAllResources command on SdpSubarray.
 
         :param task_callback: Update task state, defaults to None
-        :type task_callback: Callable
+        :type task_callback: TaskCallbackType
         :param task_abort_event: Check for abort, defaults to None
         :type task_abort_event: Event
         """
@@ -58,7 +71,7 @@ class ReleaseAllResources(SdpSLNCommand):
         else:
             lrcr_callback = self.component_manager.long_running_result_callback
             self.start_tracker_thread(
-                state_function=self.component_manager.get_obs_state,
+                state_function="get_obs_state",
                 expected_state=[ObsState.EMPTY],
                 abort_event=task_abort_event,
                 timeout_id=self.timeout_id,
@@ -89,9 +102,10 @@ class ReleaseAllResources(SdpSLNCommand):
             self.sdp_subarray_adapter.ReleaseAllResources(
                 self.component_manager.cmd_ended_cb
             )
-        except (AttributeError, ValueError, TypeError, DevFailed) as e:
+        except Exception as exception:
             self.logger.exception(
-                "Command invocation failed on ReleaseAllResources: %s", e
+                "Command invocation failed on ReleaseAllResources: %s",
+                exception,
             )
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,

@@ -30,7 +30,7 @@ def on_command(
         change_event_callbacks[
             "longRunningCommandsInQueue"
         ].assert_change_event(
-            None,
+            (),
         )
         result, unique_id = sdp_subarray_ln_proxy.On()
         change_event_callbacks[
@@ -47,13 +47,13 @@ def on_command(
         )
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], str(int(ResultCode.OK))),
-            lookahead=2,
+            lookahead=4,
         )
 
         change_event_callbacks[
             "longRunningCommandsInQueue"
         ].assert_change_event(
-            None,
+            (),
             lookahead=2,
         )
         event_remover(
@@ -61,9 +61,9 @@ def on_command(
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
         tear_down(dev_factory, sdp_subarray_proxy, sdp_subarray_ln_proxy)
-    except Exception as e:
+    except Exception as exception:
         tear_down(dev_factory, sdp_subarray_proxy, sdp_subarray_ln_proxy)
-        raise Exception(e)
+        raise Exception(exception)
 
 
 @pytest.mark.post_deployment

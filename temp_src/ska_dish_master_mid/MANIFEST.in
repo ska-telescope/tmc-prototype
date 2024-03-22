@@ -1,9 +1,0 @@
-recursive-include src/ska_dish_master_mid *.py
-recursive-include test *.py
-recursive-include src/ska_dish_master_mid dish_master.fgo
-recursive-include src/ska_dish_master_mid dish_master_SimDD.json
-include *.rst
-include *.txt
-graft docs
-global-exclude *.pyc
-global-exclude *.pyo

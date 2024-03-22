@@ -34,7 +34,7 @@ UMBRELLA_CHART_PATH ?= charts/$(HELM_CHART)/
 K8S_CHARTS ?= ska-tmc-sdpleafnodes test-parent## list of charts
 K8S_CHART ?= $(HELM_CHART)
 
-TEST_VERSION ?= 0.14.3
+
 CI_REGISTRY ?= gitlab.com
 CUSTOM_VALUES = --set tmc-sdpleafnodes.sdpleafnodes.image.tag=$(VERSION)
 K8S_TEST_IMAGE_TO_TEST=$(CAR_OCI_REGISTRY_HOST)/$(PROJECT):$(VERSION)
@@ -42,7 +42,7 @@ ifneq ($(CI_JOB_ID),)
 CUSTOM_VALUES = --set tmc-sdpleafnodes.sdpleafnodes.image.image=$(PROJECT) \
 	--set tmc-sdpleafnodes.sdpleafnodes.image.registry=$(CI_REGISTRY)/ska-telescope/ska-tmc/$(PROJECT) \
 	--set tmc-sdpleafnodes.sdpleafnodes.image.tag=$(VERSION)-dev.c$(CI_COMMIT_SHORT_SHA)
-K8S_TEST_IMAGE_TO_TEST=$(CI_REGISTRY)/ska-telescope/ska-tmc/$(PROJECT)/$(PROJECT):$(TEST_VERSION)-dev.c$(CI_COMMIT_SHORT_SHA)
+K8S_TEST_IMAGE_TO_TEST=$(CI_REGISTRY)/ska-telescope/ska-tmc/$(PROJECT)/$(PROJECT):$(VERSION)-dev.c$(CI_COMMIT_SHORT_SHA)
 endif
 
 CI_PROJECT_DIR ?= .
@@ -56,8 +56,8 @@ MINIKUBE ?= false ## Minikube or not
 FAKE_DEVICES ?= true ## Install fake devices or not
 TANGO_HOST ?= tango-databaseds:10000## TANGO_HOST connection to the Tango DS
 COUNT ?= 1
-
-ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.3.9
+K8S_TIMEOUT=600s
+ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.4.3
 
 # Test runner - run to completion job in K8s
 # name of the pod running the k8s_tests
@@ -110,6 +110,7 @@ K8S_TEST_TEST_COMMAND = $(PYTHON_VARS_BEFORE_PYTEST) $(PYTHON_RUNNER) \
 -include .make/release.mk
 -include .make/make.mk
 -include .make/help.mk
+-include .make/base.mk
 -include PrivateRules.mak
 
 
@@ -118,3 +119,6 @@ test-requirements:
 
 k8s-pre-test: python-pre-test test-requirements
 
+cred:
+	make k8s-namespace
+	make k8s-namespace-credentials

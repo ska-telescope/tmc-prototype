@@ -31,7 +31,7 @@ def off_command(tango_context, sdpmln_name, group_callback):
         group_callback["longRunningCommandsInQueue"],
     )
     group_callback["longRunningCommandsInQueue"].assert_change_event(
-        None,
+        (),
     )
     result, unique_id = sdpmln_node.On()
 
@@ -61,7 +61,7 @@ def off_command(tango_context, sdpmln_name, group_callback):
         lookahead=2,
     )
     group_callback["longRunningCommandsInQueue"].assert_change_event(
-        None,
+        (),
         lookahead=3,
     )
     event_remover(

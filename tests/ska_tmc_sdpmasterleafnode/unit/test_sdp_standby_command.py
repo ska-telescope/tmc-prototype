@@ -23,7 +23,7 @@ from tests.settings import (
 def test_standby_command(tango_context, sdp_master_device, task_callback):
     cm = create_cm("SdpMLNComponentManager", sdp_master_device)
     assert cm.is_command_allowed("Standby")
-    cm.submit_standby_command(task_callback=task_callback)
+    cm.standby(task_callback=task_callback)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.QUEUED}
     )

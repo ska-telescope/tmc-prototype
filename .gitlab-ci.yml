@@ -76,9 +76,6 @@ include:
 # Release Automation
 - project: 'ska-telescope/templates-repository'
   file: 'gitlab-ci/includes/release.gitlab-ci.yml'
-# retry to template job for python-test
-python-test:
-  retry: 2
 
 
 # k8s test stage template
@@ -93,10 +90,11 @@ k8s-low-test:
     TELESCOPE: 'SKA-low'
     CONFIG: 'low'
     KUBE_NAMESPACE: 'ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CONFIG'
-
+    SERVICE_ACCOUNT: 'ci-svc-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CONFIG'
   before_script:
     - '[ -f .make/k8s.mk ] || (echo "File k8s.mk not included in Makefile; exit 1")'
     - 'make help | grep k8s-test'
+    - make cred SERVICE_ACCOUNT=$SERVICE_ACCOUNT
     - make k8s-install-chart
     - make k8s-wait
   script:

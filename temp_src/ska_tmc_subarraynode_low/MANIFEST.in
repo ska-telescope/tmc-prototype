@@ -1,8 +1,0 @@
-recursive-include src/ska_tmc_subarraynode_low *.py
-recursive-include test *.py
-recursive-include pogo SubarrayNodeLow.xmi
-include *.rst
-include *.txt
-graft docs
-global-exclude *.pyc
-global-exclude *.pyo

@@ -58,7 +58,7 @@ def abort_restart_command(
         change_event_callbacks[
             "longRunningCommandsInQueue"
         ].assert_change_event(
-            None,
+            (),
         )
         set_sdp_subarray_obsstate(dev_factory, obsstate, sdp_subarray)
         wait_and_assert_sdp_subarray_obsstate(sdp_subarray_ln_proxy, obsstate)
@@ -85,9 +85,9 @@ def abort_restart_command(
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
 
-    except Exception as e:
+    except Exception as exception:
         tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
-        raise Exception(e)
+        raise Exception(exception)
 
 
 @pytest.mark.post_deployment

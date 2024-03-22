@@ -65,7 +65,6 @@ def release_all_resources_error_propagation(
     result, unique_id = sdpsal_node.ReleaseAllResources()
 
     logger.info(
-        # pylint: disable=line-too-long
         "ReleaseAllResources Command ID: "
         + f"{unique_id} ResultCode received: {result}"
     )
@@ -131,7 +130,6 @@ def release_all_resources_timeout(
     result, unique_id = sdpsal_node.ReleaseAllResources()
 
     logger.info(
-        # pylint: disable=line-too-long
         f"ReleaseAllResources Command ID: \
             {unique_id} ResultCode received: {result}"
     )

@@ -4,12 +4,13 @@ End command class for SdpSubarrayLeafNode.
 
 import threading
 from logging import Logger
-from typing import Callable, Optional
+from typing import Any, Optional, Tuple
 
+from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.executor import TaskStatus
 
-from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
+from ska_tmc_sdpsubarrayleafnode.commands.sdp_sln_command import SdpSLNCommand
 
 
 class End(SdpSLNCommand):
@@ -24,7 +25,7 @@ class End(SdpSLNCommand):
     def end(
         self,
         logger: Logger,
-        task_callback: Callable = None,
+        task_callback: TaskCallbackType,
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
         """This is a long running method for End command, it
@@ -33,7 +34,7 @@ class End(SdpSLNCommand):
         :param logger: logger
         :type logger: logging.Logger
         :param task_callback: Update task state, defaults to None
-        :type task_callback: Callable, optional
+        :type task_callback: TaskCallbackType
         :param task_abort_event: Check for abort, defaults to None
         :type task_abort_event: Event, optional
         """
@@ -52,7 +53,7 @@ class End(SdpSLNCommand):
             exception=message,
         )
 
-    def do(self, argin=None):
+    def do(self, argin: Optional[Any] = None) -> Tuple[ResultCode, str]:
         """
         Method to invoke End command on SdpSubarray.
 
@@ -65,12 +66,10 @@ class End(SdpSLNCommand):
         return_code, message = self.init_adapter()
         if return_code == ResultCode.FAILED:
             return return_code, message
-        if return_code == ResultCode.FAILED:
-            return return_code, message
         try:
             self.sdp_subarray_adapter.End()
-        except Exception as e:
-            self.logger.exception(f"Command invocation failed: {e}")
+        except Exception as exception:
+            self.logger.exception(f"Command invocation failed: {exception}")
             return (
                 ResultCode.FAILED,
                 f"The invocation of the End"

@@ -60,10 +60,10 @@ RESET_DEFECT = json.dumps(
 )
 
 
-def count_faulty_devices(cm):
+def count_faulty_devices(component_manager):
     """Count faulty devices"""
     result = 0
-    for dev_info in cm.checked_devices:
+    for dev_info in component_manager.checked_devices:
         if dev_info.unresponsive:
             result += 1
     return result
@@ -72,19 +72,19 @@ def count_faulty_devices(cm):
 def create_cm(cm_class, device):
     """Create Component Manager"""
     if cm_class == "SdpMLNComponentManager":
-        cm = SdpMLNComponentManager(
+        component_manager = SdpMLNComponentManager(
             device,
             logger=logger,
         )
     if cm_class == "SdpSLNComponentManager":
-        cm = SdpSLNComponentManager(
+        component_manager = SdpSLNComponentManager(
             device, logger=logger, _liveliness_probe=LivelinessProbeType.NONE
         )
     else:
         log_msg = f"Unknown component manager class {cm_class}"
         logger.error(log_msg)
 
-    return cm
+    return component_manager
 
 
 def event_remover(change_event_callbacks, attributes: List[str]) -> None:
@@ -115,6 +115,20 @@ def wait_for_attribute_value(
             logger.info(
                 "The attribute value after time out is: %s",
                 device.read_attribute(attribute_name).value,
+            )
+            return False
+    return True
+
+
+def wait_for_cm_obstate_attribute_value(cm, obs_state: ObsState) -> bool:
+    """Waits for attribute value to change on the given device."""
+    start_time = time.time()
+    while cm.get_obs_state() != obs_state:
+        time.sleep(0.5)
+        if time.time() - start_time >= 100:
+            logger.info(
+                "The attribute value after time out is: %s",
+                cm.get_obs_state(),
             )
             return False
     return True

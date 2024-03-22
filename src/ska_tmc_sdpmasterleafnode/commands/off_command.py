@@ -3,12 +3,13 @@ Off command class for SdpMasterLeafNode.
 """
 import threading
 from logging import Logger
-from typing import Callable, Optional
+from typing import Any, Optional, Tuple
 
+from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.executor import TaskStatus
 
-from ska_tmc_sdpmasterleafnode.commands.abstract_command import SdpMLNCommand
+from ska_tmc_sdpmasterleafnode.commands.sdp_mln_command import SdpMLNCommand
 
 
 class Off(SdpMLNCommand):
@@ -24,7 +25,7 @@ class Off(SdpMLNCommand):
     def off(
         self,
         logger: Logger,
-        task_callback: Callable = None,
+        task_callback: TaskCallbackType,
         # pylint: disable= unused-argument
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
@@ -34,7 +35,7 @@ class Off(SdpMLNCommand):
         :param logger: logger
         :type logger: logging.Logger
         :param task_callback: Update task state, defaults to None
-        :type task_callback: Callable, optional
+        :type task_callback: TaskCallbackType
         :param task_abort_event: Check for abort, defaults to None
         :type task_abort_event: Event, optional
         """
@@ -67,7 +68,7 @@ class Off(SdpMLNCommand):
                 result=result_code,
             )
 
-    def do(self, argin=None):
+    def do(self, argin: Optional[Any] = None) -> Tuple[ResultCode, str]:
         """
         Method to invoke Off command on Sdp Master.
 
@@ -77,8 +78,9 @@ class Off(SdpMLNCommand):
             return result_code, message
         try:
             self.sdp_master_adapter.Off()
-        except Exception as e:
-            self.logger.exception(f"Command invocation failed: {e}")
+
+        except Exception as exception:
+            self.logger.exception(f"Command invocation failed: {exception}")
             return (
                 ResultCode.FAILED,
                 f"The invocation of the Off"

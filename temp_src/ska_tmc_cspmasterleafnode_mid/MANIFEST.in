@@ -1,8 +1,0 @@
-recursive-include src/ska_tmc_cspmasterleafnode_mid *.py
-recursive-include test *.py
-recursive-include pogo CspMasterLeafNode.xmi
-include *.rst
-include *.txt
-graft docs
-global-exclude *.pyc
-global-exclude *.pyo

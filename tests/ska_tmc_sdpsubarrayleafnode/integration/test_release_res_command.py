@@ -34,7 +34,7 @@ def release_resources(
         change_event_callbacks[
             "longRunningCommandsInQueue"
         ].assert_change_event(
-            None,
+            (),
             lookahead=2,
         )
         result, unique_id = sdp_subarray_ln_proxy.On()
@@ -62,6 +62,7 @@ def release_resources(
                 "On",
                 "AssignResources",
             ),
+            lookahead=2,
         )
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         assert result[0] == ResultCode.QUEUED
@@ -82,6 +83,7 @@ def release_resources(
                 "AssignResources",
                 "ReleaseAllResources",
             ),
+            lookahead=2,
         )
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         assert result[0] == ResultCode.QUEUED
@@ -98,9 +100,9 @@ def release_resources(
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
         tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
-    except Exception as e:
+    except Exception as exception:
         tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
-        raise Exception(e)
+        raise Exception(exception)
 
 
 @pytest.mark.post_deployment

@@ -5,7 +5,7 @@ from typing import Tuple
 
 from ska_tango_base.commands import ResultCode
 
-from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
+from ska_tmc_sdpsubarrayleafnode.commands.sdp_sln_command import SdpSLNCommand
 
 
 class Abort(SdpSLNCommand):
@@ -40,16 +40,16 @@ class Abort(SdpSLNCommand):
                 self.sdp_subarray_adapter.dev_name,
             )
             self.sdp_subarray_adapter.Abort()
-        except Exception as ex:
+        except Exception as exception:
             self.logger.exception(
                 "Execution of Abort command is failed."
                 + "Reason: Error in invoking Abort command on Sdp Subarray -"
-                + f"{self.sdp_subarray_adapter.dev_name}: {ex}"
+                + f"{self.sdp_subarray_adapter.dev_name}: {exception}"
             )
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "Execution of Abort command is failed."
                 + "Reason: Error in invoking Abort command on Sdp Subarray -"
-                + f"{self.sdp_subarray_adapter.dev_name}: {ex}",
+                + f"{self.sdp_subarray_adapter.dev_name}: {exception}",
             )
         return ResultCode.OK, ""

@@ -1,10 +1,16 @@
 """Event Reciever for SDP Subarray Leaf Node Manager"""
+import logging
 from concurrent import futures
 from time import sleep
+from typing import Dict, Optional
 
 import tango
+from ska_ser_logging import configure_logging
+from ska_tmc_common.device_info import SubArrayDeviceInfo
 from ska_tmc_common.event_receiver import EventReceiver
-from tango import DevFailed
+
+configure_logging()
+LOGGER: logging.Logger = logging.getLogger(__name__)
 
 
 class SdpSLNEventReceiver(EventReceiver):
@@ -21,13 +27,17 @@ class SdpSLNEventReceiver(EventReceiver):
     def __init__(
         self,
         component_manager,
-        logger=None,
-        max_workers=1,
-        proxy_timeout=500,
-        sleep_time=1,
+        logger: logging.Logger = LOGGER,
+        max_workers: int = 1,
+        proxy_timeout: int = 500,
+        sleep_time: int = 1,
     ):
         super().__init__(
-            component_manager, logger, max_workers, proxy_timeout, sleep_time
+            component_manager=component_manager,
+            logger=logger,
+            max_workers=max_workers,
+            proxy_timeout=proxy_timeout,
+            sleep_time=sleep_time,
         )
         self._max_workers = max_workers
         self._sleep_time = sleep_time
@@ -44,7 +54,11 @@ class SdpSLNEventReceiver(EventReceiver):
                     executor.submit(self.subscribe_events, dev_info)
             sleep(self._sleep_time)
 
-    def subscribe_events(self, dev_info, attribute_dictionary=None):
+    def subscribe_events(
+        self,
+        dev_info: SubArrayDeviceInfo,
+        attribute_dictionary: Optional[Dict[str, str]] = None,
+    ):
         try:
             proxy = self._dev_factory.get_device(dev_info.dev_name)
             proxy.subscribe_event(
@@ -53,9 +67,11 @@ class SdpSLNEventReceiver(EventReceiver):
                 self.handle_obs_state_event,
                 stateless=True,
             )
-        except (AttributeError, ValueError, TypeError, DevFailed) as e:
+        except Exception as exception:
             self._logger.debug(
-                "Event not working for the device %s, %s", proxy.dev_name, e
+                "Event not working for the device %s, %s",
+                proxy.dev_name,
+                exception,
             )
 
     def handle_obs_state_event(self, event):

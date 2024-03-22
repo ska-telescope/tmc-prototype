@@ -1,3 +1,5 @@
+import threading
+import time
 from os.path import dirname, join
 
 import pytest
@@ -16,6 +18,7 @@ from tests.settings import (
     SDP_SUBARRAY_DEVICE_MID,
     create_cm,
     logger,
+    wait_for_cm_obstate_attribute_value,
 )
 
 
@@ -26,26 +29,38 @@ def get_assign_input_str(assign_input_file="command_AssignResources.json"):
     return assign_input_str
 
 
+@pytest.mark.test
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
-def test_telescope_assign_resources_command(
-    tango_context, devices, task_callback
-):
-    logger.info("%s", tango_context)
+def test_telescope_assign_resources_command(devices, task_callback):
+    adapter_factory = HelperAdapterFactory()
+
     cm = create_cm("SdpSLNComponentManager", devices)
     assert cm.is_command_allowed("AssignResources")
     assign_input_str = get_assign_input_str()
-    cm.assign_resources(assign_input_str, task_callback=task_callback)
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.QUEUED}
+    adapter_factory.get_or_create_adapter(
+        devices,
+        AdapterType.SDPSUBARRAY,
+    )
+    cm.command_timeout = 60
+    assign_command = AssignResources(cm, logger)
+    assign_command.adapter_factory = adapter_factory
+    assign_command.assign_resources(
+        assign_input_str, task_callback, threading.Event()
     )
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
+    cm.update_device_obs_state(ObsState.RESOURCING)
+    assert wait_for_cm_obstate_attribute_value(cm, ObsState.RESOURCING)
+    time.sleep(3)
+    cm.update_device_obs_state(ObsState.IDLE)
+    assert wait_for_cm_obstate_attribute_value(cm, ObsState.IDLE)
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK}
+        call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK},
+        lookahead=2,
     )
 
 
