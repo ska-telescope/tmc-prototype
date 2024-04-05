@@ -579,8 +579,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             logger=self.logger,
         )
         self.abort_event.set()
+        self.logger.info("Abort event set")
         result_code, message = abort_command.do()
-        self.abort_event.clear()
         return result_code, message
 
     def restart(

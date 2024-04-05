@@ -135,6 +135,9 @@ class SdpSLNCommand(TmcLeafNodeCommand):
         result: Optional[ResultCode] = kwargs.get("result")
         status: TaskStatus = kwargs.get("status", TaskStatus.COMPLETED)
         message: str = kwargs.get("message")
+        if status == TaskStatus.ABORTED:
+            self.logger.info("Clearing Abort Event")
+            self.component_manager.abort_event.clear()
         if result == ResultCode.FAILED:
             self.task_callback(
                 status=status,
