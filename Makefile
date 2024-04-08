@@ -60,6 +60,7 @@ K8S_TIMEOUT=600s
 ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.4.3
 EXPOSE_ALL_DS ?=false
 OPERATOR ?=false
+CLUSTER_DOMAIN ?= cluster.local
 # Test runner - run to completion job in K8s
 # name of the pod running the k8s_tests
 K8S_TEST_RUNNER = test-runner-$(HELM_RELEASE)
@@ -96,6 +97,7 @@ K8S_CHART_PARAMS = --set global.minikube=$(MINIKUBE) \
 	--set ska-taranta.enabled=$(TARANTA) \
 	--set global.exposeAllDS=$(EXPOSE_ALL_DS) \
 	--set global.operator=$(OPERATOR) \
+	--set global.cluster_domain=$(CLUSTER_DOMAIN)\
 	$(CUSTOM_VALUES) \
 	--values gitlab_values.yaml
 
