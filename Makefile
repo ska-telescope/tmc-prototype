@@ -122,7 +122,3 @@ k8s-pre-test: python-pre-test test-requirements
 cred:
 	make k8s-namespace
 	make k8s-namespace-credentials
-
-
-oci-post-build-all: 
-	printf "git says you have the following outstanding changes:\n $$(git status -s) \n";
