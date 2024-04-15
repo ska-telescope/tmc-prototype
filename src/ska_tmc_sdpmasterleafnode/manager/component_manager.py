@@ -177,7 +177,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         return False
 
     def on(
-        self, task_callback: TaskCallbackType | None = None
+        self, task_callback: Optional[TaskCallbackType] = None
     ) -> Tuple[TaskStatus, str]:
         """Submits the On command for execution.
 
@@ -196,7 +196,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         return task_status, response
 
     def off(
-        self, task_callback: TaskCallbackType | None = None
+        self, task_callback: Optional[TaskCallbackType] = None
     ) -> Tuple[TaskStatus, str]:
         """Submits the Off command for execution.
 
@@ -215,7 +215,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         return task_status, response
 
     def standby(
-        self, task_callback: TaskCallbackType | None = None
+        self, task_callback: Optional[TaskCallbackType] = None
     ) -> Tuple[TaskStatus, str]:
         """Submits the Standby command for execution.
 

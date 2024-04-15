@@ -4,15 +4,6 @@ ska\_tmc\_sdpsubarrayleafnode.commands package
 Submodules
 ----------
 
-ska\_tmc\_sdpsubarrayleafnode.commands.abstract\_command module
----------------------------------------------------------------
-
-.. automodule:: ska_tmc_sdpsubarrayleafnode.commands.abstract_command
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 ska\_tmc\_sdpsubarrayleafnode.commands.off\_command module
 ----------------------------------------------------------
 
@@ -54,18 +45,10 @@ ska\_tmc\_sdpsubarrayleafnode.commands.end\_command module
    :undoc-members:
    :show-inheritance:
 
-ska\_tmc\_sdpsubarrayleafnode.commands.endscan\_command module
---------------------------------------------------------------
+ska\_tmc\_sdpsubarrayleafnode.commands.end\_scan\_command module
+-----------------------------------------------------------------
 
-.. automodule:: ska_tmc_sdpsubarrayleafnode.commands.endscan_command
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-ska\_tmc\_sdpsubarrayleafnode.commands.obsreset\_command module
----------------------------------------------------------------
-
-.. automodule:: ska_tmc_sdpsubarrayleafnode.commands.obsreset_command
+.. automodule:: ska_tmc_sdpsubarrayleafnode.commands.end_scan_command
    :members:
    :undoc-members:
    :show-inheritance:
@@ -74,14 +57,6 @@ ska\_tmc\_sdpsubarrayleafnode.commands.release\_resources\_command module
 -------------------------------------------------------------------------
 
 .. automodule:: ska_tmc_sdpsubarrayleafnode.commands.release_resources_command
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-ska\_tmc\_sdpsubarrayleafnode.commands.reset\_command module
-------------------------------------------------------------
-
-.. automodule:: ska_tmc_sdpsubarrayleafnode.commands.reset_command
    :members:
    :undoc-members:
    :show-inheritance:

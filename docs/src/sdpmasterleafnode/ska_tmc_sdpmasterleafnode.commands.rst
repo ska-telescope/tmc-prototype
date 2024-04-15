@@ -4,15 +4,6 @@ ska\_tmc\_sdpmasterleafnode.commands package
 Submodules
 ----------
 
-ska\_tmc\_sdpmasterleafnode.commands.abstract\_command module
--------------------------------------------------------------
-
-.. automodule:: ska_tmc_sdpmasterleafnode.commands.abstract_command
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 ska\_tmc\_sdpmasterleafnode.commands.disable\_command module
 ------------------------------------------------------------
 
@@ -20,7 +11,6 @@ ska\_tmc\_sdpmasterleafnode.commands.disable\_command module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 ska\_tmc\_sdpmasterleafnode.commands.off\_command module
 --------------------------------------------------------
