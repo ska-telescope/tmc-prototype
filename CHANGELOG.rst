@@ -5,6 +5,14 @@ Change Log
 All notable changes to this project will be documented in this file.
 This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
+[Master]
+************
+
+Fixed
+------
+* Updated the .readthdocs.yaml
+* Fixed documentation missing information issue
+
 [0.15.0]
 ************
 * Updated pytango v9.4.2
