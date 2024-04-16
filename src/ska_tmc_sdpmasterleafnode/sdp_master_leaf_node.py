@@ -1,5 +1,5 @@
 """
-SDP Master Leaf node acts as a SDP contact point for the Master Node and also 
+SDP Master Leaf node acts as a SDP contact point for the Master Node and also
 monitors and issues commands to the SDP Master.
 """
 from typing import Union
@@ -125,7 +125,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     ) -> Union[bool, CommandNotAllowed, DeviceUnresponsive]:
         """
         Checks whether this command is allowed to be run in current
-        device state. 
+        device state.
 
         :return: True if this command is allowed to be run in current device
             state.
@@ -147,10 +147,10 @@ class SdpMasterLeafNode(SKABaseDevice):
         self,
     ) -> Union[bool, CommandNotAllowed, DeviceUnresponsive]:
         """
-        Checks whether this command is allowed to be run in current device 
+        Checks whether this command is allowed to be run in current device
             state.
 
-        :return: True if this command is allowed to be run in current device 
+        :return: True if this command is allowed to be run in current device
             state.
 
         :rtype: bool,CommandNotAllowed,DeviceUnresponsive
@@ -171,11 +171,11 @@ class SdpMasterLeafNode(SKABaseDevice):
         self,
     ) -> Union[bool, CommandNotAllowed, DeviceUnresponsive]:
         """
-        Checks whether this command is allowed to be run in current device 
-        state. 
+        Checks whether this command is allowed to be run in current device
+        state.
 
-        :return: True if this command is allowed to be  
-            run in current device state. 
+        :return: True if this command is allowed to be
+            run in current device state.
 
         :rtype: bool,CommandNotAllowed,DeviceUnresponsive
         """
@@ -195,10 +195,10 @@ class SdpMasterLeafNode(SKABaseDevice):
         self,
     ) -> Union[bool, CommandNotAllowed, DeviceUnresponsive]:
         """
-        Checks whether this command is allowed to be run in current device \
+        Checks whether this command is allowed to be run in current device
         state.
 
-        :return: True if this command is allowed to be 
+        :return: True if this command is allowed to be
             run in current device state.
 
         :rtype: bool,CommandNotAllowed,DeviceUnresponsive
@@ -264,7 +264,7 @@ class SdpMasterLeafNode(SKABaseDevice):
 def main(args=None, **kwargs):
     """
     Runs the SdpMasterLeafNodeMid.
-    
+
     :param args: Arguments internal to TANGO
 
     :param kwargs: Arguments internal to TANGO

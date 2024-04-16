@@ -393,7 +393,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
         :param event: a CmdDoneEvent object. This object is used to passdata
             to the callback method in asynchronous callback model forcommand
-            execution. 
+            execution.
         :type CmdDoneEvent object:
             It has the following members:
                 - cmd_name   : (str) The command name

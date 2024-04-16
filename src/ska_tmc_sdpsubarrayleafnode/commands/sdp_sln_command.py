@@ -172,7 +172,7 @@ class SdpSLNCommand(TmcLeafNodeCommand):
     def do(self, argin: Optional[Any] = None):
         """Abstract Method from TmcLeafNodeCommand is
             defined here but not utilized by this Class.
-            
+
         Args:
             argin (_type_, optional): Accepts argument if required.
                 Defaults to None.
