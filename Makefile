@@ -109,10 +109,6 @@ K8S_TEST_TEST_COMMAND = $(PYTHON_VARS_BEFORE_PYTEST) $(PYTHON_RUNNER) \
 -include .make/python.mk
 -include .make/helm.mk
 -include .make/oci.mk
--include .make/docs.mk
--include .make/release.mk
--include .make/make.mk
--include .make/help.mk
 -include .make/base.mk
 -include PrivateRules.mak
 

@@ -51,7 +51,6 @@ Sphinx = "^5.1.1"
 ska-ser-sphinx-theme = "^0.1.1"
 sphinx-autodoc-typehints = "^1.19.3"
 sphinxcontrib-plantuml = "^0.22"
-
 sphinx-rtd-theme = "^1.2.2"
 
 [tool.poetry.dev-dependencies]

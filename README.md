@@ -1,4 +1,4 @@
-[![Documentation Status](https://readthedocs.org/projects/ska-tmc/badge/?version=latest)](https://developer.skao.int/projects/ska-tmc-sdpleafnodes/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/ska-telescope-ska-tmc-sdpleafnodes/badge/?version=latest)](https://developer.skao.int/projects/ska-tmc-sdpleafnodes/en/latest/?badge=latest)
  
 # TABLE OF CONTENTS
  

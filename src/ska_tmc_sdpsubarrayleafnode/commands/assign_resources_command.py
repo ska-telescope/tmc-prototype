@@ -1,6 +1,5 @@
 # flake8: noqa:E501
-"""
-AssignResouces command class for SDPSubarrayLeafNode.
+"""AssignResouces command class for SDPSubarrayLeafNode.
 """
 from __future__ import annotations
 
@@ -30,7 +29,6 @@ if TYPE_CHECKING:
 class AssignResources(SdpSLNCommand):
     """
     A class for SdpSubarayLeafNode's AssignResources() command.
-
     Assigns resources to given SDP Subarray.
     """
 
@@ -52,11 +50,12 @@ class AssignResources(SdpSLNCommand):
         task_callback: TaskCallbackType,
         task_abort_event: threading.Event,
     ) -> None:
-        """This is a long running method for AssignResources command, it
+        """
+        This is a long running method for AssignResources command, it
         executes do hook, invokes AssignResources command on Sdp Subarray.
 
         :param argin: Input JSON string
-        :type argin : str
+        :type argin: str
         :param task_callback: Update task state, defaults to None
         :type task_callback: TaskCallbackTyp
         :param task_abort_event: Check for abort, defaults to None
@@ -94,7 +93,7 @@ class AssignResources(SdpSLNCommand):
         Method to invoke AssignResources command on SDP Subarray.
 
         :param argin: The string in JSON format. The JSON contains
-        following values:
+            following values:
 
             eb_id and maximum length of the SBI:
             Mandatory JSON object consisting of
