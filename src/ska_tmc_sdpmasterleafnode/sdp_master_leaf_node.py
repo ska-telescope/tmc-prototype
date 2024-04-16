@@ -1,5 +1,4 @@
-"""
-SDP Master Leaf node acts as a SDP contact point for the Master Node and also
+"""SDP Master Leaf node acts as a SDP contact point for the Master Node and also
 monitors and issues commands to the SDP Master.
 """
 from typing import Union

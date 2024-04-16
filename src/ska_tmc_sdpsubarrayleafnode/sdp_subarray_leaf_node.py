@@ -1,6 +1,5 @@
 # pylint: disable=arguments-differ
-"""
-SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
+"""SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
 actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
