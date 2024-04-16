@@ -6,7 +6,7 @@ Submodules
 
 
 ska\_tmc\_sdpmasterleafnode.commands.sdp\_mln\_command module
--------------------------------------------------------------
+--------------------------------------------------------------
 
 .. automodule:: ska_tmc_sdpmasterleafnode.commands.sdp_mln_command
    :members:
