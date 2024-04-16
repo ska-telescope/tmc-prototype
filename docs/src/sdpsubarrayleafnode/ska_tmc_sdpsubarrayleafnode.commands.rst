@@ -4,7 +4,7 @@ ska\_tmc\_sdpsubarrayleafnode.commands package
 Submodules
 ----------
 
-ska\_tmc\_sdpmasterleafnode.commands.sdp\_sln\_command module
+ska\_tmc\_sdpsubarrayleafnode.commands.sdp\_sln\_command module
 -------------------------------------------------------------
 
 .. automodule:: ska_tmc_sdpmasterleafnode.commands.sdp_sln_command
