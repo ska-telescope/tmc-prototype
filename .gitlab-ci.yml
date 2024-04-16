@@ -28,9 +28,9 @@ stages:
   - lint
   - join-reports
   - build
-  - pages
   - test
   - publish
+  - pages
   - scan
   - lifecycle
 
