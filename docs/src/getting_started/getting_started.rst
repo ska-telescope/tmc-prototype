@@ -19,6 +19,7 @@ Install minikube
 ^^^^^^^^^^^^^^^^
 
 You will need to install `minikube` or equivalent k8s installation in order to set up your test environment. You can follow the instruction `here <https://gitlab.com/ska-telescope/sdi/deploy-minikube/>`__:
+
 .. code-block::
 
     git clone git@gitlab.com:ska-telescope/sdi/deploy-minikube.git
@@ -32,11 +33,14 @@ How to Use
 ^^^^^^^^^^
 
 Clone this repo:
+
 .. code-block::
+
     git clone https://gitlab.com/ska-telescope/ska-tmc-sdpleafnodes.git
     cd ska-tmc-sdpleafnodes
 
 Install dependencies
+
 .. code-block::
 
     apt update
@@ -52,21 +56,29 @@ Please note that:
 *During this step, `libtango-dev` instalation can ask for the Tango Server IP:PORT. Just accept the default proposed value.*
 
 Install python requirements for linting and unit testing:
+
 .. code-block::
+
     $ poetry install
 
 Activate the poetry environment:
+
 .. code-block::
+
     $ source $(poetry env info --path)/bin/activate
 
 Follow the steps till installation of dependencies then run below command:
+
 .. code-block::
+
     $ virtualenv cn_venv
     $ source cn_venv/bin/activate
     $ make requirements
 
 Run python-test:
+
 .. code-block::
+
     $ make python-test
     PyTango 9.3.3 (9, 3, 3)
     PyTango compiled with:
@@ -98,7 +110,9 @@ Run python-test:
 
 
 Formatting the code:
+
 .. code-block::
+
     $ make python-format
     [...]
     --------------------------------------------------------------------
@@ -106,7 +120,9 @@ Formatting the code:
 
 
 Python linting:
+
 .. code-block::
+    
     $ make python-lint
     [...]
     --------------------------------------------------------------------
