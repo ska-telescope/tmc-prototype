@@ -72,23 +72,22 @@ class Configure(SdpSLNCommand):
             self.component_manager.command_timeout,
             self.timeout_callback,
         )
+        self.start_tracker_thread(
+            state_function="get_obs_state",
+            expected_state=[ObsState.READY],
+            abort_event=task_abort_event,
+            timeout_id=self.timeout_id,
+            timeout_callback=self.timeout_callback,
+            command_id=self.component_manager.configure_id,
+            lrcr_callback=(
+                self.component_manager.long_running_result_callback
+            ),
+        )
         result_code, message = self.do(argin)
 
         if result_code == ResultCode.FAILED:
             self.update_task_status(result=result_code, message=message)
-            self.component_manager.stop_timer()
-        else:
-            self.start_tracker_thread(
-                state_function="get_obs_state",
-                expected_state=[ObsState.READY],
-                abort_event=task_abort_event,
-                timeout_id=self.timeout_id,
-                timeout_callback=self.timeout_callback,
-                command_id=self.component_manager.configure_id,
-                lrcr_callback=(
-                    self.component_manager.long_running_result_callback
-                ),
-            )
+            self.stop_tracker_thread(self.timeout_id)
 
     def do(self, argin: str = "") -> Tuple[ResultCode, str]:
         """

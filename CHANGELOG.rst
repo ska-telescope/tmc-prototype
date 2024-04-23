@@ -13,6 +13,11 @@ Fixed
 * Updated the .readthdocs.yaml
 * Fixed documentation missing information issue
 
+[0.15.1]
+************
+* Start tracker thread at the same time at which the timer thread starts.
+* This is done to tackle the edgecase of transitional obsStates event getting missed.
+
 [0.15.0]
 ************
 * Updated pytango v9.4.2
