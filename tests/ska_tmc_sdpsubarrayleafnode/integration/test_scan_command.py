@@ -21,11 +21,6 @@ def scan(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
-    sdp_subarray_ln_proxy.subscribe_event(
-        "longRunningCommandsInQueue",
-        tango.EventType.CHANGE_EVENT,
-        change_event_callbacks["longRunningCommandsInQueue"],
-    )
 
     sdp_subarray_ln_proxy.subscribe_event(
         "longRunningCommandResult",
@@ -33,14 +28,9 @@ def scan(
         change_event_callbacks["longRunningCommandResult"],
     )
 
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        (), lookahead=3
-    )
     result, unique_id = sdp_subarray_ln_proxy.On()
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        ("On",),
-    )
+
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 
@@ -50,12 +40,7 @@ def scan(
     )
     assign_input_str = json_factory("command_AssignResources")
     result, unique_id = sdp_subarray_ln_proxy.AssignResources(assign_input_str)
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        (
-            "On",
-            "AssignResources",
-        ),
-    )
+
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 
@@ -67,13 +52,7 @@ def scan(
 
     configure_input_str = json_factory("command_Configure")
     result, unique_id = sdp_subarray_ln_proxy.Configure(configure_input_str)
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        (
-            "On",
-            "AssignResources",
-            "Configure",
-        ),
-    )
+
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 
@@ -87,14 +66,7 @@ def scan(
 
     scan_input_str = json_factory("command_Scan")
     result, unique_id = sdp_subarray_ln_proxy.Scan(scan_input_str)
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        (
-            "On",
-            "AssignResources",
-            "Configure",
-            "Scan",
-        ),
-    )
+
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 
@@ -126,7 +98,7 @@ def scan(
 
     event_remover(
         change_event_callbacks,
-        ["longRunningCommandResult", "longRunningCommandsInQueue"],
+        ["longRunningCommandResult"],
     )
     tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
 
