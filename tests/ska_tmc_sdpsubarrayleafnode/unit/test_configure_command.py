@@ -122,5 +122,6 @@ def test_telescope_configure_command_fail_check_allowed_with_device_unresponsive
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
+    logger.info("SDP Subarray unresponsive: %s", cm._device.unresponsive)
     with pytest.raises(DeviceUnresponsive):
         cm.is_command_allowed("configure")
