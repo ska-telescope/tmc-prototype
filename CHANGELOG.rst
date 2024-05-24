@@ -13,6 +13,10 @@ Fixed
 * Updated the .readthdocs.yaml
 * Fixed documentation missing information issue
 
+[0.15.1]
+------
+* CommandTimeOut Device property added to Sdp Subarray Leaf Node device
+
 [0.15.0]
 ************
 * Updated pytango v9.4.2
