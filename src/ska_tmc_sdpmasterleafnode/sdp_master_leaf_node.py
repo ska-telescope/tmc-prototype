@@ -9,7 +9,7 @@ from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
 from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
-from tango import AttrWriteType, DebugIt
+from tango import AttrWriteType, DebugIt, DevState
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_sdpmasterleafnode import release
@@ -132,6 +132,8 @@ class SdpMasterLeafNode(SKABaseDevice):
 
         :rtype: bool,CommandNotAllowed,DeviceUnresponsive
         """
+        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+            return False
         return self.component_manager.is_command_allowed("Off")
 
     @command(dtype_out="DevVarLongStringArray")
@@ -155,6 +157,8 @@ class SdpMasterLeafNode(SKABaseDevice):
 
         :rtype: bool,CommandNotAllowed,DeviceUnresponsive
         """
+        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+            return False
         return self.component_manager.is_command_allowed("On")
 
     @command(dtype_out="DevVarLongStringArray")
@@ -179,6 +183,8 @@ class SdpMasterLeafNode(SKABaseDevice):
 
         :rtype: bool,CommandNotAllowed,DeviceUnresponsive
         """
+        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+            return False
         return self.component_manager.is_command_allowed("Standby")
 
     @command(dtype_out="DevVarLongStringArray")
@@ -203,6 +209,8 @@ class SdpMasterLeafNode(SKABaseDevice):
 
         :rtype: bool,CommandNotAllowed,DeviceUnresponsive
         """
+        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+            return False
         return self.component_manager.is_command_allowed("Disable")
 
     @command(dtype_out="DevVarLongStringArray")
