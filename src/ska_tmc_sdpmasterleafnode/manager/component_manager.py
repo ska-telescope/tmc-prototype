@@ -41,7 +41,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             LivelinessProbeType.SINGLE_DEVICE
         ),
         _event_receiver: bool = False,
-        max_workers: int = 1,
         proxy_timeout: int = 500,
         sleep_time: int = 1,
         timeout: int = 30,
@@ -69,7 +68,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             logger,
             _liveliness_probe=_liveliness_probe,
             _event_receiver=False,
-            max_workers=max_workers,
             proxy_timeout=proxy_timeout,
             sleep_time=sleep_time,
         )
