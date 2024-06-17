@@ -19,7 +19,7 @@ from ska_tmc_common.exceptions import (
     DeviceUnresponsive,
     InvalidObsStateError,
 )
-from tango import ApiUtil, AttrWriteType, DebugIt
+from tango import ApiUtil, AttrWriteType, DebugIt, DevState
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_sdpsubarrayleafnode import release
@@ -228,6 +228,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         :rtype: boolean
         """
+        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+            return False
         return self.component_manager.is_command_allowed("AssignResources")
 
     @command(
@@ -413,11 +415,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         state
 
         return:
-         True if Abort command is allowed to be run in current device state
-
-        rtype:
-            boolean
-
+        True if Abort command is allowed to be run in current device state
+        op_stat
         """
         return self.component_manager.is_command_allowed("Abort")
 
