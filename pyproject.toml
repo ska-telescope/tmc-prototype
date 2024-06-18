@@ -44,10 +44,6 @@ pytz = "2021.3"
 ipython = "8.5.0"
 ska-tango-testing = "0.6.0"
 typing_extensions  = "^4.10.0"
-attrs = "*"
-jsonschema-specifications = "*"
-referencing = "*"
-rpds-py = "*"
 
 [tool.poetry.group.docs.dependencies]
 docutils = "^0.18.1"
