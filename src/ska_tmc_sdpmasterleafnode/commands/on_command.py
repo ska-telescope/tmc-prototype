@@ -91,4 +91,4 @@ class On(SdpMLNCommand):
                 ".The command has NOT been executed. "
                 "This device will continue with normal operation.",
             )
-        return ResultCode.OK, "on command completed"
+        return (ResultCode.OK, "On command completed")

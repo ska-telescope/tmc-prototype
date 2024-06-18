@@ -89,4 +89,4 @@ class Standby(SdpMLNCommand):
                 ".The command has NOT been executed. "
                 "This device will continue with normal operation.",
             )
-        return ResultCode.OK, "standby command completed"
+        return (ResultCode.OK, "Standby command completed")

@@ -92,4 +92,4 @@ class Off(SdpMLNCommand):
                 ".The command has NOT been executed. "
                 "This device will continue with normal operation.",
             )
-        return ResultCode.OK, "off command completed"
+        return (ResultCode.OK, "Off command completed")

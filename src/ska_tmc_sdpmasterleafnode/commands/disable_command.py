@@ -91,4 +91,4 @@ class Disable(SdpMLNCommand):
                 ".The command has NOT been executed. "
                 "This device will continue with normal operation.",
             )
-        return ResultCode.OK, "disable command completed"
+        return (ResultCode.OK, "Disable command completed")
