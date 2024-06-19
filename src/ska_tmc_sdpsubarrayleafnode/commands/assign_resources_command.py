@@ -73,7 +73,9 @@ class AssignResources(SdpSLNCommand):
         result_code, message = self.do(argin)
 
         if result_code == ResultCode.FAILED:
-            self.update_task_status(result=result_code, message=message)
+            self.update_task_status(
+                result=(result_code, message), message=message
+            )
             self.component_manager.stop_timer()
         else:
             self.start_tracker_thread(
@@ -208,4 +210,7 @@ class AssignResources(SdpSLNCommand):
                 + "This device will continue with normal operation.",
             )
 
-        return (ResultCode.OK, "")
+        return (
+            ResultCode.OK,
+            "AssignResources command invokation is complete",
+        )

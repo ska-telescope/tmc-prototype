@@ -47,7 +47,7 @@ class Off(SdpSLNCommand):
         )
         task_callback(
             status=TaskStatus.COMPLETED,
-            result=result_code,
+            result=(ResultCode.FAILED, message),
             exception=message,
         )
 
@@ -77,4 +77,4 @@ class Off(SdpSLNCommand):
                 ".The command has NOT been executed. "
                 "This device will continue with normal operation.",
             )
-        return ResultCode.OK, ""
+        return (ResultCode.OK, "Off command invokation is complete")

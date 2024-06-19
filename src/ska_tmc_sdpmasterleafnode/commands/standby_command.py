@@ -80,13 +80,6 @@ class Standby(SdpMLNCommand):
             self.logger.exception(f"Command invocation failed: {exception}")
             return (
                 ResultCode.FAILED,
-                f"The invocation of the Standby"
-                " command failed on SDP master "
-                "Device "
-                f"{self.sdp_master_adapter.dev_name} "
-                "Reason: Error in invoking "
-                "Standby command on SDP master"
-                ".The command has NOT been executed. "
-                "This device will continue with normal operation.",
+                "The invocation of the Standby command failed on SDP master",
             )
         return (ResultCode.OK, "Standby command invokation is complete")

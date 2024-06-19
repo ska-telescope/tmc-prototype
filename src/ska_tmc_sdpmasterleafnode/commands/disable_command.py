@@ -82,13 +82,6 @@ class Disable(SdpMLNCommand):
             self.logger.exception(f"Command invocation failed: {exception}")
             return (
                 ResultCode.FAILED,
-                f"The invocation of the Disable"
-                " command failed on SDP master "
-                "Device "
-                f"{self.sdp_master_adapter.dev_name} "
-                "Reason: Error in invoking "
-                "Disable command on SDP master"
-                ".The command has NOT been executed. "
-                "This device will continue with normal operation.",
+                "The invocation of the Disable command failed on SDP master",
             )
         return (ResultCode.OK, "Disable command invokation is complete")

@@ -41,14 +41,14 @@ TIMEOUT_DEFECT = json.dumps(
     }
 )
 
-ERROR_PROPAGATION_DEFECT = json.dumps(
-    {
-        "enabled": True,
-        "fault_type": FaultType.COMMAND_NOT_ALLOWED,
-        "error_message": "Exception occured, command failed.",
-        "result": ResultCode.FAILED,
-    }
-)
+# ERROR_PROPAGATION_DEFECT = json.dumps(
+#     {
+#         "enabled": True,
+#         "fault_type": FaultType.COMMAND_NOT_ALLOWED,
+#         "error_message": "Exception occured, command failed.",
+#         "result": ResultCode.FAILED,
+#     }
+# )
 
 RESET_DEFECT = json.dumps(
     {

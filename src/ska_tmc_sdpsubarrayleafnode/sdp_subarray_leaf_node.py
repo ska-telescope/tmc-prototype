@@ -205,8 +205,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         :rtype: boolean
         """
-        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            return False
         return self.component_manager.is_command_allowed("On")
 
     @command(dtype_out="DevVarLongStringArray")
@@ -230,13 +228,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         :rtype: boolean
         """
-        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            return False
-        if self.component_manager.get_device().obs_state not in [
-            ObsState.IDLE,
-            ObsState.EMPTY,
-        ]:
-            return False
         return self.component_manager.is_command_allowed("AssignResources")
 
     @command(
@@ -266,14 +257,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         :rtype: boolean
         """
-        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            return False
-        if self.component_manager.get_device().obs_state not in [
-            ObsState.IDLE,
-            ObsState.READY,
-        ]:
-            return False
-
         return self.component_manager.is_command_allowed("Configure")
 
     @command(
@@ -301,10 +284,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         :rtype: boolean
         """
-        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            return False
-        if self.component_manager.get_device().obs_state != ObsState.READY:
-            return False
         return self.component_manager.is_command_allowed("Scan")
 
     @command(
@@ -332,8 +311,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         :rtype: boolean
         """
-        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            return False
         return self.component_manager.is_command_allowed("Off")
 
     @command(dtype_out="DevVarLongStringArray")
@@ -357,13 +334,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         :rtype: boolean
         """
-        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            return False
-        if self.component_manager.get_device().obs_state not in [
-            ObsState.IDLE,
-            ObsState.EMPTY,
-        ]:
-            return False
         return self.component_manager.is_command_allowed("ReleaseAllResources")
 
     @command(
@@ -392,13 +362,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         :rtype: boolean
         """
-        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            return False
-        if self.component_manager.get_device().obs_state not in [
-            ObsState.IDLE,
-            ObsState.READY,
-        ]:
-            return False
         return self.component_manager.is_command_allowed("End")
 
     @command(
@@ -428,10 +391,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         rtype:
             boolean
         """
-        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            return False
-        if self.component_manager.get_device().obs_state != ObsState.SCANNING:
-            return False
         return self.component_manager.is_command_allowed("EndScan")
 
     @command(
@@ -460,17 +419,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             boolean
 
         """
-        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            return False
-        if self.component_manager.get_device().obs_state not in [
-            ObsState.SCANNING,
-            ObsState.CONFIGURING,
-            ObsState.RESOURCING,
-            ObsState.IDLE,
-            ObsState.READY,
-        ]:
-            return False
-
         return self.component_manager.is_command_allowed("Abort")
 
     @command(

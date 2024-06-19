@@ -65,7 +65,11 @@ def test_on_command_fail_sdp_master1(
     )
     caplog.set_level(logging.DEBUG, logger="ska_tango_testing.mock")
     task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "The invocation of the On command failed on SDP master Device ",
+        ),
     )
 
 

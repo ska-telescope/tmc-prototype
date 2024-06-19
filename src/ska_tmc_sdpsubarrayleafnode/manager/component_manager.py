@@ -313,6 +313,31 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         raise InvalidObsStateError(message)
 
+    def cmd_allowed_callable(self, command_str: str):
+        """
+        Args:
+            command_str (str): _description_
+        """
+
+        def check_obs_state():
+            """Return whether the command may be called in the current state.
+
+            Returns:
+                bool: whether the command may be called in the current device
+                state
+            """
+            match command_str:
+                case "AssignResources" | "ReleaseAllResources":
+                    if self.get_device().obs_state not in [
+                        ObsState.EMPTY,
+                        ObsState.IDLE,
+                    ]:
+                        return False  # to raise StateModelError or
+                        # ResultCode.NOT_ALLOWED TBD
+            return True
+
+        return check_obs_state
+
     def is_command_allowed(
         self, command_name: str
     ) -> Union[

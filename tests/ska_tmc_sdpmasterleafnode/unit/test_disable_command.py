@@ -64,7 +64,10 @@ def test_disable_command_fail_sdp_master(
     )
     task_callback.assert_against_call(
         status=TaskStatus.COMPLETED,
-        result=ResultCode.FAILED,
+        result=(
+            ResultCode.FAILED,
+            "The invocation of the Disable command failed on SDP master",
+        ),
     )
 
 
