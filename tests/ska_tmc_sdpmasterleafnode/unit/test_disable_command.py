@@ -17,7 +17,6 @@ from tests.settings import (
 )
 
 
-@pytest.mark.test1
 @pytest.mark.parametrize(
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )
@@ -64,7 +63,8 @@ def test_disable_command_fail_sdp_master(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=ResultCode.FAILED,
     )
 
 

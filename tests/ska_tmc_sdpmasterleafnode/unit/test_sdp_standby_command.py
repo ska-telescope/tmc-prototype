@@ -17,7 +17,6 @@ from tests.settings import (
 )
 
 
-@pytest.mark.test1
 @pytest.mark.parametrize(
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )

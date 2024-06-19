@@ -65,7 +65,7 @@ class Disable(SdpMLNCommand):
             )
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=(result_code, "Disable command invokation is complete"),
+                result=(result_code, message),
             )
 
     def do(self, argin: Optional[Any] = None) -> Tuple[ResultCode, str]:
