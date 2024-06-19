@@ -54,7 +54,7 @@ class Disable(SdpMLNCommand):
             exception = message
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=result_code,
+                result=(result_code, message),
                 exception=exception,
             )
 
@@ -65,7 +65,7 @@ class Disable(SdpMLNCommand):
             )
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=result_code,
+                result=(result_code, "Disable command invokation is complete"),
             )
 
     def do(self, argin: Optional[Any] = None) -> Tuple[ResultCode, str]:
@@ -91,4 +91,4 @@ class Disable(SdpMLNCommand):
                 ".The command has NOT been executed. "
                 "This device will continue with normal operation.",
             )
-        return (ResultCode.OK, "Disable command completed")
+        return (ResultCode.OK, "Disable command invokation is complete")

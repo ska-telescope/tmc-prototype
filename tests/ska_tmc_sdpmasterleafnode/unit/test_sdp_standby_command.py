@@ -17,6 +17,7 @@ from tests.settings import (
 )
 
 
+@pytest.mark.test1
 @pytest.mark.parametrize(
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )
@@ -31,7 +32,13 @@ def test_standby_command(tango_context, sdp_master_device, task_callback):
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK}
+        call_kwargs={
+            "status": TaskStatus.COMPLETED,
+            "result": (
+                ResultCode.OK,
+                "Standby command invokation is complete",
+            ),
+        }
     )
 
 

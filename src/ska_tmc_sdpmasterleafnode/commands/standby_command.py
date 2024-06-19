@@ -52,7 +52,7 @@ class Standby(SdpMLNCommand):
             exception = message
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=result_code,
+                result=(result_code, message),
                 exception=exception,
             )
 
@@ -63,7 +63,7 @@ class Standby(SdpMLNCommand):
             )
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=result_code,
+                result=(result_code, "Standby command invokation is complete"),
             )
 
     def do(self, argin: Optional[Any] = None) -> Tuple[ResultCode, str]:
@@ -89,4 +89,4 @@ class Standby(SdpMLNCommand):
                 ".The command has NOT been executed. "
                 "This device will continue with normal operation.",
             )
-        return (ResultCode.OK, "standby command completed")
+        return (ResultCode.OK, "Standby command invokation is complete")

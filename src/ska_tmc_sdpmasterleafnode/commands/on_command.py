@@ -53,7 +53,7 @@ class On(SdpMLNCommand):
             exception = message
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=result_code,
+                result=(result_code, message),
                 exception=exception,
             )
         else:
@@ -63,7 +63,7 @@ class On(SdpMLNCommand):
             )
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=result_code,
+                result=(result_code, "On command invokation is complete"),
             )
 
     def do(self, argin: Optional[Any] = None) -> Tuple[ResultCode, str]:
@@ -91,4 +91,4 @@ class On(SdpMLNCommand):
                 ".The command has NOT been executed. "
                 "This device will continue with normal operation.",
             )
-        return (ResultCode.OK, "On command completed")
+        return (ResultCode.OK, "On command invokation is complete")
