@@ -36,14 +36,11 @@ def test_telescope_configure_command(tango_context, devices, task_callback):
     cm = create_cm("SdpSLNComponentManager", devices)
     configure_input_str = get_configure_input_str()
     cm.configure(configure_input_str, task_callback=task_callback)
+    task_callback.assert_against_call(status=TaskStatus.QUEUED)
+    task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.QUEUED}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK}
+        status=TaskStatus.COMPLETED,
+        result=(ResultCode.OK, "Command Completed"),
     )
 
 
@@ -68,11 +65,17 @@ def test_configure_command_fail_subarray(
     configure_command = Configure(cm, logger)
     configure_command.adapter_factory = adapter_factory
     configure_command.configure(configure_input_str, task_callback, None)
+    task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
-    task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "The Sdp Subarray Device has failed to "
+            + f"invokethe Configure command {devices}Reason: Error in "
+            + "invoking the Configure command onSdp Subarray.The command "
+            + "has NOT been executed.This device will continue with "
+            + "normal operation.",
+        ),
     )
 
 
@@ -94,7 +97,12 @@ def test_configure_command_empty_input_json(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "Exception occurred while parsing the JSON."
+            + "\n                    Please check the logs for details.",
+        ),
     )
 
 

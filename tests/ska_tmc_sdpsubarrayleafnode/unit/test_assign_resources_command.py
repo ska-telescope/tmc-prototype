@@ -49,17 +49,15 @@ def test_telescope_assign_resources_command(devices, task_callback):
     assign_command.assign_resources(
         assign_input_str, task_callback, threading.Event()
     )
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
+    task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
     cm.update_device_obs_state(ObsState.RESOURCING)
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.RESOURCING)
     time.sleep(3)
     cm.update_device_obs_state(ObsState.IDLE)
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.IDLE)
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK},
-        lookahead=2,
+        status=TaskStatus.COMPLETED,
+        result=(ResultCode.OK, "Command Completed"),
     )
 
 

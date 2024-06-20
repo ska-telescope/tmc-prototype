@@ -27,18 +27,11 @@ def test_endscan_command(tango_context, devices, task_callback):
     cm.update_device_obs_state(ObsState.SCANNING)
     assert cm.is_command_allowed("EndScan")
     cm.end_scan(task_callback=task_callback)
+    task_callback.assert_against_call(status=TaskStatus.QUEUED)
+    task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.QUEUED}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={
-            "status": TaskStatus.COMPLETED,
-            "result": ResultCode.OK,
-            "exception": "",
-        }
+        status=TaskStatus.COMPLETED,
+        result=(ResultCode.OK, "EndScan command invokation is complete"),
     )
 
 
@@ -95,5 +88,13 @@ def test_telescope_end_scan_command_fail_subarray(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "The invocation of the EndScan command is "
+            f"failed on SDP Subarray Device {devices} Reason: Error in "
+            "invoking EndScan command on SDP Subarray.The command has NOT "
+            "been executed. This device will continue with normal "
+            "operation.",
+        ),
     )

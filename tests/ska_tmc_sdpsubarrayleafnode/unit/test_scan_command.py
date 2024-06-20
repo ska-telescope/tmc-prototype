@@ -35,18 +35,11 @@ def test_telescope_scan_command(tango_context, devices, task_callback):
     cm = create_cm("SdpSLNComponentManager", devices)
     scan_input_str = get_scan_input_str()
     cm.scan(scan_input_str, task_callback=task_callback)
+    task_callback.assert_against_call(status=TaskStatus.QUEUED)
+    task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.QUEUED}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={
-            "status": TaskStatus.COMPLETED,
-            "result": ResultCode.OK,
-            "exception": "",
-        }
+        status=TaskStatus.COMPLETED,
+        result=(ResultCode.OK, "Scan command invokation is complete"),
     )
 
 
@@ -73,7 +66,14 @@ def test_scan_command_fail_subarray(tango_context, devices, task_callback):
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "The invocation of the Scan command is failed on SdpSubarray "
+            f"Device {devices}Reason: Error in calling the Scan command on "
+            "Sdp Subarray.The command has NOT been executed."
+            "This device will continue with normal operation.",
+        ),
     )
 
 
@@ -86,14 +86,15 @@ def test_scan_command_empty_input_json(tango_context, devices, task_callback):
     cm = create_cm("SdpSLNComponentManager", devices)
     scan_input_str = ""
     cm.scan(scan_input_str, task_callback=task_callback)
+    task_callback.assert_against_call(status=TaskStatus.QUEUED)
+    task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.QUEUED}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
-    task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "Exception occurred while parsing the JSON."
+            + "\n                    Please check the logs for details.",
+        ),
     )
 
 

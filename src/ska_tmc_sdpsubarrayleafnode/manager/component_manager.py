@@ -318,6 +318,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         Args:
             command_str (str): _description_
         """
+        self._check_if_sdp_sa_is_responsive()
 
         def check_obs_state():
             """Return whether the command may be called in the current state.
@@ -451,6 +452,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             self.on_command.on,
             args=[self.logger],
+            is_cmd_allowed=self._check_if_sdp_sa_is_responsive(),
             task_callback=task_callback,
         )
         self.logger.info("On command queued for execution")
@@ -469,6 +471,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             assign_resources_command.assign_resources,
             args=[argin],
+            is_cmd_allowed=self.cmd_allowed_callable("AssignResources"),
             task_callback=task_callback,
         )
         return task_status, response
@@ -485,6 +488,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             configure_command.configure,
             args=[argin],
+            is_cmd_allowed=self.cmd_allowed_callable("Configure"),
             task_callback=task_callback,
         )
         self.logger.info(
@@ -506,6 +510,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             scan_command.scan,
             args=[argin, self.logger],
+            is_cmd_allowed=self.cmd_allowed_callable("Scan"),
             task_callback=task_callback,
         )
         self.logger.info(
@@ -525,6 +530,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             self.off_command.off,
             args=[self.logger],
+            is_cmd_allowed=self._check_if_sdp_sa_is_responsive(),
             task_callback=task_callback,
         )
         self.logger.info("Off command queued for execution")
@@ -541,6 +547,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.release_id = f"{time.time()}-{ReleaseAllResources.__name__}"
         task_status, response = self.submit_task(
             release_command.release_resources,
+            is_cmd_allowed=self.cmd_allowed_callable("ReleaseAllResources"),
             task_callback=task_callback,
         )
         self.logger.info(
@@ -560,6 +567,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             end_command.end,
             args=[self.logger],
+            is_cmd_allowed=self.cmd_allowed_callable("End"),
             task_callback=task_callback,
         )
         self.logger.info(
@@ -581,6 +589,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             end_scan_command.end_scan,
             args=[self.logger],
+            is_cmd_allowed=self.cmd_allowed_callable("EndScan"),
             task_callback=task_callback,
         )
         self.logger.info(

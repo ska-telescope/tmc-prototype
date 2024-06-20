@@ -27,18 +27,11 @@ def test_telescope_end_command(tango_context, devices, task_callback):
     cm.update_device_obs_state(ObsState.READY)
     assert cm.is_command_allowed("End")
     cm.end(task_callback=task_callback)
+    task_callback.assert_against_call(status=TaskStatus.QUEUED)
+    task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.QUEUED}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={
-            "status": TaskStatus.COMPLETED,
-            "result": ResultCode.OK,
-            "exception": "",
-        }
+        status=TaskStatus.COMPLETED,
+        result=(ResultCode.OK, "End command invokation is complete"),
     )
 
 
@@ -66,7 +59,14 @@ def test_telescope_end_command_fail_subarray(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "The invocation of the End command is "
+            f"failed on SDP Subarray Device {devices} Reason: Error in "
+            "invoking End command on SDP Subarray.The command has NOT been "
+            "executed. This device will continue with normal operation.",
+        ),
     )
 
 
