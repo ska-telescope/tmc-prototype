@@ -29,7 +29,6 @@ def get_assign_input_str(assign_input_file="command_AssignResources.json"):
     return assign_input_str
 
 
-@pytest.mark.test
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
@@ -89,7 +88,14 @@ def test_assign_resources_command_fail_subarray(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "The invocation of the AssignResources command is failed onSdp"
+            + f" Subarray Device {devices}Reason: Error in calling the "
+            + "AssignResources command on SdpSubarray.The command has NOT been"
+            + " executed.This device will continue with normal operation.",
+        ),
     )
 
 
@@ -111,7 +117,12 @@ def test_assign_resources_command_empty_input_json(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "Exception occurred while parsing the JSON:"
+            + " Expecting value: line 1 column 1 (char 0)",
+        ),
     )
 
 

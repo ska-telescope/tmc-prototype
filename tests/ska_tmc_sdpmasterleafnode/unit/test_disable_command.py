@@ -41,7 +41,6 @@ def test_disable_command(tango_context, sdp_master_device, task_callback):
     )
 
 
-@pytest.mark.new
 @pytest.mark.parametrize(
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )

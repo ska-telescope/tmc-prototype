@@ -67,7 +67,7 @@ class ReleaseAllResources(SdpSLNCommand):
         result_code, message = self.do()
         if result_code == ResultCode.FAILED:
             self.update_task_status(
-                result=(result_code, message), message=message
+                result=(result_code, message), exception=message
             )
             self.component_manager.stop_timer()
         else:

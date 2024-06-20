@@ -68,7 +68,14 @@ def test_telescope_release_resources_command_fail_subarray(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "The invocation of the ReleaseAllResources "
+            + f"command is failedon {devices}Reason: Error in invoking the "
+            + "ReleaseAllResourcescommandon SdpSubarray. The command has NOT "
+            + "been executed.This device will continue with normal operation.",
+        ),
     )
 
 

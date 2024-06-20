@@ -44,11 +44,17 @@ class On(SdpSLNCommand):
             result_code,
             message,
         )
-        task_callback(
-            status=TaskStatus.COMPLETED,
-            result=(ResultCode.FAILED, message),
-            exception=message,
-        )
+        if result_code == ResultCode.FAILED:
+            task_callback(
+                status=TaskStatus.COMPLETED,
+                result=(result_code, message),
+                exception=message,
+            )
+        else:
+            task_callback(
+                status=TaskStatus.COMPLETED,
+                result=(result_code, message),
+            )
 
     # pylint: enable=unused-argument
 

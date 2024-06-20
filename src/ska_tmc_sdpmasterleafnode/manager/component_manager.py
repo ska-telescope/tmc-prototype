@@ -182,6 +182,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             self.on_command.on,
             args=[self.logger],
+            is_cmd_allowed=self._check_if_sdp_master_is_responsive(),
             task_callback=task_callback,
         )
         self.logger.debug(
@@ -201,6 +202,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             self.off_command.off,
             args=[self.logger],
+            is_cmd_allowed=self._check_if_sdp_master_is_responsive(),
             task_callback=task_callback,
         )
         self.logger.debug(
@@ -220,6 +222,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             self.standby_command.standby,
             args=[self.logger],
+            is_cmd_allowed=self._check_if_sdp_master_is_responsive(),
             task_callback=task_callback,
         )
         self.logger.info("Standby command queued for execution")
@@ -235,6 +238,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             self.disable_command.disable,
             args=[self.logger],
+            is_cmd_allowed=self._check_if_sdp_master_is_responsive(),
             task_callback=task_callback,
         )
         self.logger.info("Disable command queued for execution")
