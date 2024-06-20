@@ -57,8 +57,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         :param _monitoring_loop: Optional. Monitoring loop for the component
         manager
         :param _event_receiver: Optional. Object of EventReceiver class
-        :param max_workers: Optional. Maximum worker threads for monitoring
-        purpose. Default 1
         :param proxy_timeout: Optional. Time period to wait for event and
         responses. Default 500 milliseconds
         :param sleep_time: Optional. Sleep time between reties. Default 1 Sec
