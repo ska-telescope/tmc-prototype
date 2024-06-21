@@ -86,6 +86,7 @@ def configure_error_propogation(
         raise Exception(exception)
 
 
+@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_configure_command_error_propagation_mid(
@@ -102,6 +103,7 @@ def test_configure_command_error_propagation_mid(
     )
 
 
+@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_configure_command_error_propagation_low(

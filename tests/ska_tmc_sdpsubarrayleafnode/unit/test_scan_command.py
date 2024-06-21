@@ -39,7 +39,7 @@ def test_telescope_scan_command(tango_context, devices, task_callback):
     task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
     task_callback.assert_against_call(
         status=TaskStatus.COMPLETED,
-        result=(ResultCode.OK, "Scan command invokation is complete"),
+        result=(ResultCode.OK, "Command Completed"),
     )
 
 

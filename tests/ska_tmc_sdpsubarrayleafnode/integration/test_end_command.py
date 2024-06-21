@@ -57,7 +57,7 @@ def end(
         )
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(int(ResultCode.OK))),
+            (unique_id[0], '[0, "Command Completed"]'),
             lookahead=4,
         )
         assign_input_str = json_factory("command_AssignResources")
@@ -73,9 +73,11 @@ def end(
             ),
             lookahead=2,
         )
+        logger.info(f"Command ID: {unique_id} Returned result: {result}")
+        assert result[0] == ResultCode.QUEUED
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(int(ResultCode.OK))),
+            (unique_id[0], '[0, "Command Completed"]'),
             lookahead=4,
         )
         wait_and_assert_sdp_subarray_obsstate(
@@ -96,9 +98,11 @@ def end(
             ),
             lookahead=2,
         )
+        logger.info(f"Command ID: {unique_id} Returned result: {result}")
+        assert result[0] == ResultCode.QUEUED
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(int(ResultCode.OK))),
+            (unique_id[0], '[0, "Command Completed"]'),
             lookahead=3,
         )
         wait_and_assert_sdp_subarray_obsstate(
@@ -119,7 +123,7 @@ def end(
         )
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(int(ResultCode.OK))),
+            (unique_id[0], '[0, "Command Completed"]'),
             lookahead=4,
         )
         wait_and_assert_sdp_subarray_obsstate(

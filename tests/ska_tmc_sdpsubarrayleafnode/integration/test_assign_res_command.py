@@ -50,7 +50,7 @@ def assign_resources(
         )
         wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(int(ResultCode.OK))),
+            (unique_id[0], '[0, "Command Completed"]'),
             lookahead=4,
         )
         event_remover(

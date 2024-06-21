@@ -141,5 +141,5 @@ class Scan(SdpSLNCommand):
         self.logger.info(log_msg)
         return (
             ResultCode.OK,
-            "Scan command invokation is complete",
+            "Command Completed",
         )

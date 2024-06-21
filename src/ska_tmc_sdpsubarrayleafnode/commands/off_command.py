@@ -83,4 +83,4 @@ class Off(SdpSLNCommand):
                 ".The command has NOT been executed. "
                 "This device will continue with normal operation.",
             )
-        return (ResultCode.OK, "Off command invokation is complete")
+        return (ResultCode.OK, "Command Completed")

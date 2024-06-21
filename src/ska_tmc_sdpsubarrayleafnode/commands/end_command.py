@@ -89,5 +89,5 @@ class End(SdpSLNCommand):
             )
         return (
             ResultCode.OK,
-            "End command invokation is complete",
+            "Command Completed",
         )

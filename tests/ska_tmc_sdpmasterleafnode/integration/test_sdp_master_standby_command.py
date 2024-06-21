@@ -49,7 +49,7 @@ def standby_command(tango_context, sdpmln_name, group_callback):
         group_callback["longRunningCommandResult"],
     )
     group_callback["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(int(ResultCode.OK))),
+        (unique_id[0], '[0, "On command invokation is complete"]'),
         lookahead=2,
     )
     result_standby, unique_id_standby = sdpmln_node.Standby()
@@ -59,7 +59,10 @@ def standby_command(tango_context, sdpmln_name, group_callback):
     )
 
     group_callback["longRunningCommandResult"].assert_change_event(
-        (unique_id_standby[0], str(int(ResultCode.OK))),
+        (
+            unique_id_standby[0],
+            '[0, "Standby command invokation is complete"]',
+        ),
         lookahead=2,
     )
     group_callback["longRunningCommandsInQueue"].assert_change_event(

@@ -212,5 +212,5 @@ class AssignResources(SdpSLNCommand):
 
         return (
             ResultCode.OK,
-            "AssignResources command invokation is complete",
+            "Command Completed",
         )

@@ -189,5 +189,5 @@ class Configure(SdpSLNCommand):
         )
         return (
             ResultCode.OK,
-            "Configure command invokation is complete",
+            "Command Completed",
         )

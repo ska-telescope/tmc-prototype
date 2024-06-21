@@ -46,7 +46,7 @@ def off_command(
         change_event_callbacks["longRunningCommandResult"],
     )
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(int(ResultCode.OK))),
+        (unique_id[0], '[0, "Command Completed"]'),
         lookahead=4,
     )
 
@@ -62,7 +62,7 @@ def off_command(
     assert result[0] == ResultCode.QUEUED
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(int(ResultCode.OK))),
+        (unique_id[0], '[0, "Command Completed"]'),
         lookahead=6,
     )
 

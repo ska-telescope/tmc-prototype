@@ -125,5 +125,5 @@ class ReleaseAllResources(SdpSLNCommand):
         self.logger.info(log_msg)
         return (
             ResultCode.OK,
-            "ReleaseAllResources command invokation is complete",
+            "Command Completed",
         )

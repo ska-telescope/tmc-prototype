@@ -83,5 +83,5 @@ class EndScan(SdpSLNCommand):
             )
         return (
             ResultCode.OK,
-            "EndScan command invokation is complete",
+            "Command Completed",
         )

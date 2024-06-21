@@ -48,7 +48,7 @@ def release_resources(
         assert result[0] == ResultCode.QUEUED
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(int(ResultCode.OK))),
+            (unique_id[0], '[0, "Command Completed"]'),
             lookahead=3,
         )
         assign_input_str = json_factory("command_AssignResources")
@@ -68,7 +68,7 @@ def release_resources(
         assert result[0] == ResultCode.QUEUED
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(int(ResultCode.OK))),
+            (unique_id[0], '[0, "Command Completed"]'),
             lookahead=4,
         )
         wait_and_assert_sdp_subarray_obsstate(
@@ -89,7 +89,7 @@ def release_resources(
         assert result[0] == ResultCode.QUEUED
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(int(ResultCode.OK))),
+            (unique_id[0], '[0, "Command Completed"]'),
             lookahead=4,
         )
         wait_and_assert_sdp_subarray_obsstate(

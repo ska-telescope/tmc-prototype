@@ -45,10 +45,7 @@ def on_command(tango_context, sdpmln_name, group_callback):
     logger.info(f"type unique_id[0]:{type(unique_id[0])}")
     logger.info(f"type str([ResultCode.OK:{type(ResultCode.OK.value)}")
     group_callback["longRunningCommandResult"].assert_change_event(
-        (
-            unique_id[0],
-            str([ResultCode.OK.value, "On command invokation is complete"]),
-        ),
+        (unique_id[0], '[0, "On command invokation is complete"]'),
         lookahead=2,
     )
 
@@ -65,7 +62,6 @@ def on_command(tango_context, sdpmln_name, group_callback):
     sdpmln_node.Off()
 
 
-@pytest.mark.f2
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_on_command_mid(tango_context, group_callback):

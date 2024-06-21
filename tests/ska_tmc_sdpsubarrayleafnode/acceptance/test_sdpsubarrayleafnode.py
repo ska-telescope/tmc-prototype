@@ -150,7 +150,7 @@ def check_command(
     )
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id, str(ResultCode.OK.value)),
+        (unique_id, '[0, "Command Completed"]'),
         lookahead=4,
     )
 
