@@ -67,7 +67,7 @@ def check_command(sdpmasterleaf_node, group_callback):
     )
 
     group_callback["longRunningCommandResult"].assert_change_event(
-        (unique_id, str(int(ResultCode.OK))), lookahead=2
+        (unique_id, '[0, "Command Completed"]'), lookahead=2
     )
 
     group_callback["longRunningCommandsInQueue"].assert_change_event(
