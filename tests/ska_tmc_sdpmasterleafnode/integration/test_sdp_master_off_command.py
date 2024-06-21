@@ -47,7 +47,7 @@ def off_command(tango_context, sdpmln_name, group_callback):
         group_callback["longRunningCommandResult"],
     )
     group_callback["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], '[0, "On command invokation is complete"]'),
+        (unique_id[0], '[0, "Command Completed"]'),
         lookahead=2,
     )
     result_off, unique_id_off = sdpmln_node.Off()
@@ -57,7 +57,7 @@ def off_command(tango_context, sdpmln_name, group_callback):
     )
 
     group_callback["longRunningCommandResult"].assert_change_event(
-        (unique_id_off[0], '[0, "Off command invokation is complete"]'),
+        (unique_id_off[0], '[0, "Command Completed"]'),
         lookahead=2,
     )
     group_callback["longRunningCommandsInQueue"].assert_change_event(

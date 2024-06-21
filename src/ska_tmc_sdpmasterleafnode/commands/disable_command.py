@@ -84,4 +84,4 @@ class Disable(SdpMLNCommand):
                 ResultCode.FAILED,
                 "The invocation of the Disable command failed on SDP master",
             )
-        return (ResultCode.OK, "Disable command invokation is complete")
+        return (ResultCode.OK, "Command Completed")

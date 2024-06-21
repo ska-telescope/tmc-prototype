@@ -85,4 +85,4 @@ class On(SdpMLNCommand):
                 "The invocation of the On command failed on SDP master "
                 + "Device ",
             )
-        return (ResultCode.OK, "On command invokation is complete")
+        return (ResultCode.OK, "Command Completed")

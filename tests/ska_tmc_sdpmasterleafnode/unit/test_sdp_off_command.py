@@ -36,7 +36,7 @@ def test_off_command(tango_context, sdp_master_device, task_callback):
             "status": TaskStatus.COMPLETED,
             "result": (
                 ResultCode.OK,
-                "Off command invokation is complete",
+                "Command Completed",
             ),
         }
     )

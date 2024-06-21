@@ -86,4 +86,4 @@ class Off(SdpMLNCommand):
                 "The invocation of the Off command failed on SDP master "
                 + "Device ",
             )
-        return (ResultCode.OK, "Off command invokation is complete")
+        return (ResultCode.OK, "Command Completed")

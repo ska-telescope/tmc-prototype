@@ -35,7 +35,7 @@ def test_standby_command(tango_context, sdp_master_device, task_callback):
             "status": TaskStatus.COMPLETED,
             "result": (
                 ResultCode.OK,
-                "Standby command invokation is complete",
+                "Command Completed",
             ),
         }
     )

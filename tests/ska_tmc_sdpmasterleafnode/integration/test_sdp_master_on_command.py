@@ -45,7 +45,7 @@ def on_command(tango_context, sdpmln_name, group_callback):
     logger.info(f"type unique_id[0]:{type(unique_id[0])}")
     logger.info(f"type str([ResultCode.OK:{type(ResultCode.OK.value)}")
     group_callback["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], '[0, "On command invokation is complete"]'),
+        (unique_id[0], '[0, "Command Completed"]'),
         lookahead=2,
     )
 

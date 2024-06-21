@@ -36,7 +36,7 @@ def test_on_command(tango_context, sdp_master_device, task_callback):
     task_callback.assert_against_call(
         call_kwargs={
             "status": TaskStatus.COMPLETED,
-            "result": (ResultCode.OK, "On command invokation is complete"),
+            "result": (ResultCode.OK, "Command Completed"),
         }
     )
 

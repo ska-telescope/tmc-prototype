@@ -49,7 +49,7 @@ def disable_command(tango_context, sdpmln_name, group_callback):
         group_callback["longRunningCommandResult"],
     )
     group_callback["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], '[0, "On command invokation is complete"]'),
+        (unique_id[0], '[0, "Command Completed"]'),
         lookahead=2,
     )
     result_disable, unique_id_disable = sdpmln_node.Disable()
@@ -61,7 +61,7 @@ def disable_command(tango_context, sdpmln_name, group_callback):
     group_callback["longRunningCommandResult"].assert_change_event(
         (
             unique_id_disable[0],
-            '[0, "Disable command invokation is complete"]',
+            '[0, "Command Completed"]',
         ),
         lookahead=2,
     )

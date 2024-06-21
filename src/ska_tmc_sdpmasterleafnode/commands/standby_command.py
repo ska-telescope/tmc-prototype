@@ -82,4 +82,4 @@ class Standby(SdpMLNCommand):
                 ResultCode.FAILED,
                 "The invocation of the Standby command failed on SDP master",
             )
-        return (ResultCode.OK, "Standby command invokation is complete")
+        return (ResultCode.OK, "Command Completed")

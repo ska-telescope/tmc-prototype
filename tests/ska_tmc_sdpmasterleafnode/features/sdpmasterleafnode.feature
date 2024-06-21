@@ -2,7 +2,7 @@
 Feature: SdpMasterLeafNode acceptance
 
 	#Test the ability to generically run a a set of commands and that the execution is completed withing 5 seconds.
-	@XTP-4908 @post_deployment @acceptance @SKA_mid @SKA_low
+	@XTP-4908 @post_deployment @acceptance @SKA_mid @SKA_low @test
 	Scenario: Ability to run commands on SdpMasterLeafNode
 		Given a SdpMasterLeafNode device
 		When I call the command <command_name>
