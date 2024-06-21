@@ -71,6 +71,7 @@ def count_faulty_devices(component_manager):
 
 def create_cm(cm_class, device):
     """Create Component Manager"""
+    component_manager = ""
     if cm_class == "SdpMLNComponentManager":
         component_manager = SdpMLNComponentManager(
             device,

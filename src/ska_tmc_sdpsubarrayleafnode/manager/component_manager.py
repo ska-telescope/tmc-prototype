@@ -72,7 +72,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             Callable[..., None]
         ] = None,
         _update_lrcr_callback: Optional[Callable[..., None]] = None,
-        max_workers: int = 5,
         proxy_timeout: int = 500,
         sleep_time: int = 1,
         timeout: int = 30,
@@ -95,7 +94,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             _event_receiver=False,
             communication_state_callback=communication_state_callback,
             component_state_callback=component_state_callback,
-            max_workers=max_workers,
             proxy_timeout=proxy_timeout,
             sleep_time=sleep_time,
         )
