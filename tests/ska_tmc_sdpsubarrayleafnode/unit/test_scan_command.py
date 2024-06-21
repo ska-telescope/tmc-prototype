@@ -16,6 +16,7 @@ from tests.settings import (
     SDP_SUBARRAY_DEVICE_MID,
     create_cm,
     logger,
+    wait_for_cm_obstate_attribute_value,
 )
 
 
@@ -34,6 +35,8 @@ def test_telescope_scan_command(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     scan_input_str = get_scan_input_str()
+    cm.update_device_obs_state(ObsState.READY)
+    assert wait_for_cm_obstate_attribute_value(cm, ObsState.READY)
     cm.scan(scan_input_str, task_callback=task_callback)
     task_callback.assert_against_call(status=TaskStatus.QUEUED)
     task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
@@ -85,6 +88,8 @@ def test_scan_command_empty_input_json(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     scan_input_str = ""
+    cm.update_device_obs_state(ObsState.READY)
+    assert wait_for_cm_obstate_attribute_value(cm, ObsState.READY)
     cm.scan(scan_input_str, task_callback=task_callback)
     task_callback.assert_against_call(status=TaskStatus.QUEUED)
     task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
