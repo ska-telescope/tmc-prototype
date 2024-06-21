@@ -89,4 +89,4 @@ def test_on_command_is_allowed_device_unresponsive(tango_context, devices):
     cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
-        cm.is_command_allowed("On")
+        cm._check_if_sdp_sa_is_responsive()

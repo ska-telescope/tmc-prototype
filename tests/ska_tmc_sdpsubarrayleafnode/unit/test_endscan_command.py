@@ -46,7 +46,8 @@ def test_endscan_fail_check_allowed_with_device_unresponsive(
     cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
-        cm.is_command_allowed("EndScan")
+        callable = cm.cmd_allowed_callable("EndScan")
+        callable()
 
 
 @pytest.mark.sdpsln

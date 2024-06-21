@@ -88,4 +88,5 @@ def test_command_off_with_failed_sdp_subarray(
 def test_off_command_is_allowed_device_unresponsive(tango_context, devices):
     cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
-    pytest.raises(DeviceUnresponsive)
+    with pytest.raises(DeviceUnresponsive):
+        cm._check_if_sdp_sa_is_responsive()

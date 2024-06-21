@@ -390,8 +390,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 + "This device will continue with normal operation."
             )
 
-        self._check_if_sdp_sa_is_responsive()
-
         if command_name in [
             "AssignResources",
             "ReleaseAllResources",
