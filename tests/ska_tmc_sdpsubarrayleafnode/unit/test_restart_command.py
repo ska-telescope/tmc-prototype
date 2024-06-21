@@ -14,6 +14,7 @@ from tests.settings import (
     SDP_SUBARRAY_DEVICE_MID,
     create_cm,
     logger,
+    wait_for_cm_obstate_attribute_value,
 )
 
 
@@ -25,20 +26,14 @@ def test_telescope_restart_command(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     cm.update_device_obs_state(ObsState.ABORTED)
+    assert wait_for_cm_obstate_attribute_value(cm, ObsState.ABORTED)
     assert cm.is_command_allowed("Restart")
     cm.restart(task_callback=task_callback)
+    task_callback.assert_against_call(status=TaskStatus.QUEUED)
+    task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.QUEUED}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={
-            "status": TaskStatus.COMPLETED,
-            "result": ResultCode.OK,
-            "exception": "",
-        }
+        status=TaskStatus.COMPLETED,
+        result=(ResultCode.OK, "Command Completed"),
     )
 
 
@@ -64,7 +59,13 @@ def test_restart_command_fail_subarray(tango_context, devices, task_callback):
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "Execution of Restart command is failed.Reason: Error in invoking"
+            f" Restart                 command on Sdp Subarray - {devices}: "
+            "Mock object has no attribute 'Restart'",
+        ),
     )
 
 
