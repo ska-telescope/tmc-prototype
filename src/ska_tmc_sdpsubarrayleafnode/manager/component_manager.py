@@ -333,6 +333,33 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                     ]:
                         return False  # to raise StateModelError or
                         # ResultCode.NOT_ALLOWED TBD
+                case "Configure" | "End":
+                    if self.get_device().obs_state not in [
+                        ObsState.IDLE,
+                        ObsState.READY,
+                    ]:
+                        return False
+                case "Scan":
+                    if self.get_device().obs_state != ObsState.READY:
+                        return False
+                case "EndScan":
+                    if self.get_device().obs_state != ObsState.SCANNING:
+                        return False
+                case "Abort":
+                    if self.get_device().obs_state not in [
+                        ObsState.SCANNING,
+                        ObsState.CONFIGURING,
+                        ObsState.RESOURCING,
+                        ObsState.IDLE,
+                        ObsState.READY,
+                    ]:
+                        return False
+                case "Restart":
+                    if self.get_device().obs_state not in [
+                        ObsState.FAULT,
+                        ObsState.ABORTED,
+                    ]:
+                        return False
             return True
 
         return check_obs_state
