@@ -326,20 +326,22 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 state
             """
             match command_str:
-                case "AssignResources" | "ReleaseAllResources":
+                case "AssignResources":
                     if self.get_device().obs_state not in [
                         ObsState.EMPTY,
                         ObsState.IDLE,
                     ]:
-                        return False  # to raise StateModelError or
-                        # ResultCode.NOT_ALLOWED TBD
-                case "Configure" | "End":
+                        return False
+                case "ReleaseAllResources":
+                    if self.get_device().obs_state != ObsState.IDLE:
+                        return False
+                case "Configure":
                     if self.get_device().obs_state not in [
                         ObsState.IDLE,
                         ObsState.READY,
                     ]:
                         return False
-                case "Scan":
+                case "End" | "Scan":
                     if self.get_device().obs_state != ObsState.READY:
                         return False
                 case "EndScan":
@@ -389,6 +391,48 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 + "The command has NOT been executed. "
                 + "This device will continue with normal operation."
             )
+
+        if command_name in [
+            "AssignResources",
+            "ReleaseAllResources",
+        ]:
+            # Checking obsState of Sdp Subarray device
+            if self.get_device().obs_state not in [
+                ObsState.IDLE,
+                ObsState.EMPTY,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+        if command_name in ["Configure", "End"]:
+            if self.get_device().obs_state not in [
+                ObsState.IDLE,
+                ObsState.READY,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+
+        if command_name == "Scan":
+            if self.get_device().obs_state != ObsState.READY:
+                self.raise_invalid_obsstate_error(command_name)
+
+        if command_name == "EndScan":
+            if self.get_device().obs_state != ObsState.SCANNING:
+                self.raise_invalid_obsstate_error(command_name)
+
+        if command_name == "Abort":
+            if self.get_device().obs_state not in [
+                ObsState.SCANNING,
+                ObsState.CONFIGURING,
+                ObsState.RESOURCING,
+                ObsState.IDLE,
+                ObsState.READY,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+
+        elif command_name == "Restart":
+            if self.get_device().obs_state not in [
+                ObsState.FAULT,
+                ObsState.ABORTED,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
 
         return True
 
@@ -610,7 +654,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             restart_command.restart,
             args=[self.logger],
-            is_cmd_allowed=self.cmd_allowed_callable("Restart"),
             task_callback=task_callback,
         )
         self.logger.info(
