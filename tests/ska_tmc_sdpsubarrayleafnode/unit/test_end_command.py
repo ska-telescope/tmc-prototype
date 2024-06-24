@@ -106,4 +106,4 @@ def test_end_fail_check_allowed_with_device_unresponsive(
     cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
-        cm.cmd_allowed_callable("End")()
+        cm.is_command_allowed_callable("End")()

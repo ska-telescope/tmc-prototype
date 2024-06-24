@@ -311,7 +311,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         raise InvalidObsStateError(message)
 
-    def cmd_allowed_callable(self, command_str: str):
+    def is_command_allowed_callable(self, command_str: str):
         """
         Args:
             command_str (str): _description_
@@ -453,7 +453,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             assign_resources_command.assign_resources,
             args=[argin],
-            is_cmd_allowed=self.cmd_allowed_callable("AssignResources"),
+            is_cmd_allowed=self.is_command_allowed_callable("AssignResources"),
             task_callback=task_callback,
         )
         return task_status, response
@@ -470,7 +470,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             configure_command.configure,
             args=[argin],
-            is_cmd_allowed=self.cmd_allowed_callable("Configure"),
+            is_cmd_allowed=self.is_command_allowed_callable("Configure"),
             task_callback=task_callback,
         )
         self.logger.info(
@@ -492,7 +492,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             scan_command.scan,
             args=[argin, self.logger],
-            is_cmd_allowed=self.cmd_allowed_callable("Scan"),
+            is_cmd_allowed=self.is_command_allowed_callable("Scan"),
             task_callback=task_callback,
         )
         self.logger.info(
@@ -529,7 +529,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.release_id = f"{time.time()}-{ReleaseAllResources.__name__}"
         task_status, response = self.submit_task(
             release_command.release_resources,
-            is_cmd_allowed=self.cmd_allowed_callable("ReleaseAllResources"),
+            is_cmd_allowed=self.is_command_allowed_callable(
+                "ReleaseAllResources"
+            ),
             task_callback=task_callback,
         )
         self.logger.info(
@@ -549,7 +551,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             end_command.end,
             args=[self.logger],
-            is_cmd_allowed=self.cmd_allowed_callable("End"),
+            is_cmd_allowed=self.is_command_allowed_callable("End"),
             task_callback=task_callback,
         )
         self.logger.info(
@@ -571,7 +573,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             end_scan_command.end_scan,
             args=[self.logger],
-            is_cmd_allowed=self.cmd_allowed_callable("EndScan"),
+            is_cmd_allowed=self.is_command_allowed_callable("EndScan"),
             task_callback=task_callback,
         )
         self.logger.info(
@@ -611,7 +613,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             restart_command.restart,
             args=[self.logger],
-            is_cmd_allowed=self.cmd_allowed_callable("Restart"),
+            is_cmd_allowed=self.is_command_allowed_callable("Restart"),
             task_callback=task_callback,
         )
         self.logger.info(

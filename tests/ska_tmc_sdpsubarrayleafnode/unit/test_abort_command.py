@@ -77,7 +77,7 @@ def test_abort_command_fail_check_allowed_with_invalid_obsState(
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     cm.update_device_obs_state(ObsState.EMPTY)
-    assert cm.cmd_allowed_callable("Abort")() is False
+    assert cm.is_command_allowed_callable("Abort")() is False
 
 
 @pytest.mark.sdpsln
@@ -91,4 +91,4 @@ def test_abort_fail_check_allowed_with_device_unresponsive(
     cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
-        cm.cmd_allowed_callable("Abort")()
+        cm.is_command_allowed_callable("Abort")()

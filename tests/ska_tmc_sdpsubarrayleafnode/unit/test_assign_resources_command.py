@@ -152,4 +152,4 @@ def test_telescope_assign_resources_command_fail_check_allowed_with_device_unres
     cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
-        cm.cmd_allowed_callable("AssignResources")()
+        cm.is_command_allowed_callable("AssignResources")()

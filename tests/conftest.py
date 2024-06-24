@@ -6,6 +6,7 @@ from os.path import dirname, join
 
 import pytest
 import tango
+from ska_tango_base.commands import ResultCode
 from ska_tango_testing.mock import MockCallable
 from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
 from ska_tmc_common.dev_factory import DevFactory
@@ -23,7 +24,7 @@ SDPSUBARRAYLEAFNODE_MID = "ska_mid/tm_leaf_node/sdp_subarray01"
 SDPSUBARRAYLEAFNODE_LOW = "ska_low/tm_leaf_node/sdp_subarray01"
 MID_SDP_SUBARRAY = "mid-sdp/subarray/01"
 LOW_SDP_SUBARRAY = "low-sdp/subarray/01"
-COMMAND_COMPLETED = '[0, "Command Completed"]'
+COMMAND_COMPLETED = json.dumps([ResultCode.OK, "Command Completed"])
 
 
 def pytest_sessionstart(session):

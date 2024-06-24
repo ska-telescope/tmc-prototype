@@ -130,19 +130,27 @@ class SdpSLNCommand(TmcLeafNodeCommand):
         return (ResultCode.OK, "")
 
     def update_task_status(
-        self, **kwargs: Dict[str, Union[ResultCode, TaskStatus, str]]
+        self,
+        **kwargs: Dict[str, Union[Tuple[ResultCode, str], TaskStatus, str]],
     ) -> None:
-        result: Optional[ResultCode] = kwargs.get("result")
-        status: TaskStatus = kwargs.get("status", TaskStatus.COMPLETED)
-        message: str = kwargs.get("message")
-        if result == ResultCode.FAILED:
-            self.task_callback(
-                status=status,
-                result=result,
-                exception=message,
-            )
+        """
+        Update the status of a task.
+
+        Args:
+            **kwargs: Keyword arguments for task status update.
+        """
+        result = kwargs.get("result")
+        status = kwargs.get("status", TaskStatus.COMPLETED)
+        message = kwargs.get("exception")
+        if status == TaskStatus.ABORTED:
+            self.task_callback(status=status)
+        if result:
+            if result[0] == ResultCode.FAILED:
+                self.task_callback(
+                    status=status, result=result, exception=message
+                )
         else:
-            self.task_callback(status=TaskStatus.COMPLETED, result=result)
+            self.task_callback(status=status, result=result)
         self.component_manager.command_in_progress = ""
 
     def init_adapter_low(self):

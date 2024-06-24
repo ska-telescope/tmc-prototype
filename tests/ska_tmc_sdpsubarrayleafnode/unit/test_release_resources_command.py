@@ -109,4 +109,4 @@ def test_release_resources_fail_check_allowed_with_device_unresponsive(
     cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
-        cm.cmd_allowed_callable("ReleaseAllResources")()
+        cm.is_command_allowed_callable("ReleaseAllResources")()
