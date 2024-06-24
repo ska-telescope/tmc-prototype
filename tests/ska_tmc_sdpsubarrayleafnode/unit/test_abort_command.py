@@ -5,7 +5,7 @@ from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterType
 from ska_tmc_common.device_info import DeviceInfo
-from ska_tmc_common.exceptions import DeviceUnresponsive, InvalidObsStateError
+from ska_tmc_common.exceptions import DeviceUnresponsive
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )
@@ -77,8 +77,7 @@ def test_abort_command_fail_check_allowed_with_invalid_obsState(
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     cm.update_device_obs_state(ObsState.EMPTY)
-    with pytest.raises(InvalidObsStateError):
-        cm.is_command_allowed("Abort")
+    assert cm.cmd_allowed_callable("Abort")() is False
 
 
 @pytest.mark.sdpsln
@@ -92,5 +91,4 @@ def test_abort_fail_check_allowed_with_device_unresponsive(
     cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
-        callable = cm.cmd_allowed_callable("Abort")
-        callable()
+        cm.cmd_allowed_callable("Abort")()
