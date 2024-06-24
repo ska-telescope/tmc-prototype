@@ -50,7 +50,7 @@ def configure_error_propogation(
             change_event_callbacks["longRunningCommandResult"],
         )
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(ResultCode.OK.value)),
+            (unique_id[0], '[0, "Command Completed"]'),
             lookahead=3,
         )
         wait_and_assert_sdp_subarray_obsstate(sdpsln_device, ObsState.IDLE)
@@ -69,10 +69,7 @@ def configure_error_propogation(
             change_event_callbacks["longRunningCommandResult"],
         )
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (
-                unique_id[0],
-                "Missing scan_type key",
-            ),
+            (unique_id[0], '[3, "Missing scan_type key"]'),
             lookahead=3,
         )
         event_remover(
@@ -86,7 +83,6 @@ def configure_error_propogation(
         raise Exception(exception)
 
 
-@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_configure_command_error_propagation_mid(
@@ -103,7 +99,6 @@ def test_configure_command_error_propagation_mid(
     )
 
 
-@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_configure_command_error_propagation_low(
