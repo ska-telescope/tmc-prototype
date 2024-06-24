@@ -6,6 +6,7 @@ from ska_tango_base.commands import ResultCode
 from ska_tmc_common.dev_factory import DevFactory
 from tango import Database, DeviceProxy
 
+from tests.conftest import COMMAND_COMPLETED
 from tests.settings import event_remover, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     wait_and_assert_sdp_subarray_obsstate,
@@ -150,7 +151,7 @@ def check_command(
     )
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id, '[0, "Command Completed"]'),
+        (unique_id, COMMAND_COMPLETED),
         lookahead=4,
     )
 

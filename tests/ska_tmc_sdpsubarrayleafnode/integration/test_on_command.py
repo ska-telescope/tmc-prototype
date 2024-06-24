@@ -3,6 +3,7 @@ import tango
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.dev_factory import DevFactory
 
+from tests.conftest import COMMAND_COMPLETED
 from tests.settings import (
     SDP_SUBARRAY_DEVICE_LOW,
     SDP_SUBARRAY_DEVICE_MID,
@@ -46,7 +47,7 @@ def on_command(
             change_event_callbacks["longRunningCommandResult"],
         )
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], '[0, "Command Completed"]'),
+            (unique_id[0], COMMAND_COMPLETED),
             lookahead=4,
         )
 

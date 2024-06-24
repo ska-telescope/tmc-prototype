@@ -23,6 +23,7 @@ SDPSUBARRAYLEAFNODE_MID = "ska_mid/tm_leaf_node/sdp_subarray01"
 SDPSUBARRAYLEAFNODE_LOW = "ska_low/tm_leaf_node/sdp_subarray01"
 MID_SDP_SUBARRAY = "mid-sdp/subarray/01"
 LOW_SDP_SUBARRAY = "low-sdp/subarray/01"
+COMMAND_COMPLETED = '[0, "Command Completed"]'
 
 
 def pytest_sessionstart(session):

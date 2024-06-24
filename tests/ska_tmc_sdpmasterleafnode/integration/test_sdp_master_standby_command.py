@@ -3,6 +3,7 @@ import tango
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.dev_factory import DevFactory
 
+from tests.conftest import COMMAND_COMPLETED
 from tests.settings import (
     SDP_MASTER_LEAF_DEVICE_LOW,
     SDP_MASTER_LEAF_DEVICE_MID,
@@ -49,7 +50,7 @@ def standby_command(tango_context, sdpmln_name, group_callback):
         group_callback["longRunningCommandResult"],
     )
     group_callback["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], '[0, "Command Completed"]'),
+        (unique_id[0], COMMAND_COMPLETED),
         lookahead=2,
     )
     result_standby, unique_id_standby = sdpmln_node.Standby()
@@ -61,7 +62,7 @@ def standby_command(tango_context, sdpmln_name, group_callback):
     group_callback["longRunningCommandResult"].assert_change_event(
         (
             unique_id_standby[0],
-            '[0, "Command Completed"]',
+            COMMAND_COMPLETED,
         ),
         lookahead=2,
     )

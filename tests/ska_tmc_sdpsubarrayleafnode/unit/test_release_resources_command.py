@@ -28,7 +28,8 @@ def test_telescope_release_resources_command(
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     assert cm.is_command_allowed("ReleaseAllResources")
-
+    cm.update_device_obs_state(ObsState.IDLE)
+    assert wait_for_cm_obstate_attribute_value(cm, ObsState.IDLE)
     cm.release_all_resources(task_callback=task_callback)
     task_callback.assert_against_call(status=TaskStatus.QUEUED)
     task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
