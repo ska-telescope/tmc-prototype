@@ -120,7 +120,7 @@ def scan(
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (
             unique_id[0],
-            '[0, "Command Completed"]',
+            COMMAND_COMPLETED,
         ),
         lookahead=6,
     )
