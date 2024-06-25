@@ -80,17 +80,17 @@ Run python-test:
 .. code-block::
 
     $ make python-test
-    PyTango 9.3.3 (9, 3, 3)
+    PyTango 9.5.0 (9, 5, 0)
     PyTango compiled with:
-    Python : 3.8.5
+    Python : 3.10.0 or above
     Numpy  : 0.0.0 ## output generated from a WSL windows machine
-    Tango  : 9.2.5
+    Tango  : 9.5.0
     Boost  : 1.71.0
 
     PyTango runtime is:
-    Python : 3.8.5
+    Python : 3.10.0 or above
     Numpy  : None
-    Tango  : 9.2.5
+    Tango  : 9.5.0
 
     PyTango running on:
     uname_result(system='Linux', node='LAPTOP-5LBGJH83', release='4.19.128-microsoft-standard', version='#1 SMP Tue Jun 23 12:58:10 UTC 2020', machine='x86_64', processor='x86_64')
