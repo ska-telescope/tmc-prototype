@@ -198,7 +198,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :param ping: device response time
         :type ping: int
         """
-        self.logger.debug("Updating ping info for device: %s", device_name)
         with self.lock:
             self._device.ping = ping
             self._device.update_unresponsive(False)
@@ -311,10 +310,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         raise InvalidObsStateError(message)
 
-    def is_command_allowed_callable(self, command_str: str):
+    def is_command_allowed_callable(self, command_name: str):
         """
         Args:
-            command_str (str): _description_
+            command_name (str): _description_
         """
         self._check_if_sdp_sa_is_responsive()
 
@@ -325,7 +324,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 bool: whether the command may be called in the current device
                 state
             """
-            match command_str:
+            match command_name:
                 case "AssignResources":
                     if self.get_device().obs_state not in [
                         ObsState.EMPTY,

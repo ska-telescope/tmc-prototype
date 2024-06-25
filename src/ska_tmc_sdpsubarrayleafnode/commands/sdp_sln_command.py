@@ -149,8 +149,8 @@ class SdpSLNCommand(TmcLeafNodeCommand):
                 self.task_callback(
                     status=status, result=result, exception=message
                 )
-        else:
-            self.task_callback(status=status, result=result)
+            else:
+                self.task_callback(status=status, result=result)
         self.component_manager.command_in_progress = ""
 
     def init_adapter_low(self):
