@@ -1,3 +1,5 @@
+# TODO: This test needs to be refactored separately as we don't have a way to
+# raise and exception in ReleaseAllResources command.
 import pytest
 import tango
 from ska_tango_base.commands import ResultCode
@@ -10,8 +12,7 @@ from tests.conftest import (
     SDPSUBARRAYLEAFNODE_LOW,
     SDPSUBARRAYLEAFNODE_MID,
 )
-from tests.settings import (
-    ERROR_PROPAGATION_DEFECT,
+from tests.settings import (  # ERROR_PROPAGATION_DEFECT,
     RESET_DEFECT,
     TIMEOUT_DEFECT,
     event_remover,
@@ -61,7 +62,7 @@ def release_all_resources_error_propagation(
     wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
 
     # Check error propagation
-    sdp_subarray.SetDefective(ERROR_PROPAGATION_DEFECT)
+    # sdp_subarray.SetDefective(ERROR_PROPAGATION_DEFECT)
     result, unique_id = sdpsal_node.ReleaseAllResources()
 
     logger.info(

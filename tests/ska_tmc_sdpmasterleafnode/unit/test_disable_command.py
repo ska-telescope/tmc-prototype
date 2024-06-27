@@ -31,11 +31,16 @@ def test_disable_command(tango_context, sdp_master_device, task_callback):
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK}
+        call_kwargs={
+            "status": TaskStatus.COMPLETED,
+            "result": (
+                ResultCode.OK,
+                "Command Completed",
+            ),
+        }
     )
 
 
-@pytest.mark.new
 @pytest.mark.parametrize(
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )
@@ -56,7 +61,11 @@ def test_disable_command_fail_sdp_master(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "The invocation of the Disable command failed on SDP master",
+        ),
     )
 
 

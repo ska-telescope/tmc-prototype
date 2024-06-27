@@ -5,6 +5,7 @@ import tango
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.dev_factory import DevFactory
 
+from tests.conftest import COMMAND_COMPLETED
 from tests.settings import (
     SDP_SUBARRAY_DEVICE_LOW,
     SDP_SUBARRAY_DEVICE_MID,
@@ -46,7 +47,7 @@ def off_command(
         change_event_callbacks["longRunningCommandResult"],
     )
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(int(ResultCode.OK))),
+        (unique_id[0], COMMAND_COMPLETED),
         lookahead=4,
     )
 
@@ -62,7 +63,7 @@ def off_command(
     assert result[0] == ResultCode.QUEUED
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(int(ResultCode.OK))),
+        (unique_id[0], COMMAND_COMPLETED),
         lookahead=6,
     )
 

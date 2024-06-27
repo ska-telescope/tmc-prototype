@@ -49,11 +49,17 @@ class Scan(SdpSLNCommand):
             result_code,
             message,
         )
-        task_callback(
-            status=TaskStatus.COMPLETED,
-            result=result_code,
-            exception=message,
-        )
+        if result_code == ResultCode.FAILED:
+            task_callback(
+                status=TaskStatus.COMPLETED,
+                result=(result_code, message),
+                exception=message,
+            )
+        else:
+            task_callback(
+                status=TaskStatus.COMPLETED,
+                result=(result_code, message),
+            )
 
     def do(self, argin: str = "") -> Tuple[ResultCode, str]:
         """
@@ -127,11 +133,13 @@ class Scan(SdpSLNCommand):
                 )
                 + "Reason: Error in calling the Scan command on Sdp Subarray."
                 + "The command has NOT been executed."
-                + "This device will continue with normal operation."
-                "",
+                + "This device will continue with normal operation.",
             )
         log_msg = "Scan command successfully invoked on:" + "{}".format(
             self.sdp_subarray_adapter.dev_name
         )
         self.logger.info(log_msg)
-        return (ResultCode.OK, "")
+        return (
+            ResultCode.OK,
+            "Command Completed",
+        )

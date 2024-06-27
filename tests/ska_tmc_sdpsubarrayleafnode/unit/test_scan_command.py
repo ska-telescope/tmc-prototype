@@ -5,7 +5,7 @@ from ska_tango_base.commands import ResultCode, TaskStatus
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterType
 from ska_tmc_common.device_info import DeviceInfo
-from ska_tmc_common.exceptions import DeviceUnresponsive, InvalidObsStateError
+from ska_tmc_common.exceptions import DeviceUnresponsive
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )
@@ -16,6 +16,7 @@ from tests.settings import (
     SDP_SUBARRAY_DEVICE_MID,
     create_cm,
     logger,
+    wait_for_cm_obstate_attribute_value,
 )
 
 
@@ -34,19 +35,14 @@ def test_telescope_scan_command(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     scan_input_str = get_scan_input_str()
+    cm.update_device_obs_state(ObsState.READY)
+    assert wait_for_cm_obstate_attribute_value(cm, ObsState.READY)
     cm.scan(scan_input_str, task_callback=task_callback)
+    task_callback.assert_against_call(status=TaskStatus.QUEUED)
+    task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.QUEUED}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={
-            "status": TaskStatus.COMPLETED,
-            "result": ResultCode.OK,
-            "exception": "",
-        }
+        status=TaskStatus.COMPLETED,
+        result=(ResultCode.OK, "Command Completed"),
     )
 
 
@@ -73,7 +69,14 @@ def test_scan_command_fail_subarray(tango_context, devices, task_callback):
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "The invocation of the Scan command is failed on SdpSubarray "
+            f"Device {devices}Reason: Error in calling the Scan command on "
+            "Sdp Subarray.The command has NOT been executed."
+            "This device will continue with normal operation.",
+        ),
     )
 
 
@@ -85,15 +88,18 @@ def test_scan_command_empty_input_json(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     scan_input_str = ""
+    cm.update_device_obs_state(ObsState.READY)
+    assert wait_for_cm_obstate_attribute_value(cm, ObsState.READY)
     cm.scan(scan_input_str, task_callback=task_callback)
+    task_callback.assert_against_call(status=TaskStatus.QUEUED)
+    task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.QUEUED}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
-    task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "Exception occurred while parsing the JSON."
+            + "\n                    Please check the logs for details.",
+        ),
     )
 
 
@@ -101,14 +107,25 @@ def test_scan_command_empty_input_json(tango_context, devices, task_callback):
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
-def test_scan_command_fail_check_allowed_with_invalid_obsState(
-    tango_context, devices
+def test_scan_command_not_allowed_with_invalid_obsState(
+    tango_context, devices, task_callback
 ):
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
-    cm.update_device_obs_state(ObsState.EMPTY)
-    with pytest.raises(InvalidObsStateError):
-        cm.is_command_allowed("Scan")
+    scan_input_str = get_scan_input_str()
+    cm.update_device_obs_state(ObsState.IDLE)
+    assert wait_for_cm_obstate_attribute_value(cm, ObsState.IDLE)
+    cm.scan(scan_input_str, task_callback=task_callback)
+    task_callback.assert_against_call(
+        call_kwargs={"status": TaskStatus.QUEUED}
+    )
+    task_callback.assert_against_call(
+        status=TaskStatus.REJECTED,
+        result=(
+            ResultCode.NOT_ALLOWED,
+            "Command is not allowed",
+        ),
+    )
 
 
 @pytest.mark.sdpsln
@@ -122,4 +139,4 @@ def test_telescope_scan_command_fail_check_allowed_with_device_unresponsive(  # 
     cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
-        cm.is_command_allowed("scan")
+        cm.is_command_allowed_callable("Scan")()

@@ -52,4 +52,4 @@ class Abort(SdpSLNCommand):
                 + "Reason: Error in invoking Abort command on Sdp Subarray -"
                 + f"{self.sdp_subarray_adapter.dev_name}: {exception}",
             )
-        return ResultCode.OK, ""
+        return (ResultCode.OK, "Command Completed")

@@ -27,18 +27,11 @@ def test_command_on(tango_context, devices, task_callback):
     assert cm.is_command_allowed("On")
 
     cm.on(task_callback=task_callback)
+    task_callback.assert_against_call(status=TaskStatus.QUEUED)
+    task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.QUEUED}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={
-            "status": TaskStatus.COMPLETED,
-            "result": ResultCode.OK,
-            "exception": "",
-        }
+        status=TaskStatus.COMPLETED,
+        result=(ResultCode.OK, "Command Completed"),
     )
 
 
@@ -75,11 +68,16 @@ def test_command_on_with_failed_sdp_subarray(
     on_command.adapter_factory = adapter_factory
     assert cm.is_command_allowed("On")
     on_command.on(logger, task_callback=task_callback)
+    task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
-    task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "The invocation of the On command is "
+            + f"failed on SDP Subarray Device {devices} Reason: Error in "
+            + "invoking On command on SDP Subarray.The command has NOT been "
+            + "executed. This device will continue with normal operation.",
+        ),
     )
 
 
@@ -91,4 +89,4 @@ def test_on_command_is_allowed_device_unresponsive(tango_context, devices):
     cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
-        cm.is_command_allowed("On")
+        cm._check_if_sdp_sa_is_responsive()

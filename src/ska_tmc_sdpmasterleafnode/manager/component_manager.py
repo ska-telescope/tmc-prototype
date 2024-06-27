@@ -8,7 +8,7 @@ from typing import Callable, Optional, Tuple
 
 from ska_ser_logging import configure_logging
 from ska_tango_base.base import TaskCallbackType
-from ska_tango_base.base.component_manager import BaseComponentManager
+from ska_tango_base.base.base_component_manager import BaseComponentManager
 from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.enum import LivelinessProbeType
@@ -41,7 +41,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             LivelinessProbeType.SINGLE_DEVICE
         ),
         _event_receiver: bool = False,
-        max_workers: int = 1,
         proxy_timeout: int = 500,
         sleep_time: int = 1,
         timeout: int = 30,
@@ -58,8 +57,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         :param _monitoring_loop: Optional. Monitoring loop for the component
         manager
         :param _event_receiver: Optional. Object of EventReceiver class
-        :param max_workers: Optional. Maximum worker threads for monitoring
-        purpose. Default 1
         :param proxy_timeout: Optional. Time period to wait for event and
         responses. Default 500 milliseconds
         :param sleep_time: Optional. Sleep time between reties. Default 1 Sec
@@ -69,7 +66,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             logger,
             _liveliness_probe=_liveliness_probe,
             _event_receiver=False,
-            max_workers=max_workers,
             proxy_timeout=proxy_timeout,
             sleep_time=sleep_time,
         )
@@ -186,6 +182,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             self.on_command.on,
             args=[self.logger],
+            is_cmd_allowed=self._check_if_sdp_master_is_responsive(),
             task_callback=task_callback,
         )
         self.logger.debug(
@@ -205,6 +202,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             self.off_command.off,
             args=[self.logger],
+            is_cmd_allowed=self._check_if_sdp_master_is_responsive(),
             task_callback=task_callback,
         )
         self.logger.debug(
@@ -224,6 +222,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             self.standby_command.standby,
             args=[self.logger],
+            is_cmd_allowed=self._check_if_sdp_master_is_responsive(),
             task_callback=task_callback,
         )
         self.logger.info("Standby command queued for execution")
@@ -239,6 +238,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             self.disable_command.disable,
             args=[self.logger],
+            is_cmd_allowed=self._check_if_sdp_master_is_responsive(),
             task_callback=task_callback,
         )
         self.logger.info("Disable command queued for execution")

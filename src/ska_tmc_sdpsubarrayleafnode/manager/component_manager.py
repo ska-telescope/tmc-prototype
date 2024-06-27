@@ -72,7 +72,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             Callable[..., None]
         ] = None,
         _update_lrcr_callback: Optional[Callable[..., None]] = None,
-        max_workers: int = 5,
         proxy_timeout: int = 500,
         sleep_time: int = 1,
         timeout: int = 30,
@@ -95,7 +94,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             _event_receiver=False,
             communication_state_callback=communication_state_callback,
             component_state_callback=component_state_callback,
-            max_workers=max_workers,
             proxy_timeout=proxy_timeout,
             sleep_time=sleep_time,
         )
@@ -200,7 +198,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :param ping: device response time
         :type ping: int
         """
-        self.logger.debug("Updating ping info for device: %s", device_name)
         with self.lock:
             self._device.ping = ping
             self._device.update_unresponsive(False)
@@ -313,6 +310,61 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         raise InvalidObsStateError(message)
 
+    def is_command_allowed_callable(self, command_name: str):
+        """
+        Args:
+            command_name (str): _description_
+        """
+        self._check_if_sdp_sa_is_responsive()
+
+        def check_obs_state():
+            """Return whether the command may be called in the current state.
+
+            Returns:
+                bool: whether the command may be called in the current device
+                state
+            """
+            match command_name:
+                case "AssignResources":
+                    if self.get_device().obs_state not in [
+                        ObsState.EMPTY,
+                        ObsState.IDLE,
+                    ]:
+                        return False
+                case "ReleaseAllResources":
+                    if self.get_device().obs_state != ObsState.IDLE:
+                        return False
+                case "Configure":
+                    if self.get_device().obs_state not in [
+                        ObsState.IDLE,
+                        ObsState.READY,
+                    ]:
+                        return False
+                case "End" | "Scan":
+                    if self.get_device().obs_state != ObsState.READY:
+                        return False
+                case "EndScan":
+                    if self.get_device().obs_state != ObsState.SCANNING:
+                        return False
+                case "Abort":
+                    if self.get_device().obs_state not in [
+                        ObsState.SCANNING,
+                        ObsState.CONFIGURING,
+                        ObsState.RESOURCING,
+                        ObsState.IDLE,
+                        ObsState.READY,
+                    ]:
+                        return False
+                case "Restart":
+                    if self.get_device().obs_state not in [
+                        ObsState.FAULT,
+                        ObsState.ABORTED,
+                    ]:
+                        return False
+            return True
+
+        return check_obs_state
+
     def is_command_allowed(
         self, command_name: str
     ) -> Union[
@@ -338,51 +390,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 + "The command has NOT been executed. "
                 + "This device will continue with normal operation."
             )
-
-        self._check_if_sdp_sa_is_responsive()
-
-        if command_name in [
-            "AssignResources",
-            "ReleaseAllResources",
-        ]:
-            # Checking obsState of Sdp Subarray device
-            if self.get_device().obs_state not in [
-                ObsState.IDLE,
-                ObsState.EMPTY,
-            ]:
-                self.raise_invalid_obsstate_error(command_name)
-        if command_name in ["Configure", "End"]:
-            if self.get_device().obs_state not in [
-                ObsState.IDLE,
-                ObsState.READY,
-            ]:
-                self.raise_invalid_obsstate_error(command_name)
-
-        if command_name == "Scan":
-            if self.get_device().obs_state != ObsState.READY:
-                self.raise_invalid_obsstate_error(command_name)
-
-        if command_name == "EndScan":
-            if self.get_device().obs_state != ObsState.SCANNING:
-                self.raise_invalid_obsstate_error(command_name)
-
-        if command_name == "Abort":
-            if self.get_device().obs_state not in [
-                ObsState.SCANNING,
-                ObsState.CONFIGURING,
-                ObsState.RESOURCING,
-                ObsState.IDLE,
-                ObsState.READY,
-            ]:
-                self.raise_invalid_obsstate_error(command_name)
-
-        elif command_name == "Restart":
-            if self.get_device().obs_state not in [
-                ObsState.FAULT,
-                ObsState.ABORTED,
-            ]:
-                self.raise_invalid_obsstate_error(command_name)
-
         return True
 
     def cmd_ended_cb(self, event):
@@ -426,6 +433,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             self.on_command.on,
             args=[self.logger],
+            is_cmd_allowed=self._check_if_sdp_sa_is_responsive(),
             task_callback=task_callback,
         )
         self.logger.info("On command queued for execution")
@@ -444,6 +452,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             assign_resources_command.assign_resources,
             args=[argin],
+            is_cmd_allowed=self.is_command_allowed_callable("AssignResources"),
             task_callback=task_callback,
         )
         return task_status, response
@@ -460,6 +469,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             configure_command.configure,
             args=[argin],
+            is_cmd_allowed=self.is_command_allowed_callable("Configure"),
             task_callback=task_callback,
         )
         self.logger.info(
@@ -481,6 +491,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             scan_command.scan,
             args=[argin, self.logger],
+            is_cmd_allowed=self.is_command_allowed_callable("Scan"),
             task_callback=task_callback,
         )
         self.logger.info(
@@ -500,6 +511,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             self.off_command.off,
             args=[self.logger],
+            is_cmd_allowed=self._check_if_sdp_sa_is_responsive(),
             task_callback=task_callback,
         )
         self.logger.info("Off command queued for execution")
@@ -516,6 +528,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.release_id = f"{time.time()}-{ReleaseAllResources.__name__}"
         task_status, response = self.submit_task(
             release_command.release_resources,
+            is_cmd_allowed=self.is_command_allowed_callable(
+                "ReleaseAllResources"
+            ),
             task_callback=task_callback,
         )
         self.logger.info(
@@ -535,6 +550,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             end_command.end,
             args=[self.logger],
+            is_cmd_allowed=self.is_command_allowed_callable("End"),
             task_callback=task_callback,
         )
         self.logger.info(
@@ -556,6 +572,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             end_scan_command.end_scan,
             args=[self.logger],
+            is_cmd_allowed=self.is_command_allowed_callable("EndScan"),
             task_callback=task_callback,
         )
         self.logger.info(
@@ -595,6 +612,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         task_status, response = self.submit_task(
             restart_command.restart,
             args=[self.logger],
+            is_cmd_allowed=self.is_command_allowed_callable("Restart"),
             task_callback=task_callback,
         )
         self.logger.info(

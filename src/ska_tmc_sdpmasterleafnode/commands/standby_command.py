@@ -52,7 +52,7 @@ class Standby(SdpMLNCommand):
             exception = message
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=result_code,
+                result=(result_code, message),
                 exception=exception,
             )
 
@@ -63,7 +63,7 @@ class Standby(SdpMLNCommand):
             )
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=result_code,
+                result=(result_code, message),
             )
 
     def do(self, argin: Optional[Any] = None) -> Tuple[ResultCode, str]:
@@ -80,13 +80,6 @@ class Standby(SdpMLNCommand):
             self.logger.exception(f"Command invocation failed: {exception}")
             return (
                 ResultCode.FAILED,
-                f"The invocation of the Standby"
-                " command failed on SDP master "
-                "Device "
-                f"{self.sdp_master_adapter.dev_name} "
-                "Reason: Error in invoking "
-                "Standby command on SDP master"
-                ".The command has NOT been executed. "
-                "This device will continue with normal operation.",
+                "The invocation of the Standby command failed on SDP master",
             )
-        return ResultCode.OK, ""
+        return (ResultCode.OK, "Command Completed")

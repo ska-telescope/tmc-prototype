@@ -5,6 +5,7 @@ from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.conftest import (
+    COMMAND_COMPLETED,
     LOW_SDP_SUBARRAY,
     MID_SDP_SUBARRAY,
     SDPSUBARRAYLEAFNODE_LOW,
@@ -50,7 +51,7 @@ def configure_error_propogation(
             change_event_callbacks["longRunningCommandResult"],
         )
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(ResultCode.OK.value)),
+            (unique_id[0], COMMAND_COMPLETED),
             lookahead=3,
         )
         wait_and_assert_sdp_subarray_obsstate(sdpsln_device, ObsState.IDLE)
@@ -69,10 +70,7 @@ def configure_error_propogation(
             change_event_callbacks["longRunningCommandResult"],
         )
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (
-                unique_id[0],
-                "Missing scan_type key",
-            ),
+            (unique_id[0], '[3, "Missing scan_type key"]'),
             lookahead=3,
         )
         event_remover(

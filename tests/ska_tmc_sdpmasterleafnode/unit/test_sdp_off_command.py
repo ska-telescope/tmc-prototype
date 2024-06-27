@@ -32,7 +32,13 @@ def test_off_command(tango_context, sdp_master_device, task_callback):
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK}
+        call_kwargs={
+            "status": TaskStatus.COMPLETED,
+            "result": (
+                ResultCode.OK,
+                "Command Completed",
+            ),
+        }
     )
 
 
@@ -57,7 +63,11 @@ def test_off_command_fail_sdp_master(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "The invocation of the Off command failed on SDP master Device ",
+        ),
     )
 
 

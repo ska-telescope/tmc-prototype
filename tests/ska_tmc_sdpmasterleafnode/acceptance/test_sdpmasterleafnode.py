@@ -4,6 +4,7 @@ from pytest_bdd import given, parsers, scenarios, then, when
 from ska_tango_base.commands import ResultCode
 from tango import Database, DeviceProxy
 
+from tests.conftest import COMMAND_COMPLETED
 from tests.settings import event_remover
 
 
@@ -67,7 +68,7 @@ def check_command(sdpmasterleaf_node, group_callback):
     )
 
     group_callback["longRunningCommandResult"].assert_change_event(
-        (unique_id, str(int(ResultCode.OK))), lookahead=2
+        (unique_id, COMMAND_COMPLETED), lookahead=2
     )
 
     group_callback["longRunningCommandsInQueue"].assert_change_event(

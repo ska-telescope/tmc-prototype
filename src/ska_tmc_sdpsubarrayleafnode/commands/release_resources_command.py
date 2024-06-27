@@ -66,7 +66,9 @@ class ReleaseAllResources(SdpSLNCommand):
         )
         result_code, message = self.do()
         if result_code == ResultCode.FAILED:
-            self.update_task_status(result=result_code, message=message)
+            self.update_task_status(
+                result=(result_code, message), exception=message
+            )
             self.component_manager.stop_timer()
         else:
             lrcr_callback = self.component_manager.long_running_result_callback
@@ -121,4 +123,7 @@ class ReleaseAllResources(SdpSLNCommand):
             + "{}".format(self.sdp_subarray_adapter.dev_name)
         )
         self.logger.info(log_msg)
-        return (ResultCode.OK, "")
+        return (
+            ResultCode.OK,
+            "Command Completed",
+        )

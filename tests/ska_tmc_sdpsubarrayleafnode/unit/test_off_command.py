@@ -27,18 +27,11 @@ def test_mid_off(tango_context, devices, task_callback):
     assert cm.is_command_allowed("off")
 
     cm.off(task_callback=task_callback)
+    task_callback.assert_against_call(status=TaskStatus.QUEUED)
+    task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.QUEUED}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={
-            "status": TaskStatus.COMPLETED,
-            "result": ResultCode.OK,
-            "exception": "",
-        }
+        status=TaskStatus.COMPLETED,
+        result=(ResultCode.OK, "Command Completed"),
     )
 
 
@@ -75,11 +68,16 @@ def test_command_off_with_failed_sdp_subarray(
     off_command.adapter_factory = adapter_factory
     assert cm.is_command_allowed("off")
     off_command.off(logger, task_callback=task_callback)
+    task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
-    task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "The invocation of the Off command is "
+            + f"failed on SDP Subarray Device {devices} Reason: Error in "
+            + "invoking Off command on SDP Subarray.The command has NOT been "
+            + "executed. This device will continue with normal operation.",
+        ),
     )
 
 
@@ -90,4 +88,5 @@ def test_command_off_with_failed_sdp_subarray(
 def test_off_command_is_allowed_device_unresponsive(tango_context, devices):
     cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
-    pytest.raises(DeviceUnresponsive)
+    with pytest.raises(DeviceUnresponsive):
+        cm._check_if_sdp_sa_is_responsive()

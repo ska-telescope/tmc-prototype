@@ -4,6 +4,7 @@ from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
+from tests.conftest import COMMAND_COMPLETED
 from tests.settings import (
     SDP_SUBARRAY_DEVICE_LOW,
     SDP_SUBARRAY_DEVICE_MID,
@@ -57,7 +58,7 @@ def end(
         )
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(int(ResultCode.OK))),
+            (unique_id[0], COMMAND_COMPLETED),
             lookahead=4,
         )
         assign_input_str = json_factory("command_AssignResources")
@@ -73,9 +74,11 @@ def end(
             ),
             lookahead=2,
         )
+        logger.info(f"Command ID: {unique_id} Returned result: {result}")
+        assert result[0] == ResultCode.QUEUED
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(int(ResultCode.OK))),
+            (unique_id[0], COMMAND_COMPLETED),
             lookahead=4,
         )
         wait_and_assert_sdp_subarray_obsstate(
@@ -96,9 +99,11 @@ def end(
             ),
             lookahead=2,
         )
+        logger.info(f"Command ID: {unique_id} Returned result: {result}")
+        assert result[0] == ResultCode.QUEUED
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(int(ResultCode.OK))),
+            (unique_id[0], COMMAND_COMPLETED),
             lookahead=3,
         )
         wait_and_assert_sdp_subarray_obsstate(
@@ -119,7 +124,7 @@ def end(
         )
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(int(ResultCode.OK))),
+            (unique_id[0], COMMAND_COMPLETED),
             lookahead=4,
         )
         wait_and_assert_sdp_subarray_obsstate(

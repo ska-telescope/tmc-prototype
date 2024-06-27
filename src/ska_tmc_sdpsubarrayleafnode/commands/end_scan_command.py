@@ -46,11 +46,17 @@ class EndScan(SdpSLNCommand):
             message,
         )
 
-        task_callback(
-            status=TaskStatus.COMPLETED,
-            result=result_code,
-            exception=message,
-        )
+        if result_code == ResultCode.FAILED:
+            task_callback(
+                status=TaskStatus.COMPLETED,
+                result=(result_code, message),
+                exception=message,
+            )
+        else:
+            task_callback(
+                status=TaskStatus.COMPLETED,
+                result=(result_code, message),
+            )
 
     def do(self, argin: Optional[str] = None) -> Tuple[ResultCode, str]:
         """
@@ -75,4 +81,7 @@ class EndScan(SdpSLNCommand):
                 ".The command has NOT been executed. "
                 "This device will continue with normal operation.",
             )
-        return ResultCode.OK, ""
+        return (
+            ResultCode.OK,
+            "Command Completed",
+        )

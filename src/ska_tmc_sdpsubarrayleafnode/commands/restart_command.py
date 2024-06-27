@@ -42,11 +42,17 @@ class Restart(SdpSLNCommand):
             result_code,
             message,
         )
-        task_callback(
-            status=TaskStatus.COMPLETED,
-            result=result_code,
-            exception=message,
-        )
+        if result_code == ResultCode.FAILED:
+            task_callback(
+                status=TaskStatus.COMPLETED,
+                result=(result_code, message),
+                exception=message,
+            )
+        else:
+            task_callback(
+                status=TaskStatus.COMPLETED,
+                result=(result_code, message),
+            )
 
     # pylint: disable=arguments-differ
     def do(self) -> Tuple[ResultCode, str]:
@@ -89,4 +95,4 @@ class Restart(SdpSLNCommand):
             "Restart command successfully invoked on: %s",
             self.sdp_subarray_adapter.dev_name,
         )
-        return ResultCode.OK, ""
+        return (ResultCode.OK, "Command Completed")

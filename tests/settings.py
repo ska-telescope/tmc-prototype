@@ -41,15 +41,6 @@ TIMEOUT_DEFECT = json.dumps(
     }
 )
 
-ERROR_PROPAGATION_DEFECT = json.dumps(
-    {
-        "enabled": True,
-        "fault_type": FaultType.COMMAND_NOT_ALLOWED,
-        "error_message": "Exception occured, command failed.",
-        "result": ResultCode.FAILED,
-    }
-)
-
 RESET_DEFECT = json.dumps(
     {
         "enabled": False,
@@ -72,19 +63,14 @@ def count_faulty_devices(component_manager):
 def create_cm(cm_class, device):
     """Create Component Manager"""
     if cm_class == "SdpMLNComponentManager":
-        component_manager = SdpMLNComponentManager(
+        return SdpMLNComponentManager(
             device,
             logger=logger,
         )
-    if cm_class == "SdpSLNComponentManager":
-        component_manager = SdpSLNComponentManager(
-            device, logger=logger, _liveliness_probe=LivelinessProbeType.NONE
-        )
-    else:
-        log_msg = f"Unknown component manager class {cm_class}"
-        logger.error(log_msg)
 
-    return component_manager
+    return SdpSLNComponentManager(
+        device, logger=logger, _liveliness_probe=LivelinessProbeType.NONE
+    )
 
 
 def event_remover(change_event_callbacks, attributes: List[str]) -> None:

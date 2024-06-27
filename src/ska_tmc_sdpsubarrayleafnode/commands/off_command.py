@@ -45,11 +45,17 @@ class Off(SdpSLNCommand):
             result_code,
             message,
         )
-        task_callback(
-            status=TaskStatus.COMPLETED,
-            result=result_code,
-            exception=message,
-        )
+        if result_code == ResultCode.FAILED:
+            task_callback(
+                status=TaskStatus.COMPLETED,
+                result=(result_code, message),
+                exception=message,
+            )
+        else:
+            task_callback(
+                status=TaskStatus.COMPLETED,
+                result=(result_code, message),
+            )
 
     # pylint: enable=unused-argument
 
@@ -77,4 +83,4 @@ class Off(SdpSLNCommand):
                 ".The command has NOT been executed. "
                 "This device will continue with normal operation.",
             )
-        return ResultCode.OK, ""
+        return (ResultCode.OK, "Command Completed")

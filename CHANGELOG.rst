@@ -13,6 +13,10 @@ Fixed
 * Updated the .readthdocs.yaml
 * Fixed documentation missing information issue
 
+[0.16.0]
+------
+* Update Sdp master leaf node and Sdp Subarray Leaf Node to use Base class v1.0.0 and pytango v9.5.0
+
 [0.15.1]
 ------
 * CommandTimeOut Device property added to Sdp Subarray Leaf Node device
