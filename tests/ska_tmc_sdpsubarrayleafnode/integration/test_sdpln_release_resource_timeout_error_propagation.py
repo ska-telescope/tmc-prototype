@@ -1,3 +1,5 @@
+# TODO: This test needs to be refactored separately as we don't have a way to
+# raise and exception in ReleaseAllResources command.
 import pytest
 import tango
 from ska_tango_base.commands import ResultCode
