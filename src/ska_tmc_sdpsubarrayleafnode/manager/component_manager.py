@@ -346,15 +346,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 case "EndScan":
                     if self.get_device().obs_state != ObsState.SCANNING:
                         return False
-                case "Abort":
-                    if self.get_device().obs_state not in [
-                        ObsState.SCANNING,
-                        ObsState.CONFIGURING,
-                        ObsState.RESOURCING,
-                        ObsState.IDLE,
-                        ObsState.READY,
-                    ]:
-                        return False
                 case "Restart":
                     if self.get_device().obs_state not in [
                         ObsState.FAULT,
@@ -390,6 +381,15 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 + "The command has NOT been executed. "
                 + "This device will continue with normal operation."
             )
+        if command_name == "Abort" and self.get_device().obs_state not in [
+            ObsState.SCANNING,
+            ObsState.CONFIGURING,
+            ObsState.RESOURCING,
+            ObsState.IDLE,
+            ObsState.READY,
+        ]:
+            self.raise_invalid_obsstate_error(command_name)
+
         return True
 
     def cmd_ended_cb(self, event):
