@@ -81,7 +81,7 @@ def test_configure_command_fail_subarray(
         ),
     )
 
-
+@pytest.mark.test2
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
@@ -99,8 +99,15 @@ def test_configure_command_empty_input_json(
         call_kwargs={"status": TaskStatus.QUEUED}
     )
     task_callback.assert_against_call(
-        status=TaskStatus.REJECTED,
-        result=(ResultCode.NOT_ALLOWED, "Command is not allowed"),
+        call_kwargs={"status": TaskStatus.IN_PROGRESS}
+    )
+    task_callback.assert_against_call(
+        status=TaskStatus.COMPLETED,
+        result=(
+            ResultCode.FAILED,
+            "Exception occurred while parsing the JSON."
+            + "\n                    Please check the logs for details.",
+        ),
     )
 
 
