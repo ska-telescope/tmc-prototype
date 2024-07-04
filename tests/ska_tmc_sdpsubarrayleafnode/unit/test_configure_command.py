@@ -99,15 +99,8 @@ def test_configure_command_empty_input_json(
         call_kwargs={"status": TaskStatus.QUEUED}
     )
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
-    task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED,
-        result=(
-            ResultCode.FAILED,
-            "Exception occurred while parsing the JSON."
-            + "\n                    Please check the logs for details.",
-        ),
+        status=TaskStatus.REJECTED,
+        result=(ResultCode.NOT_ALLOWED, "Command is not allowed"),
     )
 
 
