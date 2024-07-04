@@ -28,6 +28,7 @@ def get_configure_input_str(configure_input_file="command_Configure.json"):
     return configure_input_str
 
 
+@pytest.mark.test1
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
@@ -80,6 +81,7 @@ def test_configure_command_fail_subarray(
             + "normal operation.",
         ),
     )
+
 
 @pytest.mark.test2
 @pytest.mark.sdpsln

@@ -324,6 +324,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 bool: whether the command may be called in the current device
                 state
             """
+            self.logger.info("...........%s", self.get_device().obs_state)
             match command_name:
                 case "AssignResources":
                     if self.get_device().obs_state not in [
