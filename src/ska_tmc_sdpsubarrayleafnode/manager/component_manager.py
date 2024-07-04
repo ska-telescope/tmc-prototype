@@ -372,15 +372,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: boolean
 
         """
-        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            raise CommandNotAllowed(
-                f"The invocation of the {command_name} command on this"
-                + " device is not allowed."
-                + "Reason: The current operational state is"
-                + f"{self.op_state_model.op_state}"
-                + "The command has NOT been executed. "
-                + "This device will continue with normal operation."
-            )
         if command_name == "Abort" and self.get_device().obs_state not in [
             ObsState.SCANNING,
             ObsState.CONFIGURING,
@@ -390,6 +381,15 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         ]:
             self.raise_invalid_obsstate_error(command_name)
 
+        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+            raise CommandNotAllowed(
+                f"The invocation of the {command_name} command on this"
+                + " device is not allowed."
+                + "Reason: The current operational state is"
+                + f"{self.op_state_model.op_state}"
+                + "The command has NOT been executed. "
+                + "This device will continue with normal operation."
+            )
         return True
 
     def cmd_ended_cb(self, event):
