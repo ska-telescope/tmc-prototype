@@ -81,9 +81,7 @@ def test_scan_command_fail_subarray(tango_context, devices, task_callback):
     )
 
 
-@pytest.mark.test1
 @pytest.mark.sdpsln
-@pytest.mark.repeat(10)
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )

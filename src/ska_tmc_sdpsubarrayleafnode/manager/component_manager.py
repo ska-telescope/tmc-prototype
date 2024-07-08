@@ -341,15 +341,12 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                     ]:
                         return False
                 case "End" | "Scan":
-                    self.logger.info("checking for end and scan callable")
                     if self.get_device().obs_state != ObsState.READY:
                         return False
                 case "EndScan":
-                    self.logger.info("checking for endscan callable")
                     if self.get_device().obs_state != ObsState.SCANNING:
                         return False
                 case "Restart":
-                    self.logger.info("checking for restart callable")
                     if self.get_device().obs_state not in [
                         ObsState.FAULT,
                         ObsState.ABORTED,
