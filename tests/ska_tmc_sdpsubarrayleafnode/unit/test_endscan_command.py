@@ -27,7 +27,6 @@ def test_endscan_command(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
     DevFactory().get_device(devices).SetDirectObsState(ObsState.SCANNING)
     cm = create_cm("SdpSLNComponentManager", devices)
-    cm.update_device_obs_state(ObsState.SCANNING)
     assert cm.is_command_allowed("EndScan")
     cm.end_scan(task_callback=task_callback)
     task_callback.assert_against_call(status=TaskStatus.QUEUED)
