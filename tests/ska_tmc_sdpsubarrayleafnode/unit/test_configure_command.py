@@ -83,7 +83,9 @@ def test_configure_command_fail_subarray(
     )
 
 
+@pytest.mark.test1
 @pytest.mark.sdpsln
+@pytest.mark.repeat(10)
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
@@ -91,6 +93,7 @@ def test_configure_command_empty_input_json(
     tango_context, devices, task_callback
 ):
     logger.info("%s", tango_context)
+    DevFactory().get_device(devices).SetDirectObsState(ObsState.IDLE)
     cm = create_cm("SdpSLNComponentManager", devices)
     configure_input_str = ""
     cm.update_device_obs_state(ObsState.IDLE)
