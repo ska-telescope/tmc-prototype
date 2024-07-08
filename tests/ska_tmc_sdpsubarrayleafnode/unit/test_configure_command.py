@@ -83,7 +83,6 @@ def test_configure_command_fail_subarray(
     )
 
 
-@pytest.mark.test2
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]

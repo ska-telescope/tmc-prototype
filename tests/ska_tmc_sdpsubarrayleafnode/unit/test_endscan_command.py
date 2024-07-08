@@ -2,6 +2,7 @@ import pytest
 from ska_tango_base.commands import ResultCode, TaskStatus
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterType
+from ska_tmc_common.dev_factory import DevFactory
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.exceptions import DeviceUnresponsive
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
@@ -24,6 +25,7 @@ from tests.settings import (
 )
 def test_endscan_command(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
+    DevFactory().get_device(devices).SetDirectObsState(ObsState.SCANNING)
     cm = create_cm("SdpSLNComponentManager", devices)
     cm.update_device_obs_state(ObsState.SCANNING)
     assert cm.is_command_allowed("EndScan")
