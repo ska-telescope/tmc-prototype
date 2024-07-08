@@ -18,6 +18,7 @@ from tests.settings import (
     wait_for_cm_obstate_attribute_value,
 )
 
+
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
