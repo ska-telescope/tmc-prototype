@@ -346,15 +346,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 case "EndScan":
                     if self.get_device().obs_state != ObsState.SCANNING:
                         return False
-                case "Abort":
-                    if self.get_device().obs_state not in [
-                        ObsState.SCANNING,
-                        ObsState.CONFIGURING,
-                        ObsState.RESOURCING,
-                        ObsState.IDLE,
-                        ObsState.READY,
-                    ]:
-                        return False
                 case "Restart":
                     if self.get_device().obs_state not in [
                         ObsState.FAULT,
@@ -381,6 +372,15 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: boolean
 
         """
+        if command_name == "Abort" and self.get_device().obs_state not in [
+            ObsState.SCANNING,
+            ObsState.CONFIGURING,
+            ObsState.RESOURCING,
+            ObsState.IDLE,
+            ObsState.READY,
+        ]:
+            self.raise_invalid_obsstate_error(command_name)
+
         if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             raise CommandNotAllowed(
                 f"The invocation of the {command_name} command on this"

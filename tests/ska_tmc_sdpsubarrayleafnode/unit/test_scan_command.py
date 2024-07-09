@@ -4,6 +4,7 @@ import pytest
 from ska_tango_base.commands import ResultCode, TaskStatus
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterType
+from ska_tmc_common.dev_factory import DevFactory
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.exceptions import DeviceUnresponsive
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
@@ -33,9 +34,9 @@ def get_scan_input_str(scan_input_file="command_Scan.json"):
 )
 def test_telescope_scan_command(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
+    DevFactory().get_device(devices).SetDirectObsState(ObsState.READY)
     cm = create_cm("SdpSLNComponentManager", devices)
     scan_input_str = get_scan_input_str()
-    cm.update_device_obs_state(ObsState.READY)
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.READY)
     cm.scan(scan_input_str, task_callback=task_callback)
     task_callback.assert_against_call(status=TaskStatus.QUEUED)
@@ -86,6 +87,7 @@ def test_scan_command_fail_subarray(tango_context, devices, task_callback):
 )
 def test_scan_command_empty_input_json(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
+    DevFactory().get_device(devices).SetDirectObsState(ObsState.READY)
     cm = create_cm("SdpSLNComponentManager", devices)
     scan_input_str = ""
     cm.update_device_obs_state(ObsState.READY)

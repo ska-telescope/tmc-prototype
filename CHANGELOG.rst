@@ -13,6 +13,11 @@ Fixed
 * Updated the .readthdocs.yaml
 * Fixed documentation missing information issue
 
+[0.16.1]
+******
+*Enable obsState check for Abort commad
+
+
 [0.16.0]
 ------
 * Update Sdp master leaf node and Sdp Subarray Leaf Node to use Base class v1.0.0 and pytango v9.5.0
