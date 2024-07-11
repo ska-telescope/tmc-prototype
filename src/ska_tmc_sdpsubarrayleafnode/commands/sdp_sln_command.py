@@ -11,7 +11,7 @@ from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common import SdpSubArrayAdapter
 from ska_tmc_common.adapters import AdapterType
-from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
+from ska_tmc_common.exceptions import CommandNotAllowed
 from ska_tmc_common.tmc_command import TmcLeafNodeCommand
 from tango import ConnectionFailed, DevFailed, DevState
 
@@ -62,17 +62,6 @@ class SdpSLNCommand(TmcLeafNodeCommand):
         self.component_manager = component_manager
         self.sdp_subarray_adapter = None
         self.task_callback: TaskCallbackType = task_callback_default
-
-    def check_unresponsive(self) -> None:
-        """Checks whether the device is unresponsive"""
-        dev_info = self.component_manager.get_device()
-        if dev_info is None or dev_info.unresponsive:
-            raise DeviceUnresponsive(
-                """The invocation of the command on this device is not allowed.
-                Reason: SDP subarray device is not available.
-                The command has NOT been executed.
-                This device will continue with normal operation."""
-            )
 
     def check_op_state(self, command_name) -> None:
         """Checks the operational state of the device"""

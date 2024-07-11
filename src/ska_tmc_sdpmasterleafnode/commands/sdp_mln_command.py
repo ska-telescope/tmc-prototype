@@ -7,9 +7,7 @@ from typing import TYPE_CHECKING, Any, Optional, Tuple
 
 from ska_ser_logging import configure_logging
 from ska_tango_base.commands import ResultCode
-from ska_tmc_common import DeviceInfo
 from ska_tmc_common.adapters import AdapterType
-from ska_tmc_common.exceptions import DeviceUnresponsive
 from ska_tmc_common.tmc_command import TmcLeafNodeCommand
 from tango import ConnectionFailed, DevFailed
 
@@ -30,16 +28,6 @@ class SdpMLNCommand(TmcLeafNodeCommand):
     ):
         super().__init__(component_manager, logger)
         self.sdp_master_adapter = None
-
-    def check_unresponsive(self):
-        """Checks whether the device is unresponsive"""
-        dev_info: DeviceInfo = self.component_manager.get_device()
-        if dev_info is None or dev_info.unresponsive:
-            raise DeviceUnresponsive(
-                """Command invocation failed as the SDP subarray device is not
-                available The command has NOT been executed.
-                This device will continue with normal operation."""
-            )
 
     def init_adapter_low(self):
         self.init_adapter()
