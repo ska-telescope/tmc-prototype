@@ -106,8 +106,8 @@ class ReleaseAllResources(SdpSLNCommand):
             )
         except Exception as exception:
             self.logger.exception(
-                "Command invocation failed on ReleaseAllResources: %s",
-                exception,
+                f"Command {self.__class__.__name__} "
+                + f"invocation failed with exception: {exception}"
             )
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,

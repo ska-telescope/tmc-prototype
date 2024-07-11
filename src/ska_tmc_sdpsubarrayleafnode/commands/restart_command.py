@@ -78,10 +78,8 @@ class Restart(SdpSLNCommand):
             self.sdp_subarray_adapter.Restart()
         except Exception as exception:
             self.logger.exception(
-                "Execution of Restart command is failed."
-                + "Reason: Error in invoking Restart\
-                 command on Sdp Subarray - "
-                + f"{self.sdp_subarray_adapter.dev_name}: {exception}",
+                f"Command {self.__class__.__name__} "
+                + f"invocation failed with exception: {exception}"
             )
             return (
                 ResultCode.FAILED,

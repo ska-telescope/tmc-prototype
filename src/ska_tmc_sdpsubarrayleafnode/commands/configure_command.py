@@ -170,7 +170,8 @@ class Configure(SdpSLNCommand):
 
         except Exception as exception:
             self.logger.exception(
-                "Configure command invocation failed: %s", exception
+                f"Command {self.__class__.__name__} "
+                + f"invocation failed with exception: {exception}"
             )
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,

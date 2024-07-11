@@ -124,7 +124,10 @@ class Scan(SdpSLNCommand):
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.Scan(json.dumps(json_argument))
         except Exception as exception:
-            self.logger.exception("Command invocation failed: %s", exception)
+            self.logger.exception(
+                f"Command {self.__class__.__name__} "
+                + f"invocation failed with exception: {exception}"
+            )
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "The invocation of the Scan command is failed on Sdp"

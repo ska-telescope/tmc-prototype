@@ -69,7 +69,10 @@ class On(SdpSLNCommand):
         try:
             self.sdp_subarray_adapter.On()
         except Exception as exception:
-            self.logger.exception(f"Command invocation failed: {exception}")
+            self.logger.exception(
+                f"Command {self.__class__.__name__} "
+                + f"invocation failed with exception: {exception}"
+            )
             return (
                 ResultCode.FAILED,
                 f"The invocation of the On"
