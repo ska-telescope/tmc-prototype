@@ -16,6 +16,7 @@ from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
+from ska_tmc_common import error_propagation_decorator, timeout_decorator
 from ska_tmc_common.timeout_callback import TimeoutCallback
 
 from ska_tmc_sdpsubarrayleafnode.commands.sdp_sln_command import SdpSLNCommand
@@ -49,6 +50,10 @@ class Configure(SdpSLNCommand):
             self.timeout_id, self.logger
         )
 
+    @timeout_decorator
+    @error_propagation_decorator(
+        "get_subarray_obsstate", [ObsState.RESOURCING, ObsState.IDLE]
+    )
     def configure(
         self,
         argin: str,
