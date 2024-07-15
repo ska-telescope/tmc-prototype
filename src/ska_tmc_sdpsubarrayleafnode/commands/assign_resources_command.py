@@ -197,7 +197,7 @@ class AssignResources(SdpSLNCommand):
                 ResultCode.FAILED,
                 "Missing eb_id in the AssignResources input json",
             )
-        if json_argument["resources"]["receive_nodes"]:
+        if json_argument["resources"]["receive_nodes"] == 0:
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "Missing receive nodes in the AssignResources input json",
