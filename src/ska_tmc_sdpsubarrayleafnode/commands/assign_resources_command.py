@@ -42,12 +42,12 @@ class AssignResources(SdpSLNCommand):
         super().__init__(component_manager, logger)
         self.component_manager = component_manager
         self.timeout_id: str = f"{time.time()}_{__class__.__name__}"
-        self.timekeeper = TimeKeeper(
-            self.component_manager.command_timeout, logger
-        )
         self.timeout_callback: Optional[
             Callable[[str, logging.Logger], None]
         ] = TimeoutCallback(self.timeout_id, self.logger)
+        self.timekeeper = TimeKeeper(
+            self.component_manager.command_timeout, logger
+        )
         self.component_manager.command_in_progress = "AssignResources"
 
     @timeout_decorator
@@ -191,6 +191,16 @@ class AssignResources(SdpSLNCommand):
                 + "Subarray."
                 + "The command has NOT been executed."
                 + "This device will continue with normal operation.",
+            )
+        if "eb_id" not in json_argument["execution_block"]:
+            return self.component_manager.generate_command_result(
+                ResultCode.FAILED,
+                "Missing eb_id in the AssignResources input json",
+            )
+        if json_argument["resources"]["receive_nodes"]:
+            return self.component_manager.generate_command_result(
+                ResultCode.FAILED,
+                "Missing receive nodes in the AssignResources input json",
             )
 
         return (

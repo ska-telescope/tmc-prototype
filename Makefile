@@ -59,7 +59,7 @@ COUNT ?= 1
 K8S_TIMEOUT=600s
 ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.4.3
 EXPOSE_ALL_DS ?=false
-OPERATOR ?=true
+OPERATOR ?=false
 CLUSTER_DOMAIN ?= cluster.local
 # Test runner - run to completion job in K8s
 # name of the pod running the k8s_tests
@@ -85,7 +85,7 @@ ADD_ARGS += -x
 endif
 
 
-PYTHON_VARS_AFTER_PYTEST ?= -m '$(MARK)' $(ADD_ARGS) $(FILE)
+PYTHON_VARS_AFTER_PYTEST ?= -m '$(MARK)' $(ADD_ARGS) $(FILE) -x
 
 K8S_CHART_PARAMS = --set global.minikube=$(MINIKUBE) \
 	--set global.tango_host=$(TANGO_HOST) \
