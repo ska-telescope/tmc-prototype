@@ -48,6 +48,7 @@ class AssignResources(SdpSLNCommand):
         self.timeout_callback: Optional[
             Callable[[str, logging.Logger], None]
         ] = TimeoutCallback(self.timeout_id, self.logger)
+        self.component_manager.command_in_progress = "AssignResources"
 
     @timeout_decorator
     @error_propagation_decorator(
@@ -68,6 +69,7 @@ class AssignResources(SdpSLNCommand):
         :param task_abort_event: Check for abort, defaults to None
         :type task_abort_event: Event
         """
+
         return self.do(argin)
 
     def do(self, argin: str = "") -> Tuple[ResultCode, str]:

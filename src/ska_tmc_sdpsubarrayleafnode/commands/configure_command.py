@@ -53,6 +53,7 @@ class Configure(SdpSLNCommand):
         self.timekeeper = TimeKeeper(
             self.component_manager.command_timeout, logger
         )
+        self.component_manager.command_in_progress = "Configure"
 
     @timeout_decorator
     @error_propagation_decorator(
