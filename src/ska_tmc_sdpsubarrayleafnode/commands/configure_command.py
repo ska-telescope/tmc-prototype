@@ -6,18 +6,19 @@ from __future__ import annotations
 
 import json
 import logging
-import threading
 import time
 from json import JSONDecodeError
 from typing import TYPE_CHECKING, Callable, Tuple
 
 from ska_ser_logging import configure_logging
-from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-from ska_tango_base.executor import TaskStatus
-from ska_tmc_common import error_propagation_decorator, timeout_decorator
-from ska_tmc_common.timeout_callback import TimeoutCallback
+from ska_tmc_common import (
+    TimeKeeper,
+    TimeoutCallback,
+    error_propagation_decorator,
+    timeout_decorator,
+)
 
 from ska_tmc_sdpsubarrayleafnode.commands.sdp_sln_command import SdpSLNCommand
 
@@ -49,16 +50,17 @@ class Configure(SdpSLNCommand):
         self.timeout_callback: Callable = TimeoutCallback(
             self.timeout_id, self.logger
         )
+        self.timekeeper = TimeKeeper(
+            self.component_manager.command_timeout, logger
+        )
 
     @timeout_decorator
     @error_propagation_decorator(
-        "get_subarray_obsstate", [ObsState.RESOURCING, ObsState.IDLE]
+        "get_obs_state", [ObsState.CONFIGURING, ObsState.READY]
     )
     def configure(
         self,
         argin: str,
-        task_callback: TaskCallbackType,
-        task_abort_event: threading.Event,
     ) -> None:
         """This is a long running method for Configure command, it
         executes do hook, invokes Configure command on SdpSubarray.
@@ -68,34 +70,8 @@ class Configure(SdpSLNCommand):
         :param task_abort_event: Check for abort, defaults to None
         :type task_abort_event: Event
         """
-        self.component_manager.abort_event = task_abort_event
-        self.component_manager.command_in_progress = "Configure"
-        self.task_callback = task_callback
-        task_callback(status=TaskStatus.IN_PROGRESS)
-        self.component_manager.start_timer(
-            self.timeout_id,
-            self.component_manager.command_timeout,
-            self.timeout_callback,
-        )
-        result_code, message = self.do(argin)
 
-        if result_code == ResultCode.FAILED:
-            self.update_task_status(
-                result=(result_code, message), exception=message
-            )
-            self.component_manager.stop_timer()
-        else:
-            self.start_tracker_thread(
-                state_function="get_obs_state",
-                expected_state=[ObsState.READY],
-                abort_event=task_abort_event,
-                timeout_id=self.timeout_id,
-                timeout_callback=self.timeout_callback,
-                command_id=self.component_manager.configure_id,
-                lrcr_callback=(
-                    self.component_manager.long_running_result_callback
-                ),
-            )
+        return self.do(argin)
 
     def do(self, argin: str = "") -> Tuple[ResultCode, str]:
         """

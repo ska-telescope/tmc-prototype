@@ -451,7 +451,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.assign_id = f"{time.time()}-{AssignResources.__name__}"
         task_status, response = self.submit_task(
             assign_resources_command.assign_resources,
-            args=[argin],
+            kwargs={"argin": argin},
             is_cmd_allowed=self.is_command_allowed_callable("AssignResources"),
             task_callback=task_callback,
         )
@@ -468,7 +468,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.configure_id = f"{time.time()}-{Configure.__name__}"
         task_status, response = self.submit_task(
             configure_command.configure,
-            args=[argin],
+            kwargs={"argin": argin},
             is_cmd_allowed=self.is_command_allowed_callable("Configure"),
             task_callback=task_callback,
         )
