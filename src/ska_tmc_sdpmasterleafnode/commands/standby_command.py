@@ -84,6 +84,8 @@ class Standby(SdpMLNCommand):
             )
             return (
                 ResultCode.FAILED,
-                "The invocation of the Standby command failed on SDP master",
+                "Standby Command invocation failed on device: "
+                + f"{self.sdp_master_adapter.dev_name}. with exception: "
+                + f": {exception}",
             )
         return (ResultCode.OK, "Command Completed")
