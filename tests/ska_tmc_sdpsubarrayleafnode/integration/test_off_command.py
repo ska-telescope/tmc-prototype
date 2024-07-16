@@ -19,7 +19,6 @@ from tests.settings import (
 def off_command(
     tango_context, sdpsaln_fqdn, sdpsa_fqdn, change_event_callbacks
 ):
-    logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_fqdn)
     event_remover(
