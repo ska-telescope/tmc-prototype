@@ -62,14 +62,12 @@ class Configure(SdpSLNCommand):
     def configure(
         self,
         argin: str,
-    ) -> None:
+    ) -> Tuple[ResultCode, str]:
         """This is a long running method for Configure command, it
         executes do hook, invokes Configure command on SdpSubarray.
 
-        :param task_callback: Update task state, defaults to None
-        :type task_callback: TaskCallbackType
-        :param task_abort_event: Check for abort, defaults to None
-        :type task_abort_event: Event
+        :param argin : Input json string for Configure Command.
+        :type argin: str
         """
 
         return self.do(argin)

@@ -52,14 +52,9 @@ class ReleaseAllResources(SdpSLNCommand):
     )
     def release_resources(
         self,
-    ) -> None:
+    ) -> Tuple[ResultCode, str]:
         """This is a long running method for ReleaseAllResources command, it
         executes do hook, invokes ReleaseAllResources command on SdpSubarray.
-
-        :param task_callback: Update task state, defaults to None
-        :type task_callback: TaskCallbackType
-        :param task_abort_event: Check for abort, defaults to None
-        :type task_abort_event: Event
         """
 
         return self.do()

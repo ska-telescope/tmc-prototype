@@ -59,17 +59,13 @@ class AssignResources(SdpSLNCommand):
     def assign_resources(
         self,
         argin: str,
-    ) -> None:
+    ) -> Tuple[ResultCode, str]:
         """
         This is a long running method for AssignResources command, it
         executes do hook, invokes AssignResources command on Sdp Subarray.
 
-        :param argin: Input JSON string
+        :param argin : Input json string for AssignResources Command.
         :type argin: str
-        :param task_callback: Update task state, defaults to None
-        :type task_callback: TaskCallbackTyp
-        :param task_abort_event: Check for abort, defaults to None
-        :type task_abort_event: Event
         """
 
         return self.do(argin)
