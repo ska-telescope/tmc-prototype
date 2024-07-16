@@ -59,7 +59,6 @@ class AssignResources(SdpSLNCommand):
     def assign_resources(
         self,
         argin: str,
-        **kwargs,
     ) -> None:
         """
         This is a long running method for AssignResources command, it
@@ -73,9 +72,9 @@ class AssignResources(SdpSLNCommand):
         :type task_abort_event: Event
         """
 
-        return self.do(argin, **kwargs)
+        return self.do(argin)
 
-    def do(self, argin: str = "", **kwargs) -> Tuple[ResultCode, str]:
+    def do(self, argin: str = "") -> Tuple[ResultCode, str]:
         """
         Method to invoke AssignResources command on SDP Subarray.
 
@@ -144,10 +143,7 @@ class AssignResources(SdpSLNCommand):
             None
         """
         result_code, message = self.init_adapter()
-        self.logger.debug(
-            "Executing the error propagation decorator with: %s",
-            kwargs,
-        )
+
         if result_code == ResultCode.FAILED:
             return result_code, message
         try:
