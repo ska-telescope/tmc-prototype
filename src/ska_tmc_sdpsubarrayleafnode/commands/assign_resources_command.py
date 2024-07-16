@@ -10,6 +10,7 @@ from json import JSONDecodeError
 from typing import TYPE_CHECKING, Callable, Optional, Tuple
 
 from ska_ser_logging import configure_logging
+from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common import (
@@ -49,6 +50,7 @@ class AssignResources(SdpSLNCommand):
             self.component_manager.command_timeout, logger
         )
         self.component_manager.command_in_progress = "AssignResources"
+        self.task_callback: TaskCallbackType
 
     @timeout_decorator
     @error_propagation_decorator(
@@ -57,6 +59,7 @@ class AssignResources(SdpSLNCommand):
     def assign_resources(
         self,
         argin: str,
+        **kwargs,
     ) -> None:
         """
         This is a long running method for AssignResources command, it
@@ -70,9 +73,9 @@ class AssignResources(SdpSLNCommand):
         :type task_abort_event: Event
         """
 
-        return self.do(argin)
+        return self.do(argin, **kwargs)
 
-    def do(self, argin: str = "") -> Tuple[ResultCode, str]:
+    def do(self, argin: str = "", **kwargs) -> Tuple[ResultCode, str]:
         """
         Method to invoke AssignResources command on SDP Subarray.
 
@@ -141,6 +144,10 @@ class AssignResources(SdpSLNCommand):
             None
         """
         result_code, message = self.init_adapter()
+        self.logger.debug(
+            "Executing the error propagation decorator with: %s",
+            kwargs,
+        )
         if result_code == ResultCode.FAILED:
             return result_code, message
         try:

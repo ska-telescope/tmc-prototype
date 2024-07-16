@@ -53,6 +53,7 @@ def test_telescope_assign_resources_command(
     )
 
 
+@pytest.mark.test
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
@@ -73,7 +74,13 @@ def test_assign_resources_command_fail_subarray(
     )
     assign_command = AssignResources(cm, logger)
     assign_command.adapter_factory = adapter_factory
-    assign_command.assign_resources(assign_input_str)
+    assign_command.assign_resources(
+        {
+            "argin": assign_input_str,
+            "task_callback": task_callback,
+            "task_abort_event": None,
+        }
+    )
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
