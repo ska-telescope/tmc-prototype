@@ -125,7 +125,7 @@ class Scan(SdpSLNCommand):
             self.sdp_subarray_adapter.Scan(json.dumps(json_argument))
         except Exception as exception:
             self.logger.exception(
-                f"Command {self.__class__.__name__} "
+                "Command Scan "
                 + f"invocation failed with exception: {exception}"
             )
             return self.component_manager.generate_command_result(

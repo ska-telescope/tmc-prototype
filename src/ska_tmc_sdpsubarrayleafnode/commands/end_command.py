@@ -76,7 +76,7 @@ class End(SdpSLNCommand):
             self.sdp_subarray_adapter.End()
         except Exception as exception:
             self.logger.exception(
-                f"Command {self.__class__.__name__} "
+                "Command End "
                 + f"invocation failed with exception: {exception}"
             )
             return (

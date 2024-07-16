@@ -106,6 +106,7 @@ def release_resources(
         raise Exception(exception)
 
 
+@pytest.mark.test
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(

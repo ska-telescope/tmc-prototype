@@ -70,7 +70,7 @@ class EndScan(SdpSLNCommand):
             self.sdp_subarray_adapter.EndScan()
         except Exception as exception:
             self.logger.exception(
-                f"Command {self.__class__.__name__} "
+                "Command EndScan "
                 + f"invocation failed with exception: {exception}"
             )
             return (
