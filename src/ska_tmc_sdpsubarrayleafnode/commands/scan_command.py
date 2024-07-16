@@ -83,15 +83,14 @@ class Scan(SdpSLNCommand):
         try:
             json_argument = json.loads(argin)
         except JSONDecodeError as json_error:
-            log_msg = (
-                "Execution of Scan command is failed."
-                + "Reason: JSON parsing failed with exception: {}".format(
-                    json_error
-                )
-                + "The command is not executed successfully."
-                + "The device will continue with normal operation"
+            self.logger.exception(
+                "Execution of Scan command is failed. "
+                "Reason: JSON parsing failed with exception: %s. "
+                "The command is not executed successfully. "
+                "The device will continue with normal operation.",
+                json_error,
             )
-            self.logger.exception(log_msg)
+
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 (
@@ -100,10 +99,9 @@ class Scan(SdpSLNCommand):
                 ),
             )
 
-        log_msg = (
-            f"Invoking Scan command on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(
+            "Invoking Scan command on: %s", self.sdp_subarray_adapter.dev_name
         )
-        self.logger.info(log_msg)
 
         try:
             # As, SKA logtransaction is not utilised in scan command across
@@ -115,18 +113,15 @@ class Scan(SdpSLNCommand):
             json_argument[
                 "interface"
             ] = "https://schema.skao.int/ska-sdp-scan/0.4"
-            log_msg = (
-                "Input JSON for Scan command for SDP subarray"
-                "{}: {} ".format(
-                    self.sdp_subarray_adapter.dev_name, json_argument
-                )
+            self.logger.debug(
+                "Input JSON for Scan command for SDP subarray %s: %s",
+                self.sdp_subarray_adapter.dev_name,
+                json_argument,
             )
-            self.logger.debug(log_msg)
             self.sdp_subarray_adapter.Scan(json.dumps(json_argument))
         except Exception as exception:
             self.logger.exception(
-                "Command Scan "
-                + f"invocation failed with exception: {exception}"
+                "Command Scan invocation failed with exception: %s", exception
             )
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
@@ -138,10 +133,11 @@ class Scan(SdpSLNCommand):
                 + "The command has NOT been executed."
                 + "This device will continue with normal operation.",
             )
-        log_msg = "Scan command successfully invoked on:" + "{}".format(
-            self.sdp_subarray_adapter.dev_name
+        self.logger.info(
+            "Scan command successfully invoked on: %s",
+            self.sdp_subarray_adapter.dev_name,
         )
-        self.logger.info(log_msg)
+
         return (
             ResultCode.OK,
             "Command Completed",

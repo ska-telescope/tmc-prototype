@@ -126,29 +126,25 @@ class Configure(SdpSLNCommand):
             )
 
         self.logger.info(
-            "Invoking Configure command on:"
-            "{}".format(self.sdp_subarray_adapter.dev_name)
+            "Invoking Configure command on: %s",
+            self.sdp_subarray_adapter.dev_name,
         )
+
         try:
             json_argument[
                 "interface"
             ] = "https://schema.skao.int/ska-sdp-configure/0.3"
-            log_msg = (
-                "Input JSON for Configure command for SDP subarray"
-                + "{}: {}".format(
-                    self.sdp_subarray_adapter.dev_name, json_argument
-                )
-            )
-            self.logger.debug(log_msg)
+
             self.sdp_subarray_adapter.Configure(
                 json.dumps(json_argument), self.component_manager.cmd_ended_cb
             )
 
         except Exception as exception:
             self.logger.exception(
-                "Command Configure "
-                + f"invocation failed with exception: {exception}"
+                "Command Configure invocation failed with exception: %s",
+                exception,
             )
+
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "The Sdp Subarray Device has failed to invoke"
@@ -161,9 +157,10 @@ class Configure(SdpSLNCommand):
                 + "This device will continue with normal operation.",
             )
         self.logger.info(
-            "Configure command successfully invoked on:"
-            + "{}".format(self.sdp_subarray_adapter.dev_name)
+            "Configure command successfully invoked on Device: %s",
+            self.sdp_subarray_adapter.dev_name,
         )
+
         return (
             ResultCode.OK,
             "Command Completed",

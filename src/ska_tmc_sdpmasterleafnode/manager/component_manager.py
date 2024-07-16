@@ -112,9 +112,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             self._device.ping = ping
             self._device.update_unresponsive(False)
             if self.update_availablity_callback is not None:
-                self.logger.info(
-                    "Calling update_availablity_callback from update_ping_info"
-                )
                 self.update_availablity_callback(True)
 
     def update_device_ping_failure(

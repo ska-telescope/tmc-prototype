@@ -172,9 +172,10 @@ class AssignResources(SdpSLNCommand):
 
         except Exception as exception:
             self.logger.exception(
-                "Command AssignResources "
-                + f"invocation failed with exception: {exception}"
+                "Command AssignResources invocation failed with exception: %s",
+                exception,
             )
+
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "The invocation of the AssignResources command is failed on"

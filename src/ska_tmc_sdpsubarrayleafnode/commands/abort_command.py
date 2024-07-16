@@ -42,9 +42,9 @@ class Abort(SdpSLNCommand):
             self.sdp_subarray_adapter.Abort()
         except Exception as exception:
             self.logger.exception(
-                "Command Abort "
-                + f"invocation failed with exception: {exception}"
+                "Command Abort invocation failed with exception: %s", exception
             )
+
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "Execution of Abort command is failed."

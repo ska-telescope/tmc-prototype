@@ -71,19 +71,20 @@ class ReleaseAllResources(SdpSLNCommand):
         if result_code == ResultCode.FAILED:
             return result_code, message
         try:
-            log_msg = (
-                "Invoking ReleaseAllResources command on "
-                + "{}".format(self.sdp_subarray_adapter.dev_name),
+            self.logger.debug(
+                "Invoking ReleaseAllResources command on %s",
+                self.sdp_subarray_adapter.dev_name,
             )
-            self.logger.debug(log_msg)
+
             self.sdp_subarray_adapter.ReleaseAllResources(
                 self.component_manager.cmd_ended_cb
             )
         except Exception as exception:
             self.logger.exception(
-                "Command ReleaseResources "
-                + f"invocation failed with exception: {exception}"
+                "Command ReleaseResources invocation failed, exception: %s",
+                exception,
             )
+
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "The invocation of the ReleaseAllResources command is failed"
@@ -93,11 +94,12 @@ class ReleaseAllResources(SdpSLNCommand):
                 + "Subarray. The command has NOT been executed."
                 + "This device will continue with normal operation.",
             )
-        log_msg = (
-            "ReleaseAllResources command successfully invoked on:"
-            + "{}".format(self.sdp_subarray_adapter.dev_name)
+
+        self.logger.info(
+            "ReleaseAllResources command successfully invoked on: %s",
+            self.sdp_subarray_adapter.dev_name,
         )
-        self.logger.info(log_msg)
+
         return (
             ResultCode.OK,
             "Command Completed",
