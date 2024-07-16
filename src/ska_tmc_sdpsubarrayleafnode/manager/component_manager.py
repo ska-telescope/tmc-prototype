@@ -162,13 +162,15 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :param obs_state: obs state of the device
         :type obs_state: ObsState
         """
-        self.logger.info(f"Obs State value {obs_state}")
+
         with self.lock:
             dev_info = self.get_device()
             dev_info.obs_state = obs_state
             dev_info.last_event_arrived = time.time()
             dev_info.update_unresponsive(False)
-            self.logger.info(f"Obs State value updated to {obs_state}")
+            self.logger.info(
+                "Obs State value updated to :%s", ObsState(obs_state).value
+            )
             if self._update_sdp_subarray_obs_state_callback:
                 self._update_sdp_subarray_obs_state_callback(obs_state)
 

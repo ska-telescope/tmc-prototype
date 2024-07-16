@@ -6,6 +6,7 @@ from typing import Dict, Optional
 
 import tango
 from ska_ser_logging import configure_logging
+from ska_tango_base.control_model import ObsState
 from ska_tmc_common.device_info import SubArrayDeviceInfo
 from ska_tmc_common.event_receiver import EventReceiver
 
@@ -89,4 +90,6 @@ class SdpSLNEventReceiver(EventReceiver):
             return
         new_value = event.attr_value.value
         self._component_manager.update_device_obs_state(new_value)
-        self._logger.info("ObsState value is updated to %s", new_value)
+        self._logger.info(
+            "Obs State value updated to :%s", ObsState(new_value).value
+        )
