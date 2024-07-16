@@ -41,6 +41,7 @@ def test_disable_command(tango_context, sdp_master_device, task_callback):
     )
 
 
+@pytest.mark.test
 @pytest.mark.parametrize(
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )
@@ -64,7 +65,16 @@ def test_disable_command_fail_sdp_master(
         status=TaskStatus.COMPLETED,
         result=(
             ResultCode.FAILED,
-            "The invocation of the Disable command failed on SDP master",
+            "Disable Command invocation"
+            + f" failed on device: {sdp_master_device}."
+            + " with exception: Mock object has"
+            + " no attribute 'Disable'",
+        ),
+        exception=(
+            "Disable Command invocation"
+            + f" failed on device: {sdp_master_device}."
+            + " with exception: Mock object has"
+            + " no attribute 'Disable'"
         ),
     )
 

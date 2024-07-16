@@ -71,7 +71,9 @@ class Off(SdpSLNCommand):
         try:
             self.sdp_subarray_adapter.Off()
         except Exception as exception:
-            self.logger.exception(f"Command invocation failed: {exception}")
+            self.logger.exception(
+                "Command Off invocation failed with exception: %s", exception
+            )
             return (
                 ResultCode.FAILED,
                 f"The invocation of the Off"

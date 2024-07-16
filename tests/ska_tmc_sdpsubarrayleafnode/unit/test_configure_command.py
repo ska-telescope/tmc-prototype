@@ -68,7 +68,11 @@ def test_configure_command_fail_subarray(
     )
     configure_command = Configure(cm, logger)
     configure_command.adapter_factory = adapter_factory
-    configure_command.configure(configure_input_str, task_callback, None)
+    configure_command.configure(
+        argin=configure_input_str,
+        task_abort_event=None,
+        task_callback=task_callback,
+    )
     task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
     task_callback.assert_against_call(
         status=TaskStatus.COMPLETED,

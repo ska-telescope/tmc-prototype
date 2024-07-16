@@ -5,17 +5,18 @@ from __future__ import annotations
 
 import json
 import logging
-import threading
 import time
 from json import JSONDecodeError
 from typing import TYPE_CHECKING, Callable, Optional, Tuple
 
 from ska_ser_logging import configure_logging
-from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-from ska_tango_base.executor import TaskStatus
-from ska_tmc_common.timeout_callback import TimeoutCallback
+from ska_tmc_common import (
+    TimeoutCallback,
+    error_propagation_decorator,
+    timeout_decorator,
+)
 
 from ska_tmc_sdpsubarrayleafnode.commands.sdp_sln_command import SdpSLNCommand
 
@@ -44,51 +45,25 @@ class AssignResources(SdpSLNCommand):
             Callable[[str, logging.Logger], None]
         ] = TimeoutCallback(self.timeout_id, self.logger)
 
+        self.component_manager.command_in_progress = "AssignResources"
+
+    @timeout_decorator
+    @error_propagation_decorator(
+        "get_obs_state", [ObsState.RESOURCING, ObsState.IDLE]
+    )
     def assign_resources(
         self,
         argin: str,
-        task_callback: TaskCallbackType,
-        task_abort_event: threading.Event,
-    ) -> None:
+    ) -> Tuple[ResultCode, str]:
         """
         This is a long running method for AssignResources command, it
         executes do hook, invokes AssignResources command on Sdp Subarray.
 
-        :param argin: Input JSON string
+        :param argin : Input json string for AssignResources Command.
         :type argin: str
-        :param task_callback: Update task state, defaults to None
-        :type task_callback: TaskCallbackTyp
-        :param task_abort_event: Check for abort, defaults to None
-        :type task_abort_event: Event
         """
-        self.component_manager.abort_event = task_abort_event
-        self.component_manager.command_in_progress = "AssignResources"
-        self.task_callback = task_callback
-        task_callback(status=TaskStatus.IN_PROGRESS)
-        self.component_manager.start_timer(
-            self.timeout_id,
-            self.component_manager.command_timeout,
-            self.timeout_callback,
-        )
-        result_code, message = self.do(argin)
 
-        if result_code == ResultCode.FAILED:
-            self.update_task_status(
-                result=(result_code, message), exception=message
-            )
-            self.component_manager.stop_timer()
-        else:
-            self.start_tracker_thread(
-                state_function="get_obs_state",
-                expected_state=[ObsState.RESOURCING, ObsState.IDLE],
-                abort_event=task_abort_event,
-                timeout_id=self.timeout_id,
-                timeout_callback=self.timeout_callback,
-                command_id=self.component_manager.assign_id,
-                lrcr_callback=(
-                    self.component_manager.long_running_result_callback
-                ),
-            )
+        return self.do(argin)
 
     def do(self, argin: str = "") -> Tuple[ResultCode, str]:
         """
@@ -159,6 +134,7 @@ class AssignResources(SdpSLNCommand):
             None
         """
         result_code, message = self.init_adapter()
+
         if result_code == ResultCode.FAILED:
             return result_code, message
         try:
@@ -196,8 +172,10 @@ class AssignResources(SdpSLNCommand):
 
         except Exception as exception:
             self.logger.exception(
-                "AssignResources Command failed: %s", exception
+                "Command AssignResources invocation failed with exception: %s",
+                exception,
             )
+
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "The invocation of the AssignResources command is failed on"
@@ -208,6 +186,16 @@ class AssignResources(SdpSLNCommand):
                 + "Subarray."
                 + "The command has NOT been executed."
                 + "This device will continue with normal operation.",
+            )
+        if "eb_id" not in json_argument["execution_block"]:
+            return self.component_manager.generate_command_result(
+                ResultCode.FAILED,
+                "Missing eb_id in the AssignResources input json",
+            )
+        if json_argument["resources"]["receive_nodes"] == 0:
+            return self.component_manager.generate_command_result(
+                ResultCode.FAILED,
+                "Missing receive nodes in the AssignResources input json",
             )
 
         return (
