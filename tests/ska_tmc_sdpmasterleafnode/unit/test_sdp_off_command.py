@@ -66,7 +66,16 @@ def test_off_command_fail_sdp_master(
         status=TaskStatus.COMPLETED,
         result=(
             ResultCode.FAILED,
-            "The invocation of the Off command failed on SDP master Device ",
+            "Off Command invocation"
+            + f" failed on device: {sdp_master_device}."
+            + " with exception:  Mock object has"
+            + " no attribute 'Off'",
+        ),
+        exception=(
+            "Off Command invocation"
+            + f" failed on device: {sdp_master_device}."
+            + " with exception:  Mock object has"
+            + " no attribute 'Off'"
         ),
     )
 

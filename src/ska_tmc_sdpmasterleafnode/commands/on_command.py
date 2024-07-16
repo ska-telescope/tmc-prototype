@@ -82,12 +82,12 @@ class On(SdpMLNCommand):
             self.logger.exception(
                 "On Command invocation failed on device: "
                 + f"{self.sdp_master_adapter.dev_name}. with exception: "
-                + f": {exception}"
+                + f" {exception}"
             )
             return (
                 ResultCode.FAILED,
-                "Standby Command invocation failed on device: "
+                "On Command invocation failed on device: "
                 + f"{self.sdp_master_adapter.dev_name}. with exception: "
-                + f": {exception}",
+                + f" {exception}",
             )
         return (ResultCode.OK, "Command Completed")
