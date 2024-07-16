@@ -8,7 +8,6 @@ import time
 from typing import TYPE_CHECKING, Tuple
 
 from ska_ser_logging import configure_logging
-from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common import (
@@ -44,7 +43,6 @@ class ReleaseAllResources(SdpSLNCommand):
         self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
         self.component_manager = component_manager
         self.component_manager.command_in_progress = "ReleaseAllResources"
-        self.task_callback: TaskCallbackType
 
     @timeout_decorator
     @error_propagation_decorator(

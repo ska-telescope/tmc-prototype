@@ -10,7 +10,6 @@ from json import JSONDecodeError
 from typing import TYPE_CHECKING, Callable, Optional, Tuple
 
 from ska_ser_logging import configure_logging
-from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common import (
@@ -50,7 +49,6 @@ class AssignResources(SdpSLNCommand):
             self.component_manager.command_timeout, logger
         )
         self.component_manager.command_in_progress = "AssignResources"
-        self.task_callback: TaskCallbackType
 
     @timeout_decorator
     @error_propagation_decorator(
