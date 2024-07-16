@@ -79,7 +79,11 @@ class Disable(SdpMLNCommand):
         try:
             self.sdp_master_adapter.Disable()
         except Exception as exception:
-            self.logger.exception(f"Command invocation failed: {exception}")
+            self.logger.exception(
+                "Disable Command invocation failed on device: "
+                + f"{self.sdp_master_adapter.dev_name}. with exception: "
+                + f": {exception}"
+            )
             return (
                 ResultCode.FAILED,
                 "The invocation of the Disable command failed on SDP master",

@@ -78,7 +78,9 @@ class Standby(SdpMLNCommand):
             self.sdp_master_adapter.Standby()
         except Exception as exception:
             self.logger.exception(
-                f"Command invocation failed with exception: {exception}"
+                "Standby Command invocation failed on device: "
+                + f"{self.sdp_master_adapter.dev_name}. with exception: "
+                + f": {exception}"
             )
             return (
                 ResultCode.FAILED,
