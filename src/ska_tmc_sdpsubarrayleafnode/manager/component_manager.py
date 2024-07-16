@@ -215,7 +215,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
     def update_command_result(self, command_name: str, value: str) -> None:
         """Updates the long running command result callback"""
         self.logger.info(
-            "Received longRunningCommandResult event with value: %s",
+            "Received longRunningCommandResult for device : %s value: %s",
+            self._sdp_subarray_dev_name,
             value,
         )
         try:
@@ -415,16 +416,19 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
 
         if event.err:
-            log_message = (
-                f"Error invoking command:{event.cmd_name}\n{event.errors}"
+            self.logger.error(
+                "Error invoking command: %s failed with error : %s",
+                event.cmd_name,
+                event.errors,
             )
-            self.logger.error(log_message)
+
             error = event.errors[0]
             self.update_command_result(event.cmd_name, error.desc)
 
         else:
-            log_message = f"Command {event.cmd_name} invoked successfully."
-            self.logger.info(log_message)
+            self.logger.info(
+                "Command %s invoked successfully.", event.cmd_name
+            )
 
     # pylint: disable= signature-differs
     def on(self, task_callback: TaskCallbackType) -> Tuple[TaskStatus, str]:
@@ -475,8 +479,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             task_callback=task_callback,
         )
         self.logger.info(
-            "TaskStatus: %s and Response: %s of Configure \
-                  command after queued to execution",
+            (
+                "TaskStatus: %s and Response: %s of Configure "
+                "command after being queued for execution"
+            ),
             task_status,
             response,
         )
@@ -497,8 +503,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             task_callback=task_callback,
         )
         self.logger.info(
-            "TaskStatus: %s and Response: %s of Scan \
-                  command after queued to execution",
+            (
+                "TaskStatus: %s and Response: %s of Scan command "
+                "after being queued for execution"
+            ),
             task_status,
             response,
         )
@@ -536,8 +544,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             task_callback=task_callback,
         )
         self.logger.info(
-            "TaskStatus: %s and Response: %s of ReleaseAllResource \
-                  command after queued to execution",
+            (
+                "TaskStatus: %s and Response: %s of ReleaseAllResources "
+                "command after being queued for execution"
+            ),
             task_status,
             response,
         )
@@ -556,11 +566,14 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             task_callback=task_callback,
         )
         self.logger.info(
-            "TaskStatus: %s and Response: %s of End command after queued\
-                 to execution",
+            (
+                "TaskStatus: %s and Response: %s of End command "
+                "after being queued for execution"
+            ),
             task_status,
             response,
         )
+
         return task_status, response
 
     def end_scan(
@@ -578,11 +591,14 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             task_callback=task_callback,
         )
         self.logger.info(
-            "TaskStatus: %s and Response: %s of EndScan command after queued\
-                 to execution",
+            (
+                "TaskStatus: %s and Response: %s of EndScan command "
+                "after being queued for execution"
+            ),
             task_status,
             response,
         )
+
         return task_status, response
 
     def abort_commands(self) -> Tuple[ResultCode, str]:
@@ -618,11 +634,14 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             task_callback=task_callback,
         )
         self.logger.info(
-            "TaskStatus: %s and Response: %s of Restart command after queued\
-                 to execution",
+            (
+                "TaskStatus: %s and Response: %s of Restart command "
+                "after being queued for execution"
+            ),
             task_status,
             response,
         )
+
         return task_status, response
 
     def standby(self, task_callback: Optional[Callable] = None) -> None:

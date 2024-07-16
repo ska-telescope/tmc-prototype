@@ -70,7 +70,7 @@ class SdpSLNEventReceiver(EventReceiver):
             )
         except Exception as exception:
             self._logger.debug(
-                "Event not working for the device %s, %s",
+                "Error on Device %s while event subscription. Exception: %s",
                 proxy.dev_name,
                 exception,
             )
