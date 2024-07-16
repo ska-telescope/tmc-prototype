@@ -12,6 +12,7 @@ Fixed
 ------
 * Updated the .readthdocs.yaml
 * Fixed documentation missing information issue
+* Fixed Logger strings.
 
 [0.16.1]
 ******
