@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ska-tmc-sdpleafnodes"
-version = "0.16.1"
+version = "0.16.2"
 description = "SKA-TMC-SDPLEAFNODES"
 authors = ["Team HIMALAYA" , "Team SAHYADRI"]
 license = "BSD-3-Clause"
@@ -34,8 +34,8 @@ marshmallow = "^3.13.0"
 ska-ser-log-transactions = "*"
 ska-tmc-cdm = "*"
 ska-telescope-model = "1.3.1"
-fire = "^0.4.0"
-ska-tmc-common = "0.17.0"
+fire = "^0.5.0"
+ska-tmc-common = "0.17.10"
 ska-ser-logging = "^0.4.1"
 ska-tango-base = "1.0.0"
 astropy = "^5.0.4"

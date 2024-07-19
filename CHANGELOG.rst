@@ -14,6 +14,11 @@ Fixed
 * Fixed documentation missing information issue
 * Fixed Logger strings.
 
+[0.16.2]
+******
+*Improve loggers statement and version of common
+
+
 [0.16.1]
 ******
 *Enable obsState check for Abort commad
