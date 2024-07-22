@@ -67,10 +67,10 @@ deviceServers:
     subarray_count: 1
     mid:
       file: "data/sdpsubarrayleafnodemid.yaml"
-      SdpSubarrayFQDN: "mid-sdp/subarray/01"
+      SdpSubarrayFQDN: "mid-sdp/subarray/001"
     low:
       file: "data/sdpsubarrayleafnodelow.yaml"
-      SdpSubarrayFQDN: "low-sdp/subarray/01"
+      SdpSubarrayFQDN: "low-sdp/subarray/001"
   sdpmln:
     enabled: true
     instances: ["01"]
