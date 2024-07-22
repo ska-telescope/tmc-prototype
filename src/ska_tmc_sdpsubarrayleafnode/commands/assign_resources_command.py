@@ -158,13 +158,6 @@ class AssignResources(SdpSLNCommand):
             json_argument[
                 "interface"
             ] = "https://schema.skao.int/ska-sdp-assignres/0.4"
-            log_msg = (
-                "Input JSON for AssignResources command for "
-                "{}: {}".format(
-                    self.sdp_subarray_adapter.dev_name, json_argument
-                )
-            )
-            self.logger.debug(log_msg)
 
             self.sdp_subarray_adapter.AssignResources(
                 json.dumps(json_argument), self.component_manager.cmd_ended_cb
