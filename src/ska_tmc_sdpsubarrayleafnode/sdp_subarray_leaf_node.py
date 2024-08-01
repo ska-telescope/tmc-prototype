@@ -43,10 +43,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         self._sdp_subarray_obs_state = ObsState.EMPTY
         self._LastDeviceInfoChanged = ""
         self.set_change_event("sdpSubarrayObsState", True)
+        self.set_archive_event("sdpSubarrayObsState", True)
         self._command_result = ("", "")
         self.set_change_event("longRunningCommandResult", True)
+        self.set_archive_event("longRunningCommandResult", True)
         self._issubsystemavailable = False
         self.set_change_event("isSubsystemAvailable", True, False)
+        self.set_archive_event("isSubsystemAvailable", True)
 
     # -----------------
     # Device Properties

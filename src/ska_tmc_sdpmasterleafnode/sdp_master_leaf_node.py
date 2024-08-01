@@ -87,6 +87,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             device._issubsystemavailable = False
             device.op_state_model.perform_action("component_on")
             device.set_change_event("isSubsystemAvailable", True, False)
+            device.set_archive_event("isSubsystemAvailable", True)
             return (ResultCode.OK, "")
 
     def always_executed_hook(self):
