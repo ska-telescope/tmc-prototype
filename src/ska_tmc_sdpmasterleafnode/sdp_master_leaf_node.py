@@ -2,7 +2,7 @@
 SDP Master Leaf node acts as a SDP contact point for the Master Node and also
 monitors and issues commands to the SDP Master.
 """
-from typing import Union
+from typing import Any, Union
 
 from ska_control_model import HealthState
 from ska_tango_base.base.base_device import SKABaseDevice
@@ -83,12 +83,25 @@ class SdpMasterLeafNode(SKABaseDevice):
             )
             device._health_state = HealthState.OK
             device._version_id = release.version
-            device.set_change_event("healthState", True, False)
             device._issubsystemavailable = False
             device.op_state_model.perform_action("component_on")
-            device.set_change_event("isSubsystemAvailable", True, False)
-            device.set_archive_event("isSubsystemAvailable", True)
+            for attribute_name in ["healthState", "isSubsystemAvailable"]:
+                device.set_change_event(attribute_name, True, False)
+                device.set_archive_event(attribute_name, True)
             return (ResultCode.OK, "")
+
+    def push_change_archive_events(
+        self, attribute_name: str, value: Any
+    ) -> None:
+        """Method to push change event and archive event
+        of the given attribute.
+
+        Args:
+            attribute_name (str): Attribute name
+            value (Any): Attribute value need to be pushed
+        """
+        self.push_change_event(attribute_name, value)
+        self.push_archive_event(attribute_name, value)
 
     def always_executed_hook(self):
         pass
@@ -100,7 +113,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         """Change event callback for isSubsystemAvailable"""
         if availablity != self._issubsystemavailable:
             self._issubsystemavailable = availablity
-            self.push_change_event(
+            self.push_change_archive_events(
                 "isSubsystemAvailable", self._issubsystemavailable
             )
 

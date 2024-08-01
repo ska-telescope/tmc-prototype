@@ -4,7 +4,7 @@ actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
 
-from typing import List, Tuple, Union
+from typing import Any, List, Tuple, Union
 
 import tango
 from ska_control_model import HealthState
@@ -42,14 +42,28 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         super().init_device()
         self._sdp_subarray_obs_state = ObsState.EMPTY
         self._LastDeviceInfoChanged = ""
-        self.set_change_event("sdpSubarrayObsState", True)
-        self.set_archive_event("sdpSubarrayObsState", True)
         self._command_result = ("", "")
-        self.set_change_event("longRunningCommandResult", True)
-        self.set_archive_event("longRunningCommandResult", True)
         self._issubsystemavailable = False
-        self.set_change_event("isSubsystemAvailable", True, False)
-        self.set_archive_event("isSubsystemAvailable", True)
+        for attribute_name in [
+            "sdpSubarrayObsState",
+            "longRunningCommandResult",
+            "isSubsystemAvailable",
+        ]:
+            self.set_change_event(attribute_name, True, False)
+            self.set_archive_event(attribute_name, True)
+
+    def push_change_archive_events(
+        self, attribute_name: str, value: Any
+    ) -> None:
+        """Method to push change event and archive event
+        of the given attribute.
+
+        Args:
+            attribute_name (str): Attribute name
+            value (Any): Attribute value need to be pushed
+        """
+        self.push_change_event(attribute_name, value)
+        self.push_archive_event(attribute_name, value)
 
     # -----------------
     # Device Properties
@@ -96,14 +110,16 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     def update_device_callback(self, dev_info: SdpSubarrayDeviceInfo) -> None:
         """Updates device callback info"""
         self._LastDeviceInfoChanged = dev_info.to_json()
-        self.push_change_event("lastDeviceInfoChanged", dev_info.to_json())
+        self.push_change_archive_events(
+            "lastDeviceInfoChanged", dev_info.to_json()
+        )
 
     def update_sdp_subarray_obs_state_callback(
         self, obs_state: ObsState
     ) -> None:
         """Updates SDP Subarray ObsState"""
         self._sdp_subarray_obs_state = obs_state
-        self.push_change_event(
+        self.push_change_archive_events(
             "sdpSubarrayObsState", self._sdp_subarray_obs_state
         )
 
@@ -112,13 +128,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         lrc_result: Tuple[str, Union[ResultCode, TaskStatus, Exception, str]],
     ):
         """Change event callback for longRunningCommandResult"""
-        self.push_change_event("longRunningCommandResult", lrc_result)
+        self.push_change_archive_events("longRunningCommandResult", lrc_result)
 
     def update_availablity_callback(self, availablity):
         """Change event callback for isSubsystemAvailable"""
         if availablity != self._issubsystemavailable:
             self._issubsystemavailable = availablity
-            self.push_change_event(
+            self.push_change_archive_events(
                 "isSubsystemAvailable", self._issubsystemavailable
             )
 
