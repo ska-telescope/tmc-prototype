@@ -14,6 +14,10 @@ Fixed
 * Fixed documentation missing information issue
 * Fixed Logger strings.
 
+[0.16.3]
+******
+* Set and push archive events for all the attributes.
+
 [0.16.2]
 ******
 *Improve loggers statement and version of common
