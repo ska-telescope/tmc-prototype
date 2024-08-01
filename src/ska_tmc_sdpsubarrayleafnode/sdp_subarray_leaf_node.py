@@ -4,7 +4,7 @@ actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
 
-from typing import Any, List, Tuple, Union
+from typing import List, Tuple, Union
 
 import tango
 from ska_control_model import HealthState
@@ -51,19 +51,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         ]:
             self.set_change_event(attribute_name, True, False)
             self.set_archive_event(attribute_name, True)
-
-    def push_change_archive_events(
-        self, attribute_name: str, value: Any
-    ) -> None:
-        """Method to push change event and archive event
-        of the given attribute.
-
-        Args:
-            attribute_name (str): Attribute name
-            value (Any): Attribute value need to be pushed
-        """
-        self.push_change_event(attribute_name, value)
-        self.push_archive_event(attribute_name, value)
 
     # -----------------
     # Device Properties

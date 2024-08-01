@@ -2,7 +2,7 @@
 SDP Master Leaf node acts as a SDP contact point for the Master Node and also
 monitors and issues commands to the SDP Master.
 """
-from typing import Any, Union
+from typing import Union
 
 from ska_control_model import HealthState
 from ska_tango_base.base.base_device import SKABaseDevice
@@ -89,19 +89,6 @@ class SdpMasterLeafNode(SKABaseDevice):
                 device.set_change_event(attribute_name, True, False)
                 device.set_archive_event(attribute_name, True)
             return (ResultCode.OK, "")
-
-    def push_change_archive_events(
-        self, attribute_name: str, value: Any
-    ) -> None:
-        """Method to push change event and archive event
-        of the given attribute.
-
-        Args:
-            attribute_name (str): Attribute name
-            value (Any): Attribute value need to be pushed
-        """
-        self.push_change_event(attribute_name, value)
-        self.push_archive_event(attribute_name, value)
 
     def always_executed_hook(self):
         pass
