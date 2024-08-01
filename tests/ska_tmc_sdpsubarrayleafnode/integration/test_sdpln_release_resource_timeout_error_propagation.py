@@ -7,12 +7,14 @@ from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.conftest import (
+    COMMAND_COMPLETED,
     LOW_SDP_SUBARRAY,
     MID_SDP_SUBARRAY,
     SDPSUBARRAYLEAFNODE_LOW,
     SDPSUBARRAYLEAFNODE_MID,
 )
 from tests.settings import (  # ERROR_PROPAGATION_DEFECT,
+    ERROR_PROPAGATION_DEFECT,
     RESET_DEFECT,
     TIMEOUT_DEFECT,
     event_remover,
@@ -55,14 +57,14 @@ def release_all_resources_error_propagation(
         change_event_callbacks["longRunningCommandResult"],
     )
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(ResultCode.OK.value)),
+        (unique_id[0], COMMAND_COMPLETED),
         lookahead=4,
     )
 
     wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
 
     # Check error propagation
-    # sdp_subarray.SetDefective(ERROR_PROPAGATION_DEFECT)
+    sdp_subarray.SetDefective(ERROR_PROPAGATION_DEFECT)
     result, unique_id = sdpsal_node.ReleaseAllResources()
 
     logger.info(
@@ -120,10 +122,9 @@ def release_all_resources_timeout(
         change_event_callbacks["longRunningCommandResult"],
     )
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(ResultCode.OK.value)),
+        (unique_id[0], COMMAND_COMPLETED),
         lookahead=4,
     )
-
     wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
 
     # Check timeout
@@ -155,7 +156,7 @@ def release_all_resources_timeout(
     tear_down(dev_factory, sdp_subarray, sdpsal_node)
 
 
-@pytest.mark.skip(reason="pipeline failure")
+# @pytest.mark.skip(reason="pipeline failure")
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_release_all_res_command_timeout_mid(
@@ -171,7 +172,7 @@ def test_release_all_res_command_timeout_mid(
     )
 
 
-@pytest.mark.skip(reason="pipeline failure")
+# @pytest.mark.skip(reason="pipeline failure")
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_release_all_res_command_error_propagation_mid(
