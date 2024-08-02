@@ -59,7 +59,7 @@ def test_abort_command_fail_subarray(tango_context, devices):
     attrs = {"Abort.side_effect": Exception}
     sdpcontrollerMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        devices, AdapterType.BASE, proxy=sdpcontrollerMock
+        devices, AdapterType.SDPSUBARRAY, proxy=sdpcontrollerMock
     )
     cm.update_device_obs_state(ObsState.IDLE)
     abort_command = Abort(cm, logger=logger)

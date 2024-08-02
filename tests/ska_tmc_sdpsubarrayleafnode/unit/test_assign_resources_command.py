@@ -69,7 +69,7 @@ def test_assign_resources_command_fail_subarray(
     attrs = {"AssignResources.side_effect": Exception}
     sdpcontrollerMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        devices, AdapterType.BASE, proxy=sdpcontrollerMock
+        devices, AdapterType.SDPSUBARRAY, proxy=sdpcontrollerMock
     )
     assign_command = AssignResources(cm, logger)
     assign_command.adapter_factory = adapter_factory

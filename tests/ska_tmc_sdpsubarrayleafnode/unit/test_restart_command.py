@@ -52,7 +52,7 @@ def test_restart_command_fail_subarray(tango_context, devices, task_callback):
     attrs = {"Restart.side_effect": Exception}
     sdpcontrollerMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        devices, AdapterType.BASE, proxy=sdpcontrollerMock
+        devices, AdapterType.SDPSUBARRAY, proxy=sdpcontrollerMock
     )
     end_command = Restart(cm, logger)
     end_command.adapter_factory = adapter_factory
@@ -65,8 +65,7 @@ def test_restart_command_fail_subarray(tango_context, devices, task_callback):
         result=(
             ResultCode.FAILED,
             "Execution of Restart command is failed.Reason: Error in invoking"
-            f" Restart                 command on Sdp Subarray - {devices}: "
-            "Mock object has no attribute 'Restart'",
+            f" Restart                 command on Sdp Subarray - {devices}: ",
         ),
     )
 

@@ -56,7 +56,7 @@ def test_telescope_release_resources_command_fail_subarray(
     attrs = {"ReleaseAllResources.side_effect": Exception}
     sdpcontrollerMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        devices, AdapterType.BASE, proxy=sdpcontrollerMock
+        devices, AdapterType.SDPSUBARRAY, proxy=sdpcontrollerMock
     )
     release_command = ReleaseAllResources(cm, logger)
     release_command.adapter_factory = adapter_factory

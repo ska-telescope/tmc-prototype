@@ -92,7 +92,7 @@ def test_telescope_end_scan_command_fail_subarray(
     attrs = {"EndScan.side_effect": Exception}
     sdpcontrollerMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        devices, AdapterType.BASE, proxy=sdpcontrollerMock
+        devices, AdapterType.SDPSUBARRAY, proxy=sdpcontrollerMock
     )
     release_command = EndScan(cm, logger)
     release_command.adapter_factory = adapter_factory

@@ -64,7 +64,7 @@ def test_configure_command_fail_subarray(
     attrs = {"Configure.side_effect": Exception}
     sdpcontrollerMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        devices, AdapterType.BASE, proxy=sdpcontrollerMock
+        devices, AdapterType.SDPSUBARRAY, proxy=sdpcontrollerMock
     )
     configure_command = Configure(cm, logger)
     configure_command.adapter_factory = adapter_factory

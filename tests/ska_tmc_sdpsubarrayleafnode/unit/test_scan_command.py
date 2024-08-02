@@ -61,7 +61,7 @@ def test_scan_command_fail_subarray(tango_context, devices, task_callback):
     attrs = {"Scan.side_effect": Exception}
     sdpcontrollerMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        devices, AdapterType.BASE, proxy=sdpcontrollerMock
+        devices, AdapterType.SDPSUBARRAY, proxy=sdpcontrollerMock
     )
     scan_command = Scan(cm, logger)
     scan_command.adapter_factory = adapter_factory
