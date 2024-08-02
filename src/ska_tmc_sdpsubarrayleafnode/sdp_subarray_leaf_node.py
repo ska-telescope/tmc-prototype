@@ -8,7 +8,6 @@ from typing import List, Tuple, Union
 
 import tango
 from ska_control_model import HealthState
-from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
@@ -19,6 +18,7 @@ from ska_tmc_common.exceptions import (
     DeviceUnresponsive,
     InvalidObsStateError,
 )
+from ska_tmc_common.tmc_base_leaf_device import TMCBaseLeafDevice
 from tango import ApiUtil, AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
@@ -26,7 +26,7 @@ from ska_tmc_sdpsubarrayleafnode import release
 from ska_tmc_sdpsubarrayleafnode.manager import SdpSLNComponentManager
 
 
-class SdpSubarrayLeafNode(SKABaseDevice):
+class SdpSubarrayLeafNode(TMCBaseLeafDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
     actions during an observation.
@@ -126,7 +126,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             )
 
     class InitCommand(
-        SKABaseDevice.InitCommand
+        TMCBaseLeafDevice.InitCommand
     ):  # pylint: disable=too-few-public-methods
         """
         A class for the TMC SdpSubarrayLeafNode's init_device() method.

@@ -3097,13 +3097,13 @@ reference = "ska-nexus"
 
 [[package]]
 name = "ska-tmc-common"
-version = "0.19.2"
+version = "0.19.3"
 description = "SKA TMC common contains common classes required for Telescope Monitoring and Control(TMC)."
 optional = false
 python-versions = ">=3.10,<3.11"
 files = [
-    {file = "ska_tmc_common-0.19.2-py3-none-any.whl", hash = "sha256:bd46cf02468cb42c6e665ae99f489ba6433fe25083b1f8ae295ffe6660b0400e"},
-    {file = "ska_tmc_common-0.19.2.tar.gz", hash = "sha256:83597271107b73162a2ebcf2af838adfcab13eebd6b2a5c4f5d3da134556b21d"},
+    {file = "ska_tmc_common-0.19.3-py3-none-any.whl", hash = "sha256:836771fba11f747bf8af86fa467f6874a12282e97c69ac6f394e2b375eb6e12a"},
+    {file = "ska_tmc_common-0.19.3.tar.gz", hash = "sha256:9691850ada0dc033a1aa969cf52bc5497e9ff2d552268a751c28982f4d10835f"},
 ]
 
 [package.dependencies]
@@ -3754,4 +3754,4 @@ reference = "PyPI-public"
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.10"
-content-hash = "90cf55e1b6fb5247597ef91eff81cb66289fcfe24e155253bfbb3febbc91f5b3"
+content-hash = "2bf96e02cc3da928af0186515c854b4e8e35b3760325e81c851fdedf569a16d2"
