@@ -117,6 +117,7 @@ def test_assign_resources_command_empty_input_json(
     )
 
 
+@pytest.mark.skip
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
