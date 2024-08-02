@@ -1,5 +1,6 @@
 import threading
 
+import mock
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
@@ -55,10 +56,10 @@ def test_abort_command_fail_subarray(tango_context, devices):
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     adapter_factory = HelperAdapterFactory()
+    attrs = {"Abort.side_effect": Exception}
+    sdpcontrollerMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        devices,
-        AdapterType.SUBARRAY,
-        attrs={"Abort.side_effect": Exception},
+        devices, AdapterType.BASE, proxy=sdpcontrollerMock
     )
     cm.update_device_obs_state(ObsState.IDLE)
     abort_command = Abort(cm, logger=logger)

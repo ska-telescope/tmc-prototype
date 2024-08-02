@@ -1,3 +1,4 @@
+import mock
 import pytest
 from ska_tango_base.commands import ResultCode, TaskStatus
 from ska_tango_base.control_model import ObsState
@@ -48,10 +49,10 @@ def test_restart_command_fail_subarray(tango_context, devices, task_callback):
     adapter_factory = HelperAdapterFactory()
 
     # include exception in Restart command
+    attrs = {"Restart.side_effect": Exception}
+    sdpcontrollerMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        devices,
-        AdapterType.SDPSUBARRAY,
-        attrs={"Restart.side_effect": Exception},
+        devices, AdapterType.BASE, proxy=sdpcontrollerMock
     )
     end_command = Restart(cm, logger)
     end_command.adapter_factory = adapter_factory

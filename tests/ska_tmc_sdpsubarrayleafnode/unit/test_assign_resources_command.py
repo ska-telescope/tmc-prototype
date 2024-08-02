@@ -1,6 +1,7 @@
 import time
 from os.path import dirname, join
 
+import mock
 import pytest
 from ska_tango_base.commands import ResultCode, TaskStatus
 from ska_tango_base.control_model import ObsState
@@ -63,13 +64,12 @@ def test_assign_resources_command_fail_subarray(
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     adapter_factory = HelperAdapterFactory()
-    failing_dev = devices
     assign_input_str = get_assign_input_str()
 
+    attrs = {"AssignResources.side_effect": Exception}
+    sdpcontrollerMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        failing_dev,
-        AdapterType.SDPSUBARRAY,
-        attrs={"AssignResources.side_effect": Exception},
+        devices, AdapterType.BASE, proxy=sdpcontrollerMock
     )
     assign_command = AssignResources(cm, logger)
     assign_command.adapter_factory = adapter_factory

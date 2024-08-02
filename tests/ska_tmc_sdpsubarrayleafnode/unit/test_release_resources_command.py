@@ -1,3 +1,4 @@
+import mock
 import pytest
 from ska_tango_base.commands import ResultCode, TaskStatus
 from ska_tango_base.control_model import ObsState
@@ -50,13 +51,12 @@ def test_telescope_release_resources_command_fail_subarray(
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     adapter_factory = HelperAdapterFactory()
-    failing_dev = devices
 
     # include exception in ReleaseAllResources command
+    attrs = {"ReleaseAllResources.side_effect": Exception}
+    sdpcontrollerMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        failing_dev,
-        AdapterType.SDPSUBARRAY,
-        attrs={"ReleaseAllResources.side_effect": Exception},
+        devices, AdapterType.BASE, proxy=sdpcontrollerMock
     )
     release_command = ReleaseAllResources(cm, logger)
     release_command.adapter_factory = adapter_factory

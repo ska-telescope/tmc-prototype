@@ -1,5 +1,6 @@
 from os.path import dirname, join
 
+import mock
 import pytest
 from ska_tango_base.commands import ResultCode, TaskStatus
 from ska_tango_base.control_model import ObsState
@@ -55,13 +56,12 @@ def test_scan_command_fail_subarray(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     adapter_factory = HelperAdapterFactory()
-    failing_dev = devices
     scan_input_str = get_scan_input_str()
 
+    attrs = {"Scan.side_effect": Exception}
+    sdpcontrollerMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        failing_dev,
-        AdapterType.SUBARRAY,
-        attrs={"Scan.side_effect": Exception},
+        devices, AdapterType.BASE, proxy=sdpcontrollerMock
     )
     scan_command = Scan(cm, logger)
     scan_command.adapter_factory = adapter_factory

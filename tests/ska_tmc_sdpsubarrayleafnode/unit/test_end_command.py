@@ -1,3 +1,4 @@
+import mock
 import pytest
 from ska_tango_base.commands import ResultCode, TaskStatus
 from ska_tango_base.control_model import ObsState
@@ -50,10 +51,10 @@ def test_telescope_end_command_fail_subarray(
     adapter_factory = HelperAdapterFactory()
 
     # include exception in End command
+    attrs = {"End.side_effect": Exception}
+    sdpcontrollerMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        devices,
-        AdapterType.SDPSUBARRAY,
-        attrs={"End.side_effect": Exception},
+        devices, AdapterType.BASE, proxy=sdpcontrollerMock
     )
     end_command = End(cm, logger)
     end_command.adapter_factory = adapter_factory
