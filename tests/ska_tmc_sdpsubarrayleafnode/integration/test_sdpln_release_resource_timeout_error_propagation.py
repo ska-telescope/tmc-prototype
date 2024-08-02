@@ -142,7 +142,7 @@ def release_all_resources_timeout(
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (
             unique_id[0],
-            "Timeout has occured, command failed",
+            "Timeout has occurred, command failed",
         ),
         lookahead=6,
     )
@@ -157,6 +157,7 @@ def release_all_resources_timeout(
 
 
 # @pytest.mark.skip(reason="pipeline failure")
+@pytest.mark.t1
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_release_all_res_command_timeout_mid(
