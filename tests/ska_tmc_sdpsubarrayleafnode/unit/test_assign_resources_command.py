@@ -117,7 +117,6 @@ def test_assign_resources_command_empty_input_json(
     )
 
 
-@pytest.mark.skip
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
@@ -130,6 +129,7 @@ def test_assign_resources_command_not_allowed(
     assign_input_str = get_assign_input_str()
 
     cm.update_device_obs_state(ObsState.READY)
+    assert wait_for_cm_obstate_attribute_value(cm, ObsState.READY)
     cm.assign_resources(assign_input_str, task_callback)
 
     task_callback.assert_against_call(status=TaskStatus.QUEUED)
