@@ -2,7 +2,6 @@ import mock
 import pytest
 from ska_tango_base.commands import ResultCode, TaskStatus
 from ska_tango_base.control_model import ObsState
-from ska_tmc_common.adapters import AdapterType
 from ska_tmc_common.dev_factory import DevFactory
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.exceptions import DeviceUnresponsive
@@ -90,10 +89,8 @@ def test_telescope_end_scan_command_fail_subarray(
 
     # include exception in ReleaseAllResources command
     attrs = {"EndScan.side_effect": Exception}
-    sdpcontrollerMock = mock.Mock(**attrs)
-    adapter_factory.get_or_create_adapter(
-        devices, AdapterType.SDPSUBARRAY, proxy=sdpcontrollerMock
-    )
+    sdpsubarrayrMock = mock.Mock(**attrs)
+    adapter_factory.get_or_create_adapter(devices, proxy=sdpsubarrayrMock)
     release_command = EndScan(cm, logger)
     release_command.adapter_factory = adapter_factory
     release_command.end_scan(logger, task_callback)

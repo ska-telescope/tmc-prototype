@@ -4,7 +4,6 @@ import mock
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-from ska_tmc_common.adapters import AdapterType
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.exceptions import DeviceUnresponsive, InvalidObsStateError
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
@@ -57,10 +56,8 @@ def test_abort_command_fail_subarray(tango_context, devices):
     cm = create_cm("SdpSLNComponentManager", devices)
     adapter_factory = HelperAdapterFactory()
     attrs = {"Abort.side_effect": Exception}
-    sdpcontrollerMock = mock.Mock(**attrs)
-    adapter_factory.get_or_create_adapter(
-        devices, AdapterType.SDPSUBARRAY, proxy=sdpcontrollerMock
-    )
+    sdpsubarrayrMock = mock.Mock(**attrs)
+    adapter_factory.get_or_create_adapter(devices, proxy=sdpsubarrayrMock)
     cm.update_device_obs_state(ObsState.IDLE)
     abort_command = Abort(cm, logger=logger)
     abort_command.adapter_factory = adapter_factory
