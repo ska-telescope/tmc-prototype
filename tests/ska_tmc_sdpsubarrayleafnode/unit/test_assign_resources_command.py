@@ -121,24 +121,22 @@ def test_assign_resources_command_empty_input_json(
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
-def test_assign_resources_command_not_allowed_with_invalid_obsState(
-    tango_context, devices, task_callback
+def test_assign_resources_command_not_allowed(
+    devices, task_callback, tango_context
 ):
-    logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
-    cm.update_device_obs_state(ObsState.READY)
-    assert wait_for_cm_obstate_attribute_value(cm, ObsState.READY)
+    assert cm.is_command_allowed("AssignResources")
     assign_input_str = get_assign_input_str()
-    cm.assign_resources(assign_input_str, task_callback=task_callback)
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.QUEUED}
-    )
+
+    cm.update_device_obs_state(ObsState.READY)
+    cm.assign_resources(assign_input_str, task_callback)
+
+    task_callback.assert_against_call(status=TaskStatus.QUEUED)
+
     task_callback.assert_against_call(
         status=TaskStatus.REJECTED,
-        result=(
-            ResultCode.NOT_ALLOWED,
-            "Command is not allowed",
-        ),
+        result=(ResultCode.NOT_ALLOWED, "Command is not allowed"),
+        lookahead=3,
     )
 
 
