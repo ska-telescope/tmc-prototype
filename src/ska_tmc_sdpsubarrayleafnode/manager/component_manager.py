@@ -461,6 +461,14 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             is_cmd_allowed=self.is_command_allowed_callable("AssignResources"),
             task_callback=task_callback,
         )
+        self.logger.info(
+            (
+                "TaskStatus: %s and Response: %s of AssignResources "
+                "command after being queued for execution"
+            ),
+            task_status,
+            response,
+        )
         return task_status, response
 
     def configure(

@@ -132,12 +132,12 @@ def test_assign_resources_command_not_allowed(
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.READY)
     cm.assign_resources(assign_input_str, task_callback)
 
-    task_callback.assert_against_call(status=TaskStatus.QUEUED)
-
+    task_callback.assert_against_call(
+        call_kwargs={"status": TaskStatus.QUEUED}
+    )
     task_callback.assert_against_call(
         status=TaskStatus.REJECTED,
         result=(ResultCode.NOT_ALLOWED, "Command is not allowed"),
-        lookahead=3,
     )
 
 
