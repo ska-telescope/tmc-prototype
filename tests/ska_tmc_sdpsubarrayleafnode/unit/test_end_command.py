@@ -93,7 +93,6 @@ def test_end_command_not_allowed_with_invalid_obsState(
             "Command is not allowed",
         ),
     )
-    assert 0
 
 
 @pytest.mark.sdpsln
