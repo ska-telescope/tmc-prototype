@@ -39,7 +39,7 @@ def test_telescope_end_command(tango_context, devices, task_callback):
 
 
 @pytest.mark.sdpsln
-@pytest.mark.parametrize(
+@pytest.mark.paREADYrametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
 def test_telescope_end_command_fail_subarray(
@@ -93,6 +93,7 @@ def test_end_command_not_allowed_with_invalid_obsState(
             "Command is not allowed",
         ),
     )
+    assert 0
 
 
 @pytest.mark.sdpsln

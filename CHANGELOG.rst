@@ -16,16 +16,17 @@ Fixed
 
 [0.16.3]
 ******
-* Set and push archive events for all the attributes.
+* Enable polling of all attributes by setting and pushing archive 
+events to resolve SKB-434
 
 [0.16.2]
 ******
-*Improve loggers statement and version of common
+* Improve loggers statement and version of common
 
 
 [0.16.1]
 ******
-*Enable obsState check for Abort commad
+* Enable obsState check for Abort commad
 
 
 [0.16.0]
