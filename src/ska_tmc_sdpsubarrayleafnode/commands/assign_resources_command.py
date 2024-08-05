@@ -180,11 +180,6 @@ class AssignResources(SdpSLNCommand):
                 + "The command has NOT been executed."
                 + "This device will continue with normal operation.",
             )
-        if "eb_id" not in json_argument["execution_block"]:
-            return self.component_manager.generate_command_result(
-                ResultCode.FAILED,
-                "Missing eb_id in the AssignResources input json",
-            )
         if json_argument["resources"]["receive_nodes"] == 0:
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
