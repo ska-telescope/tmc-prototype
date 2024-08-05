@@ -87,7 +87,7 @@ k8s-low-test:
   tags:
     - k8srunner
   variables:
-    TELESCOPE: 'SKA-mid'
+    TELESCOPE: 'SKA-low'
     CONFIG: 'low'
     KUBE_NAMESPACE: 'ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CONFIG'
     SERVICE_ACCOUNT: 'ci-svc-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CONFIG'
@@ -98,7 +98,7 @@ k8s-low-test:
     - make k8s-install-chart
     - make k8s-wait
   script:
-    - make k8s-test MARK=t1
+    - make k8s-test
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
     paths:
