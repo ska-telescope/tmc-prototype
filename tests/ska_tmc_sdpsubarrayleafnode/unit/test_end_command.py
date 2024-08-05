@@ -39,7 +39,7 @@ def test_telescope_end_command(tango_context, devices, task_callback):
 
 
 @pytest.mark.sdpsln
-@pytest.mark.paREADYrametrize(
+@pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
 def test_telescope_end_command_fail_subarray(
@@ -50,9 +50,10 @@ def test_telescope_end_command_fail_subarray(
     adapter_factory = HelperAdapterFactory()
 
     # include exception in End command
-    attrs = {"End.side_effect": Exception}
+    attrs = {"EndScan.side_effect": Exception}
     sdpsubarrayrMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(devices, proxy=sdpsubarrayrMock)
+
     end_command = End(cm, logger)
     end_command.adapter_factory = adapter_factory
     end_command.end(logger, task_callback)
