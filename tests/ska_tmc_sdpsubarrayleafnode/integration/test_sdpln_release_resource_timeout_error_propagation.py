@@ -129,6 +129,7 @@ def release_all_resources_timeout(
 
     # Check timeout
     sdp_subarray.SetDefective(TIMEOUT_DEFECT)
+    logger.info("defect set")
     result, unique_id = sdpsal_node.ReleaseAllResources()
 
     logger.info(
