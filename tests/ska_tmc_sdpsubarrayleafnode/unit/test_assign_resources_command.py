@@ -5,6 +5,7 @@ import mock
 import pytest
 from ska_tango_base.commands import ResultCode, TaskStatus
 from ska_tango_base.control_model import ObsState
+from ska_tmc_common.dev_factory import DevFactory
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.exceptions import DeviceUnresponsive
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
@@ -117,7 +118,6 @@ def test_assign_resources_command_empty_input_json(
     )
 
 
-@pytest.mark.skip(reason="update device obsstate method malfunctioning")
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
@@ -128,10 +128,13 @@ def test_assign_resources_command_not_allowed(
     cm = create_cm("SdpSLNComponentManager", devices)
     assert cm.is_command_allowed("AssignResources")
     assign_input_str = get_assign_input_str()
+    dev_factory = DevFactory()
+    sdpsln_node = dev_factory.get_device(devices)
+    sdpsln_node.SetDirectObsState(ObsState.SCANNING)
 
-    cm.update_device_obs_state(ObsState.READY)
-    assert wait_for_cm_obstate_attribute_value(cm, ObsState.READY)
-    cm.assign_resources(assign_input_str, task_callback)
+    cm.update_device_obs_state(ObsState.SCANNING)
+    assert wait_for_cm_obstate_attribute_value(cm, ObsState.SCANNING)
+    cm.assign_resources(assign_input_str, task_callback=task_callback)
 
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.QUEUED}
@@ -139,6 +142,7 @@ def test_assign_resources_command_not_allowed(
     task_callback.assert_against_call(
         status=TaskStatus.REJECTED,
         result=(ResultCode.NOT_ALLOWED, "Command is not allowed"),
+        lookahead=5,
     )
 
 
