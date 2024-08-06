@@ -5,10 +5,10 @@ monitors and issues commands to the SDP Master.
 from typing import Union
 
 from ska_control_model import HealthState
-from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
 from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
+from ska_tmc_common.tmc_base_leaf_device import TMCBaseLeafDevice
 from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
@@ -18,7 +18,7 @@ from ska_tmc_sdpmasterleafnode.manager import SdpMLNComponentManager
 __all__ = ["SdpMasterLeafNode", "main"]
 
 
-class SdpMasterLeafNode(SKABaseDevice):
+class SdpMasterLeafNode(TMCBaseLeafDevice):
     """
     SDP Master Leaf node acts as a SDP contact point for Master Node and
     also to monitor
@@ -57,7 +57,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         super().__init__(*args, **kwargs)
         self._issubsystemavailable: bool = False
 
-    class InitCommand(SKABaseDevice.InitCommand):
+    class InitCommand(TMCBaseLeafDevice.InitCommand):
         """
         A class for the TMC SdpMasterLeafNode's init_device() method.
         """
@@ -83,10 +83,11 @@ class SdpMasterLeafNode(SKABaseDevice):
             )
             device._health_state = HealthState.OK
             device._version_id = release.version
-            device.set_change_event("healthState", True, False)
             device._issubsystemavailable = False
             device.op_state_model.perform_action("component_on")
-            device.set_change_event("isSubsystemAvailable", True, False)
+            for attribute_name in ["healthState", "isSubsystemAvailable"]:
+                device.set_change_event(attribute_name, True, False)
+                device.set_archive_event(attribute_name, True)
             return (ResultCode.OK, "")
 
     def always_executed_hook(self):
@@ -99,7 +100,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         """Change event callback for isSubsystemAvailable"""
         if availablity != self._issubsystemavailable:
             self._issubsystemavailable = availablity
-            self.push_change_event(
+            self.push_change_archive_events(
                 "isSubsystemAvailable", self._issubsystemavailable
             )
 

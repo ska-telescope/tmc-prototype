@@ -2,8 +2,8 @@ apiVersion: v2
 name: ska-tmc-sdpleafnodes
 description: A subchart for ska-tmc-sdpleafnodes deployment.
 type: application
-version: 0.16.2
-appVersion: 0.16.2
+version: 0.16.3
+appVersion: 0.16.3
 icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
 maintainers:
   - name: Team HIMALAYA, TEAM SAHYADRI

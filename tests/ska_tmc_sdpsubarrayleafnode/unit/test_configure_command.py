@@ -1,10 +1,10 @@
 from os.path import dirname, join
 
+import mock
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
-from ska_tmc_common.adapters import AdapterType
 from ska_tmc_common.dev_factory import DevFactory
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.exceptions import DeviceUnresponsive
@@ -58,14 +58,11 @@ def test_configure_command_fail_subarray(
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     adapter_factory = HelperAdapterFactory()
-    failing_dev = devices
     configure_input_str = get_configure_input_str()
 
-    adapter_factory.get_or_create_adapter(
-        failing_dev,
-        AdapterType.SUBARRAY,
-        attrs={"Configure.side_effect": Exception},
-    )
+    attrs = {"Configure.side_effect": Exception}
+    sdpsubarrayrMock = mock.Mock(**attrs)
+    adapter_factory.get_or_create_adapter(devices, proxy=sdpsubarrayrMock)
     configure_command = Configure(cm, logger)
     configure_command.adapter_factory = adapter_factory
     configure_command.configure(

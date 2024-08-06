@@ -8,7 +8,6 @@ from typing import List, Tuple, Union
 
 import tango
 from ska_control_model import HealthState
-from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
@@ -19,6 +18,7 @@ from ska_tmc_common.exceptions import (
     DeviceUnresponsive,
     InvalidObsStateError,
 )
+from ska_tmc_common.tmc_base_leaf_device import TMCBaseLeafDevice
 from tango import ApiUtil, AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
@@ -26,7 +26,7 @@ from ska_tmc_sdpsubarrayleafnode import release
 from ska_tmc_sdpsubarrayleafnode.manager import SdpSLNComponentManager
 
 
-class SdpSubarrayLeafNode(SKABaseDevice):
+class SdpSubarrayLeafNode(TMCBaseLeafDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
     actions during an observation.
@@ -42,11 +42,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         super().init_device()
         self._sdp_subarray_obs_state = ObsState.EMPTY
         self._LastDeviceInfoChanged = ""
-        self.set_change_event("sdpSubarrayObsState", True)
         self._command_result = ("", "")
-        self.set_change_event("longRunningCommandResult", True)
         self._issubsystemavailable = False
-        self.set_change_event("isSubsystemAvailable", True, False)
+        for attribute_name in [
+            "sdpSubarrayObsState",
+            "longRunningCommandResult",
+            "isSubsystemAvailable",
+        ]:
+            self.set_change_event(attribute_name, True, False)
+            self.set_archive_event(attribute_name, True)
 
     # -----------------
     # Device Properties
@@ -93,14 +97,16 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     def update_device_callback(self, dev_info: SdpSubarrayDeviceInfo) -> None:
         """Updates device callback info"""
         self._LastDeviceInfoChanged = dev_info.to_json()
-        self.push_change_event("lastDeviceInfoChanged", dev_info.to_json())
+        self.push_change_archive_events(
+            "lastDeviceInfoChanged", dev_info.to_json()
+        )
 
     def update_sdp_subarray_obs_state_callback(
         self, obs_state: ObsState
     ) -> None:
         """Updates SDP Subarray ObsState"""
         self._sdp_subarray_obs_state = obs_state
-        self.push_change_event(
+        self.push_change_archive_events(
             "sdpSubarrayObsState", self._sdp_subarray_obs_state
         )
 
@@ -109,18 +115,18 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         lrc_result: Tuple[str, Union[ResultCode, TaskStatus, Exception, str]],
     ):
         """Change event callback for longRunningCommandResult"""
-        self.push_change_event("longRunningCommandResult", lrc_result)
+        self.push_change_archive_events("longRunningCommandResult", lrc_result)
 
     def update_availablity_callback(self, availablity):
         """Change event callback for isSubsystemAvailable"""
         if availablity != self._issubsystemavailable:
             self._issubsystemavailable = availablity
-            self.push_change_event(
+            self.push_change_archive_events(
                 "isSubsystemAvailable", self._issubsystemavailable
             )
 
     class InitCommand(
-        SKABaseDevice.InitCommand
+        TMCBaseLeafDevice.InitCommand
     ):  # pylint: disable=too-few-public-methods
         """
         A class for the TMC SdpSubarrayLeafNode's init_device() method.

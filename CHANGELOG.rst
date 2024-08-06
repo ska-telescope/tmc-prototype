@@ -14,14 +14,19 @@ Fixed
 * Fixed documentation missing information issue
 * Fixed Logger strings.
 
+[0.16.3]
+******
+* Enable polling of all attributes by setting and pushing archive 
+events to resolve SKB-434
+
 [0.16.2]
 ******
-*Improve loggers statement and version of common
+* Improve loggers statement and version of common
 
 
 [0.16.1]
 ******
-*Enable obsState check for Abort commad
+* Enable obsState check for Abort commad
 
 
 [0.16.0]

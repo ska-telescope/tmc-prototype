@@ -1,7 +1,9 @@
 import logging
 
+import mock
 import pytest
 from ska_tango_base.commands import ResultCode, TaskStatus
+from ska_tmc_common.adapters import AdapterType
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
@@ -42,7 +44,6 @@ def test_off_command(tango_context, sdp_master_device, task_callback):
     )
 
 
-@pytest.mark.test
 @pytest.mark.parametrize(
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )
@@ -53,8 +54,11 @@ def test_off_command_fail_sdp_master(
     adapter_factory = HelperAdapterFactory()
     cm.sdp_master_device_name = sdp_master_device
     # include exception in Off command
+
+    attrs = {"Off.side_effect": Exception}
+    sdpcontrollerMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        sdp_master_device, attrs={"Off.side_effect": Exception}
+        sdp_master_device, AdapterType.BASE, proxy=sdpcontrollerMock
     )
     off_command = Off(cm, logger)
     off_command.adapter_factory = adapter_factory
@@ -67,17 +71,11 @@ def test_off_command_fail_sdp_master(
         status=TaskStatus.COMPLETED,
         result=(
             ResultCode.FAILED,
-            "Off Command invocation"
-            + f" failed on device: {sdp_master_device}."
-            + " with exception: Mock object has"
-            + " no attribute 'Off'",
+            "Off Command invocation failed on device: "
+            + f"{sdp_master_device}. with exception: ",
         ),
-        exception=(
-            "Off Command invocation"
-            + f" failed on device: {sdp_master_device}."
-            + " with exception: Mock object has"
-            + " no attribute 'Off'"
-        ),
+        exception="Off Command invocation failed on device: "
+        + f"{sdp_master_device}. with exception: ",
     )
 
 
