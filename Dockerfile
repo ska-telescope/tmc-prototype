@@ -16,6 +16,7 @@ WORKDIR /app
 COPY --chown=tango:tango . /app
 
 # Install runtime dependencies and the app
+RUN apt-get update && apt-get install git -y 
 RUN poetry install --only main
 RUN rm /usr/bin/python && ln -s /usr/bin/python3 /usr/bin/python
 

@@ -234,14 +234,14 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 and self.command_in_progress == command_name
             ):
                 self.long_running_result_callback(
-                    self.assign_id, ResultCode.FAILED, exception_msg=value
+                    self.command_id, ResultCode.FAILED, exception_msg=value
                 )
             elif (
                 command_name == "ReleaseAllResources"
                 and self.command_in_progress == command_name
             ):
                 self.long_running_result_callback(
-                    self.release_id,
+                    self.command_id,
                     ResultCode.FAILED,
                     exception_msg=value,
                 )
@@ -250,7 +250,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 and self.command_in_progress == command_name
             ):
                 self.long_running_result_callback(
-                    self.configure_id, ResultCode.FAILED, exception_msg=value
+                    self.command_id, ResultCode.FAILED, exception_msg=value
                 )
 
     @property
