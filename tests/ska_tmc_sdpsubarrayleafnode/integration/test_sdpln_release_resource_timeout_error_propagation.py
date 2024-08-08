@@ -155,7 +155,6 @@ def release_all_resources_timeout(
     tear_down(dev_factory, sdp_subarray, sdpsal_node)
 
 
-@pytest.mark.skip(reason="pipeline failure")
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_release_all_res_command_timeout_mid(
@@ -171,7 +170,6 @@ def test_release_all_res_command_timeout_mid(
     )
 
 
-@pytest.mark.skip(reason="pipeline failure")
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_release_all_res_command_error_propagation_mid(
@@ -187,7 +185,6 @@ def test_release_all_res_command_error_propagation_mid(
     )
 
 
-@pytest.mark.skip(reason="pipeline failure")
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_release_all_res_command_timeout_low(
@@ -201,7 +198,6 @@ def test_release_all_res_command_timeout_low(
     )
 
 
-@pytest.mark.skip(reason="pipeline failure")
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_release_all_res_command_error_propagation_low(
