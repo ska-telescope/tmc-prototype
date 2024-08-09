@@ -1,5 +1,7 @@
 # TODO: This test needs to be refactored separately as we don't have a way to
 # raise and exception in ReleaseAllResources command.
+import json
+
 import pytest
 import tango
 from ska_tango_base.commands import ResultCode
@@ -7,6 +9,7 @@ from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.conftest import (
+    COMMAND_COMPLETED,
     LOW_SDP_SUBARRAY,
     MID_SDP_SUBARRAY,
     SDPSUBARRAYLEAFNODE_LOW,
@@ -14,7 +17,6 @@ from tests.conftest import (
 )
 from tests.settings import (  # ERROR_PROPAGATION_DEFECT,
     RESET_DEFECT,
-    TIMEOUT_DEFECT,
     event_remover,
     logger,
 )
@@ -98,7 +100,7 @@ def release_all_resources_timeout(
 ) -> None:
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsln_name)
-
+    sdpsa_device = dev_factory.get_device("mid-sdp/subarray/01")
     if sdpsln_name == SDPSUBARRAYLEAFNODE_MID:
         sdp_subarray = dev_factory.get_device(MID_SDP_SUBARRAY)
     elif sdpsln_name == SDPSUBARRAYLEAFNODE_LOW:
@@ -120,14 +122,18 @@ def release_all_resources_timeout(
         change_event_callbacks["longRunningCommandResult"],
     )
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(ResultCode.OK.value)),
+        (unique_id[0], COMMAND_COMPLETED),
         lookahead=4,
     )
 
     wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
 
     # Check timeout
-    sdp_subarray.SetDefective(TIMEOUT_DEFECT)
+    # sdp_subarray.SetDefective(TIMEOUT_DEFECT)
+    sdpsa_device.SetDelayInfo(json.dumps({"ReleaseAllResources": 35}))
+    # wait_for_attribute_to_change_to(
+    #     MID_SDP_SUBARRAY, "defective", TIMEOUT_DEFECT
+    # )
     result, unique_id = sdpsal_node.ReleaseAllResources()
 
     logger.info(
@@ -139,13 +145,14 @@ def release_all_resources_timeout(
     assert result[0] == ResultCode.QUEUED
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (
-            unique_id[0],
-            "Timeout has occured, command failed",
-        ),
-        lookahead=6,
+        (unique_id[0], '[3, "Timeout has occurred, command failed"]'),
+        lookahead=3,
     )
-    sdp_subarray.SetDefective(RESET_DEFECT)
+    sdpsa_device.ResetDelayInfo()
+    # sdp_subarray.SetDefective(RESET_DEFECT)
+    # wait_for_attribute_to_change_to(
+    #     MID_SDP_SUBARRAY, "defective", RESET_DEFECT
+    # )
 
     event_remover(
         change_event_callbacks,
@@ -155,7 +162,7 @@ def release_all_resources_timeout(
     tear_down(dev_factory, sdp_subarray, sdpsal_node)
 
 
-@pytest.mark.test
+@pytest.mark.repeat(10)
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_release_all_res_command_timeout_mid(
