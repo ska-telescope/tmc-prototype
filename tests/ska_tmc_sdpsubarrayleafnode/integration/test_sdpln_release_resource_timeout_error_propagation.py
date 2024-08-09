@@ -100,7 +100,6 @@ def release_all_resources_timeout(
 ) -> None:
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsln_name)
-    sdpsa_device = dev_factory.get_device("mid-sdp/subarray/01")
     if sdpsln_name == SDPSUBARRAYLEAFNODE_MID:
         sdp_subarray = dev_factory.get_device(MID_SDP_SUBARRAY)
     elif sdpsln_name == SDPSUBARRAYLEAFNODE_LOW:
@@ -130,7 +129,7 @@ def release_all_resources_timeout(
 
     # Check timeout
     # sdp_subarray.SetDefective(TIMEOUT_DEFECT)
-    sdpsa_device.SetDelayInfo(json.dumps({"ReleaseAllResources": 35}))
+    sdp_subarray.SetDelayInfo(json.dumps({"ReleaseAllResources": 35}))
     # wait_for_attribute_to_change_to(
     #     MID_SDP_SUBARRAY, "defective", TIMEOUT_DEFECT
     # )
@@ -148,7 +147,7 @@ def release_all_resources_timeout(
         (unique_id[0], '[3, "Timeout has occurred, command failed"]'),
         lookahead=3,
     )
-    sdpsa_device.ResetDelayInfo()
+    sdp_subarray.ResetDelayInfo()
     # sdp_subarray.SetDefective(RESET_DEFECT)
     # wait_for_attribute_to_change_to(
     #     MID_SDP_SUBARRAY, "defective", RESET_DEFECT
