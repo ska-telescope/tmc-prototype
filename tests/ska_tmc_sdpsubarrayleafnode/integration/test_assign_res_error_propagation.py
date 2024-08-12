@@ -32,7 +32,7 @@ def assign_resources_error_propagation(
                 {result_code}"
         )
 
-        sdpsln_device.subscribe_event(
+        LRCR_ID = sdpsln_device.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandResult"],
@@ -51,8 +51,10 @@ def assign_resources_error_propagation(
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
         tear_down(dev_factory, sdp_subarray, sdpsln_name)
+        sdpsln_device.unsubscribe_event(LRCR_ID)
     except Exception as exception:
         tear_down(dev_factory, sdp_subarray, sdpsln_name)
+        sdpsln_device.unsubscribe_event(LRCR_ID)
         raise Exception(exception)
 
 

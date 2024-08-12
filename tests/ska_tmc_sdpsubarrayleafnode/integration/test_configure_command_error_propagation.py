@@ -45,7 +45,7 @@ def configure_error_propogation(
         assert unique_id[0].endswith("AssignResources")
         assert result[0] == ResultCode.QUEUED
 
-        sdpsln_device.subscribe_event(
+        LRCR_ID = sdpsln_device.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandResult"],
@@ -64,11 +64,6 @@ def configure_error_propogation(
         assert unique_id[0].endswith("Configure")
         assert result[0] == ResultCode.QUEUED
 
-        sdpsln_device.subscribe_event(
-            "longRunningCommandResult",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["longRunningCommandResult"],
-        )
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], '[3, "Missing scan_type key"]'),
             lookahead=3,
@@ -77,6 +72,7 @@ def configure_error_propogation(
             change_event_callbacks,
             ["longRunningCommandResult"],
         )
+        sdpsln_device.unsubscribe_event(LRCR_ID)
         tear_down(dev_factory, sdp_subarray, sdpsln_device)
 
     except Exception as exception:

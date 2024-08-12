@@ -44,7 +44,7 @@ def assign_resources(
         assert unique_id[0].endswith("AssignResources")
         assert result[0] == ResultCode.QUEUED
 
-        sdpsal_node.subscribe_event(
+        LRCR_ID = sdpsal_node.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandResult"],
@@ -59,6 +59,8 @@ def assign_resources(
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
         tear_down(dev_factory, sdp_subarray, sdpsal_node)
+
+        sdpsal_node.unsubscribe_event(LRCR_ID)
     except Exception as exception:
         tear_down(dev_factory, sdp_subarray, sdpsal_node)
         raise Exception(exception)

@@ -26,7 +26,7 @@ def off_command(
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
 
-    sdp_subarray_ln_proxy.subscribe_event(
+    LRCR_QUE_ID = sdp_subarray_ln_proxy.subscribe_event(
         "longRunningCommandsInQueue",
         tango.EventType.CHANGE_EVENT,
         change_event_callbacks["longRunningCommandsInQueue"],
@@ -40,7 +40,7 @@ def off_command(
     )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
-    sdp_subarray_ln_proxy.subscribe_event(
+    LRCR_ID = sdp_subarray_ln_proxy.subscribe_event(
         "longRunningCommandResult",
         tango.EventType.CHANGE_EVENT,
         change_event_callbacks["longRunningCommandResult"],
@@ -73,6 +73,8 @@ def off_command(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
+    sdp_subarray_ln_proxy.unsubscribe_event(LRCR_QUE_ID)
+    sdp_subarray_ln_proxy.unsubscribe_event(LRCR_ID)
 
 
 @pytest.mark.post_deployment

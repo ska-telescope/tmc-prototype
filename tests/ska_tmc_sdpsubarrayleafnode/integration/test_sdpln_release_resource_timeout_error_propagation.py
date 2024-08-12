@@ -51,7 +51,7 @@ def release_all_resources_error_propagation(
     assert unique_id[0].endswith("AssignResources")
     assert result[0] == ResultCode.QUEUED
 
-    sdpsal_node.subscribe_event(
+    LRCR_ID = sdpsal_node.subscribe_event(
         "longRunningCommandResult",
         tango.EventType.CHANGE_EVENT,
         change_event_callbacks["longRunningCommandResult"],
@@ -89,6 +89,8 @@ def release_all_resources_error_propagation(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
+
+    sdpsal_node.unsubscribe_event(LRCR_ID)
     tear_down(dev_factory, sdp_subarray, sdpsal_node)
 
 
@@ -115,7 +117,7 @@ def release_all_resources_timeout(
     assert unique_id[0].endswith("AssignResources")
     assert result[0] == ResultCode.QUEUED
 
-    sdpsal_node.subscribe_event(
+    LRCR_ID = sdpsal_node.subscribe_event(
         "longRunningCommandResult",
         tango.EventType.CHANGE_EVENT,
         change_event_callbacks["longRunningCommandResult"],
@@ -157,7 +159,7 @@ def release_all_resources_timeout(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
-
+    sdpsal_node.unsubscribe_event(LRCR_ID)
     tear_down(dev_factory, sdp_subarray, sdpsal_node)
 
 

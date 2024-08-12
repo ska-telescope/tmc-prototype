@@ -23,13 +23,13 @@ def endscan(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
-    sdp_subarray_ln_proxy.subscribe_event(
+    LRCR_QUE_ID = sdp_subarray_ln_proxy.subscribe_event(
         "longRunningCommandsInQueue",
         tango.EventType.CHANGE_EVENT,
         change_event_callbacks["longRunningCommandsInQueue"],
     )
 
-    sdp_subarray_ln_proxy.subscribe_event(
+    LRCR_ID = sdp_subarray_ln_proxy.subscribe_event(
         "longRunningCommandResult",
         tango.EventType.CHANGE_EVENT,
         change_event_callbacks["longRunningCommandResult"],
@@ -132,6 +132,8 @@ def endscan(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
+    sdp_subarray_ln_proxy.unsubscribe_event(LRCR_QUE_ID)
+    sdp_subarray_ln_proxy.unsubscribe_event(LRCR_ID)
     tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
 
 

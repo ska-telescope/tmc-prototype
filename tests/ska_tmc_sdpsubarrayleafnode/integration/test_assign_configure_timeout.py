@@ -44,7 +44,7 @@ def assign_resources_timeout(
     assert unique_id[0].endswith("AssignResources")
     assert result[0] == ResultCode.QUEUED
 
-    sdpsal_node.subscribe_event(
+    LRCR_ID = sdpsal_node.subscribe_event(
         "longRunningCommandResult",
         tango.EventType.CHANGE_EVENT,
         change_event_callbacks["longRunningCommandResult"],
@@ -60,7 +60,7 @@ def assign_resources_timeout(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
-
+    sdpsal_node.unsubscribe_event(LRCR_ID)
     tear_down(dev_factory, sdp_subarray, sdpsal_node)
 
 
@@ -106,13 +106,13 @@ def configure_timeout(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
-        sdp_subarray_ln_proxy.subscribe_event(
+        LRCR_QUE_ID = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandsInQueue",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandsInQueue"],
         )
 
-        sdp_subarray_ln_proxy.subscribe_event(
+        LRCR_ID = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandResult"],
@@ -180,9 +180,14 @@ def configure_timeout(
         )
         sdp_subarray.ResetDelayInfo()
         tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
+        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_QUE_ID)
+        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_ID)
+
     except Exception as exception:
         tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
         sdp_subarray.ResetDelayInfo()
+        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_QUE_ID)
+        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_ID)
         raise Exception(exception)
 
 
