@@ -12,7 +12,7 @@ RUN curl -sSL https://install.python-poetry.org | python3 - && \
     poetry config virtualenvs.create false
 RUN pip install ipython
 WORKDIR /app
-
+RUN apt-get update && apt-get install git -y #dockerfile
 COPY --chown=tango:tango . /app
 # Install runtime dependencies and the app
 RUN poetry install --only main
