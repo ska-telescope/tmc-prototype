@@ -33,7 +33,7 @@ def assign_resources_timeout(
         sdp_subarray = dev_factory.get_device(SDP_SUBARRAY_DEVICE_MID)
     elif sdpsln_name == SDP_SUBARRAY_LEAF_NODE_LOW:
         sdp_subarray = dev_factory.get_device(SDP_SUBARRAY_DEVICE_LOW)
-    sdp_subarray.SetDelayInfo(json.dumps({"AssignResources": 35}))
+    sdp_subarray.SetDelayInfo(json.dumps({"AssignResources": 12}))
     # AssignResources
     result, unique_id = sdpsal_node.AssignResources(assign_input_str)
     logger.info(
@@ -156,7 +156,7 @@ def configure_timeout(
         wait_and_assert_sdp_subarray_obsstate(
             sdp_subarray_ln_proxy, ObsState.IDLE
         )
-        sdp_subarray.SetDelayInfo(json.dumps({"Configure": 35}))
+        sdp_subarray.SetDelayInfo(json.dumps({"Configure": 12}))
         configure_input_str = json_factory("command_Configure")
 
         result, unique_id = sdp_subarray_ln_proxy.Configure(

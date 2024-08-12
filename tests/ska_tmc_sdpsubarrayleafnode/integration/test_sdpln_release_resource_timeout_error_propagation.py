@@ -122,7 +122,7 @@ def release_all_resources_timeout(
 
     # Check timeout
     # sdp_subarray.SetDefective(TIMEOUT_DEFECT)
-    sdp_subarray.SetDelayInfo(json.dumps({"ReleaseAllResources": 35}))
+    sdp_subarray.SetDelayInfo(json.dumps({"ReleaseAllResources": 12}))
     # wait_for_attribute_to_change_to(
     #     MID_SDP_SUBARRAY, "defective", TIMEOUT_DEFECT
     # )
