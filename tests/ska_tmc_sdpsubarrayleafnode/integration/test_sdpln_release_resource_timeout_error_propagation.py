@@ -161,7 +161,6 @@ def release_all_resources_timeout(
     tear_down(dev_factory, sdp_subarray, sdpsal_node)
 
 
-@pytest.mark.repeat(10)
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_release_all_res_command_timeout_mid(

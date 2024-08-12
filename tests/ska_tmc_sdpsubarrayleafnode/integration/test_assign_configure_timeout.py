@@ -79,6 +79,21 @@ def test_release_all_res_command_timeout_mid(
     )
 
 
+@pytest.mark.post_deployment
+@pytest.mark.SKA_low
+def test_release_all_res_command_timeout_low(
+    tango_context,
+    json_factory,
+    change_event_callbacks,
+):
+    return assign_resources_timeout(
+        tango_context,
+        SDP_SUBARRAY_LEAF_NODE_LOW,
+        json_factory("command_AssignResources"),
+        change_event_callbacks,
+    )
+
+
 def configure_timeout(
     tango_context, sdpsaln_name, device, json_factory, change_event_callbacks
 ):
@@ -180,6 +195,20 @@ def test_configure_command_timeout_mid(
         tango_context,
         SDP_SUBARRAY_LEAF_NODE_MID,
         SDP_SUBARRAY_DEVICE_MID,
+        json_factory,
+        change_event_callbacks,
+    )
+
+
+@pytest.mark.post_deployment
+@pytest.mark.SKA_low
+def test_configure_command_timeout_low(
+    tango_context, json_factory, change_event_callbacks
+):
+    return configure_timeout(
+        tango_context,
+        SDP_SUBARRAY_LEAF_NODE_LOW,
+        SDP_SUBARRAY_DEVICE_LOW,
         json_factory,
         change_event_callbacks,
     )
