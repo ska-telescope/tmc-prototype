@@ -5,7 +5,7 @@ from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.conftest import COMMAND_COMPLETED
-from tests.settings import logger
+from tests.settings import event_remover, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     tear_down,
     wait_and_assert_sdp_subarray_obsstate,
@@ -96,7 +96,10 @@ def release_resources(
         wait_and_assert_sdp_subarray_obsstate(
             sdp_subarray_ln_proxy, ObsState.EMPTY
         )
-
+        event_remover(
+            change_event_callbacks,
+            ["longRunningCommandResult", "longRunningCommandsInQueue"],
+        )
         sdp_subarray_ln_proxy.unsubscribe_event(LRCR_QUE_ID)
         sdp_subarray_ln_proxy.unsubscribe_event(LRCR_ID)
         tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)

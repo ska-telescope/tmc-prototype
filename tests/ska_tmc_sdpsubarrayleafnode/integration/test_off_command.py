@@ -11,6 +11,7 @@ from tests.settings import (
     SDP_SUBARRAY_DEVICE_MID,
     SDP_SUBARRAY_LEAF_NODE_LOW,
     SDP_SUBARRAY_LEAF_NODE_MID,
+    event_remover,
     logger,
 )
 
@@ -20,6 +21,10 @@ def off_command(
 ):
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_fqdn)
+    event_remover(
+        change_event_callbacks,
+        ["longRunningCommandResult", "longRunningCommandsInQueue"],
+    )
 
     LRCR_QUE_ID = sdp_subarray_ln_proxy.subscribe_event(
         "longRunningCommandsInQueue",
@@ -64,7 +69,10 @@ def off_command(
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         (),
     )
-
+    event_remover(
+        change_event_callbacks,
+        ["longRunningCommandResult", "longRunningCommandsInQueue"],
+    )
     sdp_subarray_ln_proxy.unsubscribe_event(LRCR_QUE_ID)
     sdp_subarray_ln_proxy.unsubscribe_event(LRCR_ID)
 
