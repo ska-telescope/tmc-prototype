@@ -136,7 +136,6 @@ def test_configure_command_mid(
     )
 
 
-@pytest.mark.test
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_configure_command_low(
