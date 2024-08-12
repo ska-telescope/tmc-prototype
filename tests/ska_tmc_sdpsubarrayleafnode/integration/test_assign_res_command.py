@@ -11,7 +11,7 @@ from tests.conftest import (
     SDPSUBARRAYLEAFNODE_LOW,
     SDPSUBARRAYLEAFNODE_MID,
 )
-from tests.settings import event_remover, logger
+from tests.settings import logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     tear_down,
     wait_and_assert_sdp_subarray_obsstate,
@@ -26,10 +26,6 @@ def assign_resources(
 ) -> None:
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsln_name)
-    event_remover(
-        change_event_callbacks,
-        ["longRunningCommandResult", "longRunningCommandsInQueue"],
-    )
     if sdpsln_name == SDPSUBARRAYLEAFNODE_MID:
         sdp_subarray = dev_factory.get_device(MID_SDP_SUBARRAY)
     else:
@@ -54,10 +50,7 @@ def assign_resources(
             (unique_id[0], COMMAND_COMPLETED),
             lookahead=4,
         )
-        event_remover(
-            change_event_callbacks,
-            ["longRunningCommandResult", "longRunningCommandsInQueue"],
-        )
+
         tear_down(dev_factory, sdp_subarray, sdpsal_node)
 
         sdpsal_node.unsubscribe_event(LRCR_ID)

@@ -15,11 +15,7 @@ from tests.conftest import (
     SDPSUBARRAYLEAFNODE_LOW,
     SDPSUBARRAYLEAFNODE_MID,
 )
-from tests.settings import (  # ERROR_PROPAGATION_DEFECT,
-    RESET_DEFECT,
-    event_remover,
-    logger,
-)
+from tests.settings import RESET_DEFECT, logger  # ERROR_PROPAGATION_DEFECT,
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     tear_down,
     wait_and_assert_sdp_subarray_obsstate,
@@ -85,11 +81,6 @@ def release_all_resources_error_propagation(
     )
 
     sdp_subarray.SetDefective(RESET_DEFECT)
-    event_remover(
-        change_event_callbacks,
-        ["longRunningCommandResult", "longRunningCommandsInQueue"],
-    )
-
     sdpsal_node.unsubscribe_event(LRCR_ID)
     tear_down(dev_factory, sdp_subarray, sdpsal_node)
 
@@ -155,10 +146,6 @@ def release_all_resources_timeout(
     #     MID_SDP_SUBARRAY, "defective", RESET_DEFECT
     # )
 
-    event_remover(
-        change_event_callbacks,
-        ["longRunningCommandResult", "longRunningCommandsInQueue"],
-    )
     sdpsal_node.unsubscribe_event(LRCR_ID)
     tear_down(dev_factory, sdp_subarray, sdpsal_node)
 

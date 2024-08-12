@@ -3,7 +3,7 @@ import tango
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
-from tests.settings import event_remover, logger
+from tests.settings import logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     tear_down,
     wait_and_assert_sdp_subarray_obsstate,
@@ -46,10 +46,6 @@ def assign_resources_error_propagation(
             lookahead=2,
         )
         wait_and_assert_sdp_subarray_obsstate(sdpsln_device, ObsState.EMPTY)
-        event_remover(
-            change_event_callbacks,
-            ["longRunningCommandResult", "longRunningCommandsInQueue"],
-        )
         tear_down(dev_factory, sdp_subarray, sdpsln_name)
         sdpsln_device.unsubscribe_event(LRCR_ID)
     except Exception as exception:

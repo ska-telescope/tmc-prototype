@@ -9,7 +9,6 @@ from tests.settings import (
     SDP_SUBARRAY_DEVICE_MID,
     SDP_SUBARRAY_LEAF_NODE_LOW,
     SDP_SUBARRAY_LEAF_NODE_MID,
-    event_remover,
     logger,
 )
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
@@ -57,10 +56,7 @@ def on_command(
             (),
             lookahead=2,
         )
-        event_remover(
-            change_event_callbacks,
-            ["longRunningCommandResult", "longRunningCommandsInQueue"],
-        )
+
         sdp_subarray_ln_proxy.unsubscribe_event(LRCR_QUE_ID)
         sdp_subarray_ln_proxy.unsubscribe_event(LRCR_ID)
         tear_down(dev_factory, sdp_subarray_proxy, sdp_subarray_ln_proxy)

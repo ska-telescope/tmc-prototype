@@ -12,7 +12,6 @@ from tests.settings import (
     SDP_SUBARRAY_DEVICE_MID,
     SDP_SUBARRAY_LEAF_NODE_LOW,
     SDP_SUBARRAY_LEAF_NODE_MID,
-    event_remover,
     logger,
 )
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
@@ -56,10 +55,6 @@ def assign_resources_timeout(
 
     sdp_subarray.ResetDelayInfo()
 
-    event_remover(
-        change_event_callbacks,
-        ["longRunningCommandResult", "longRunningCommandsInQueue"],
-    )
     sdpsal_node.unsubscribe_event(LRCR_ID)
     tear_down(dev_factory, sdp_subarray, sdpsal_node)
 
@@ -102,10 +97,6 @@ def configure_timeout(
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
     try:
-        event_remover(
-            change_event_callbacks,
-            ["longRunningCommandResult", "longRunningCommandsInQueue"],
-        )
         LRCR_QUE_ID = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandsInQueue",
             tango.EventType.CHANGE_EVENT,
@@ -174,10 +165,6 @@ def configure_timeout(
             sdp_subarray_ln_proxy, ObsState.READY
         )
 
-        event_remover(
-            change_event_callbacks,
-            ["longRunningCommandResult", "longRunningCommandsInQueue"],
-        )
         sdp_subarray.ResetDelayInfo()
         tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
         sdp_subarray_ln_proxy.unsubscribe_event(LRCR_QUE_ID)
