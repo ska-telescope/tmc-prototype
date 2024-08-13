@@ -12,10 +12,7 @@ from tests.conftest import (
     SDPSUBARRAYLEAFNODE_MID,
 )
 from tests.settings import event_remover, logger
-from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
-    tear_down,
-    wait_and_assert_sdp_subarray_obsstate,
-)
+from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
 def assign_resources(
@@ -40,16 +37,24 @@ def assign_resources(
             f"AssignResources Command ID: {unique_id} Returned \
                 result: {result}"
         )
-
+        obsstate_id = sdpsal_node.subscribe_event(
+            "sdpSubarrayObsState",
+            tango.EventType.CHANGE_EVENT,
+            change_event_callbacks["sdpSubarrayObsState"],
+        )
         assert unique_id[0].endswith("AssignResources")
         assert result[0] == ResultCode.QUEUED
 
-        LRCR_ID = sdpsal_node.subscribe_event(
+        lrcr_id = sdpsal_node.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandResult"],
         )
-        wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.IDLE,
+            lookahead=4,
+        )
+
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], COMMAND_COMPLETED),
             lookahead=4,
@@ -58,11 +63,18 @@ def assign_resources(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
-        tear_down(dev_factory, sdp_subarray, sdpsal_node)
+        tear_down(
+            dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks
+        )
 
-        sdpsal_node.unsubscribe_event(LRCR_ID)
+        sdpsal_node.unsubscribe_event(lrcr_id)
+        sdpsal_node.unsubscribe_event(obsstate_id)
     except Exception as exception:
-        tear_down(dev_factory, sdp_subarray, sdpsal_node)
+        sdpsal_node.unsubscribe_event(lrcr_id)
+        sdpsal_node.unsubscribe_event(obsstate_id)
+        tear_down(
+            dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks
+        )
         raise Exception(exception)
 
 

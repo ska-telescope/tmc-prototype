@@ -50,6 +50,15 @@ RESET_DEFECT = json.dumps(
     }
 )
 
+ERROR_PROPAGATION_DEFECT = json.dumps(
+    {
+        "enabled": True,
+        "fault_type": FaultType.LONG_RUNNING_EXCEPTION,
+        "error_message": "Exception occurred, command failed.",
+        "result": ResultCode.FAILED,
+    }
+)
+
 
 def count_faulty_devices(component_manager):
     """Count faulty devices"""

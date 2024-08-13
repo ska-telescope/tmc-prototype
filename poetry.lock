@@ -2131,8 +2131,8 @@ ska-telmodel = "^1.19.0"
 [package.source]
 type = "git"
 url = "https://gitlab.com/ska-telescope/ska-tmc/ska-tmc-common.git"
-reference = "sah-1565"
-resolved_reference = "e30511ba7b9264a043f1721216bcd21561092c6e"
+reference = "hm-523"
+resolved_reference = "0457febd37c49cc89e0ba10d0731f5f94ea852d6"
 
 [[package]]
 name = "smmap"
@@ -2643,7 +2643,7 @@ reference = "PyPI-public"
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.10"
-content-hash = "11c6cd22d7989f6a216fa198eac815d669f70a9e88c1a002e5b636c133a3b889"
+content-hash = "a93657cbdbc01c61d4e48c768463546c8612930d509c776c42b9165d02468811"
 
 [metadata.files]
 alabaster = [

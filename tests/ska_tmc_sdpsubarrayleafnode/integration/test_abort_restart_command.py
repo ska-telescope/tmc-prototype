@@ -16,7 +16,6 @@ from tests.settings import (
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     set_sdp_subarray_obsstate,
     tear_down,
-    wait_and_assert_sdp_subarray_obsstate,
 )
 
 device_obsstate = [
@@ -44,13 +43,13 @@ def abort_restart_command(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
-        LRCR_QUE_ID = sdp_subarray_ln_proxy.subscribe_event(
+        lrcr_in_que_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandsInQueue",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandsInQueue"],
         )
 
-        LRCR_ID = sdp_subarray_ln_proxy.subscribe_event(
+        lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandResult"],
@@ -62,12 +61,24 @@ def abort_restart_command(
             (),
         )
         set_sdp_subarray_obsstate(dev_factory, obsstate, sdp_subarray)
-        wait_and_assert_sdp_subarray_obsstate(sdp_subarray_ln_proxy, obsstate)
-        result, unique_id = sdp_subarray_ln_proxy.Abort()
 
-        wait_and_assert_sdp_subarray_obsstate(
-            sdp_subarray_ln_proxy, ObsState.ABORTED
+        obsstate_id = sdp_subarray_ln_proxy.subscribe_event(
+            "sdpSubarrayObsState",
+            tango.EventType.CHANGE_EVENT,
+            change_event_callbacks["sdpSubarrayObsState"],
         )
+
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            obsstate,
+            lookahead=4,
+        )
+
+        result, unique_id = sdp_subarray_ln_proxy.Abort()
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.ABORTED,
+            lookahead=4,
+        )
+
         result, unique_id = sdp_subarray_ln_proxy.Restart()
         assert unique_id[0].endswith("Restart")
         assert result[0] == ResultCode.QUEUED
@@ -78,18 +89,25 @@ def abort_restart_command(
             lookahead=6,
         )
 
-        wait_and_assert_sdp_subarray_obsstate(
-            sdp_subarray_ln_proxy, ObsState.EMPTY
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.EMPTY,
+            lookahead=4,
         )
         event_remover(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_QUE_ID)
-        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_ID)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
 
     except Exception as exception:
-        tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
+        tear_down(
+            dev_factory,
+            sdp_subarray,
+            sdp_subarray_ln_proxy,
+            change_event_callbacks,
+        )
         raise Exception(exception)
 
 

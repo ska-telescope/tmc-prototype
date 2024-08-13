@@ -23,7 +23,7 @@ def on_command(
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_fqdn)
     sdp_subarray_proxy = dev_factory.get_device(sdpsa_fqdn)
     try:
-        LRCR_QUE_ID = sdp_subarray_ln_proxy.subscribe_event(
+        lrcr_in_que_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandsInQueue",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandsInQueue"],
@@ -41,7 +41,7 @@ def on_command(
         )
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         assert result[0] == ResultCode.QUEUED
-        LRCR_ID = sdp_subarray_ln_proxy.subscribe_event(
+        lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandResult"],
@@ -61,13 +61,23 @@ def on_command(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_QUE_ID)
-        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_ID)
-        tear_down(dev_factory, sdp_subarray_proxy, sdp_subarray_ln_proxy)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+        tear_down(
+            dev_factory,
+            sdp_subarray_proxy,
+            sdp_subarray_ln_proxy,
+            change_event_callbacks,
+        )
     except Exception as exception:
-        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_QUE_ID)
-        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_ID)
-        tear_down(dev_factory, sdp_subarray_proxy, sdp_subarray_ln_proxy)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+        tear_down(
+            dev_factory,
+            sdp_subarray_proxy,
+            sdp_subarray_ln_proxy,
+            change_event_callbacks,
+        )
         raise Exception(exception)
 
 

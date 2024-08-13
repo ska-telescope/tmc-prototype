@@ -15,11 +15,8 @@ from tests.conftest import (
     SDPSUBARRAYLEAFNODE_LOW,
     SDPSUBARRAYLEAFNODE_MID,
 )
-from tests.settings import RESET_DEFECT, logger  # ERROR_PROPAGATION_DEFECT,
-from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
-    tear_down,
-    wait_and_assert_sdp_subarray_obsstate,
-)
+from tests.settings import ERROR_PROPAGATION_DEFECT, RESET_DEFECT, logger
+from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
 def release_all_resources_error_propagation(
@@ -47,20 +44,27 @@ def release_all_resources_error_propagation(
     assert unique_id[0].endswith("AssignResources")
     assert result[0] == ResultCode.QUEUED
 
-    LRCR_ID = sdpsal_node.subscribe_event(
+    lrcr_id = sdpsal_node.subscribe_event(
         "longRunningCommandResult",
         tango.EventType.CHANGE_EVENT,
         change_event_callbacks["longRunningCommandResult"],
     )
-    change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(ResultCode.OK.value)),
-        lookahead=4,
+    obsstate_id = sdpsal_node.subscribe_event(
+        "sdpSubarrayObsState",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["sdpSubarrayObsState"],
     )
 
-    wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
-
+    change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+        ObsState.IDLE,
+        lookahead=4,
+    )
+    change_event_callbacks["longRunningCommandResult"].assert_change_event(
+        (unique_id[0], COMMAND_COMPLETED),
+        lookahead=4,
+    )
     # Check error propagation
-    # sdp_subarray.SetDefective(ERROR_PROPAGATION_DEFECT)
+    sdp_subarray.SetDefective(ERROR_PROPAGATION_DEFECT)
     result, unique_id = sdpsal_node.ReleaseAllResources()
 
     logger.info(
@@ -72,17 +76,14 @@ def release_all_resources_error_propagation(
     assert result[0] == ResultCode.QUEUED
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (
-            unique_id[0],
-            "ska_tmc_common.exceptions.CommandNotAllowed: Exception occured,"
-            + " command failed.\n",
-        ),
+        (unique_id[0], '[3, "Long running exception induced"]'),
         lookahead=6,
     )
 
     sdp_subarray.SetDefective(RESET_DEFECT)
-    sdpsal_node.unsubscribe_event(LRCR_ID)
-    tear_down(dev_factory, sdp_subarray, sdpsal_node)
+    sdpsal_node.unsubscribe_event(lrcr_id)
+    sdpsal_node.unsubscribe_event(obsstate_id)
+    tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks)
 
 
 def release_all_resources_timeout(
@@ -108,24 +109,26 @@ def release_all_resources_timeout(
     assert unique_id[0].endswith("AssignResources")
     assert result[0] == ResultCode.QUEUED
 
-    LRCR_ID = sdpsal_node.subscribe_event(
+    lrcr_id = sdpsal_node.subscribe_event(
         "longRunningCommandResult",
         tango.EventType.CHANGE_EVENT,
         change_event_callbacks["longRunningCommandResult"],
+    )
+    obsstate_id = sdpsal_node.subscribe_event(
+        "sdpSubarrayObsState",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["sdpSubarrayObsState"],
     )
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (unique_id[0], COMMAND_COMPLETED),
         lookahead=4,
     )
+    change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+        ObsState.IDLE,
+        lookahead=4,
+    )
 
-    wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
-
-    # Check timeout
-    # sdp_subarray.SetDefective(TIMEOUT_DEFECT)
-    sdp_subarray.SetDelayInfo(json.dumps({"ReleaseAllResources": 12}))
-    # wait_for_attribute_to_change_to(
-    #     MID_SDP_SUBARRAY, "defective", TIMEOUT_DEFECT
-    # )
+    sdp_subarray.SetDelayInfo(json.dumps({"ReleaseAllResources": 35}))
     result, unique_id = sdpsal_node.ReleaseAllResources()
 
     logger.info(
@@ -141,13 +144,10 @@ def release_all_resources_timeout(
         lookahead=3,
     )
     sdp_subarray.ResetDelayInfo()
-    # sdp_subarray.SetDefective(RESET_DEFECT)
-    # wait_for_attribute_to_change_to(
-    #     MID_SDP_SUBARRAY, "defective", RESET_DEFECT
-    # )
 
-    sdpsal_node.unsubscribe_event(LRCR_ID)
-    tear_down(dev_factory, sdp_subarray, sdpsal_node)
+    sdpsal_node.unsubscribe_event(lrcr_id)
+    sdpsal_node.unsubscribe_event(obsstate_id)
+    tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks)
 
 
 @pytest.mark.post_deployment
@@ -165,6 +165,7 @@ def test_release_all_res_command_timeout_mid(
     )
 
 
+@pytest.mark.test
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_release_all_res_command_error_propagation_mid(

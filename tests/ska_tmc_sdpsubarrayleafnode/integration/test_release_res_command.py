@@ -6,10 +6,7 @@ from ska_tmc_common.dev_factory import DevFactory
 
 from tests.conftest import COMMAND_COMPLETED
 from tests.settings import event_remover, logger
-from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
-    tear_down,
-    wait_and_assert_sdp_subarray_obsstate,
-)
+from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
 def release_resources(
@@ -20,16 +17,21 @@ def release_resources(
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
     try:
-        LRCR_QUE_ID = sdp_subarray_ln_proxy.subscribe_event(
+        lrcr_in_que_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandsInQueue",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandsInQueue"],
         )
 
-        LRCR_ID = sdp_subarray_ln_proxy.subscribe_event(
+        lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandResult"],
+        )
+        obsstate_id = sdp_subarray_ln_proxy.subscribe_event(
+            "sdpSubarrayObsState",
+            tango.EventType.CHANGE_EVENT,
+            change_event_callbacks["sdpSubarrayObsState"],
         )
 
         change_event_callbacks[
@@ -72,9 +74,11 @@ def release_resources(
             (unique_id[0], COMMAND_COMPLETED),
             lookahead=4,
         )
-        wait_and_assert_sdp_subarray_obsstate(
-            sdp_subarray_ln_proxy, ObsState.IDLE
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.IDLE,
+            lookahead=4,
         )
+
         result, unique_id = sdp_subarray_ln_proxy.ReleaseAllResources()
         change_event_callbacks[
             "longRunningCommandsInQueue"
@@ -93,20 +97,34 @@ def release_resources(
             (unique_id[0], COMMAND_COMPLETED),
             lookahead=4,
         )
-        wait_and_assert_sdp_subarray_obsstate(
-            sdp_subarray_ln_proxy, ObsState.EMPTY
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.EMPTY,
+            lookahead=4,
         )
+
         event_remover(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_QUE_ID)
-        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_ID)
-        tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
+        tear_down(
+            dev_factory,
+            sdp_subarray,
+            sdp_subarray_ln_proxy,
+            change_event_callbacks,
+        )
     except Exception as exception:
-        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_QUE_ID)
-        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_ID)
-        tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
+        tear_down(
+            dev_factory,
+            sdp_subarray,
+            sdp_subarray_ln_proxy,
+            change_event_callbacks,
+        )
         raise Exception(exception)
 
 

@@ -15,10 +15,7 @@ from tests.settings import (
     event_remover,
     logger,
 )
-from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
-    tear_down,
-    wait_and_assert_sdp_subarray_obsstate,
-)
+from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
 def assign_resources_timeout(
@@ -33,7 +30,7 @@ def assign_resources_timeout(
         sdp_subarray = dev_factory.get_device(SDP_SUBARRAY_DEVICE_MID)
     elif sdpsln_name == SDP_SUBARRAY_LEAF_NODE_LOW:
         sdp_subarray = dev_factory.get_device(SDP_SUBARRAY_DEVICE_LOW)
-    sdp_subarray.SetDelayInfo(json.dumps({"AssignResources": 12}))
+    sdp_subarray.SetDelayInfo(json.dumps({"AssignResources": 35}))
     # AssignResources
     result, unique_id = sdpsal_node.AssignResources(assign_input_str)
     logger.info(
@@ -44,7 +41,7 @@ def assign_resources_timeout(
     assert unique_id[0].endswith("AssignResources")
     assert result[0] == ResultCode.QUEUED
 
-    LRCR_ID = sdpsal_node.subscribe_event(
+    lrcr_id = sdpsal_node.subscribe_event(
         "longRunningCommandResult",
         tango.EventType.CHANGE_EVENT,
         change_event_callbacks["longRunningCommandResult"],
@@ -60,8 +57,8 @@ def assign_resources_timeout(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
-    sdpsal_node.unsubscribe_event(LRCR_ID)
-    tear_down(dev_factory, sdp_subarray, sdpsal_node)
+    sdpsal_node.unsubscribe_event(lrcr_id)
+    tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks)
 
 
 @pytest.mark.post_deployment
@@ -106,16 +103,21 @@ def configure_timeout(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
-        LRCR_QUE_ID = sdp_subarray_ln_proxy.subscribe_event(
+        lrcr_in_que_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandsInQueue",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandsInQueue"],
         )
 
-        LRCR_ID = sdp_subarray_ln_proxy.subscribe_event(
+        lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandResult"],
+        )
+        obsstate_id = sdp_subarray_ln_proxy.subscribe_event(
+            "sdpSubarrayObsState",
+            tango.EventType.CHANGE_EVENT,
+            change_event_callbacks["sdpSubarrayObsState"],
         )
 
         change_event_callbacks[
@@ -153,10 +155,12 @@ def configure_timeout(
             (unique_id[0], COMMAND_COMPLETED),
             lookahead=4,
         )
-        wait_and_assert_sdp_subarray_obsstate(
-            sdp_subarray_ln_proxy, ObsState.IDLE
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.IDLE,
+            lookahead=4,
         )
-        sdp_subarray.SetDelayInfo(json.dumps({"Configure": 12}))
+
+        sdp_subarray.SetDelayInfo(json.dumps({"Configure": 35}))
         configure_input_str = json_factory("command_Configure")
 
         result, unique_id = sdp_subarray_ln_proxy.Configure(
@@ -170,8 +174,9 @@ def configure_timeout(
             (unique_id[0], '[3, "Timeout has occurred, command failed"]'),
             lookahead=3,
         )
-        wait_and_assert_sdp_subarray_obsstate(
-            sdp_subarray_ln_proxy, ObsState.READY
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.READY,
+            lookahead=4,
         )
 
         event_remover(
@@ -179,15 +184,27 @@ def configure_timeout(
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
         sdp_subarray.ResetDelayInfo()
-        tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
-        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_QUE_ID)
-        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_ID)
+        tear_down(
+            dev_factory,
+            sdp_subarray,
+            sdp_subarray_ln_proxy,
+            change_event_callbacks,
+        )
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
 
     except Exception as exception:
-        tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
+        tear_down(
+            dev_factory,
+            sdp_subarray,
+            sdp_subarray_ln_proxy,
+            change_event_callbacks,
+        )
         sdp_subarray.ResetDelayInfo()
-        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_QUE_ID)
-        sdp_subarray_ln_proxy.unsubscribe_event(LRCR_ID)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
         raise Exception(exception)
 
 
