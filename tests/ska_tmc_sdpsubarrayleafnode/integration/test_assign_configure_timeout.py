@@ -37,6 +37,11 @@ def assign_resources_timeout(
         f"AssignResources Command ID: {unique_id} \
             ResultCode received: {result}"
     )
+    obsstate_id = sdpsal_node.subscribe_event(
+        "sdpSubarrayObsState",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["sdpSubarrayObsState"],
+    )
 
     assert unique_id[0].endswith("AssignResources")
     assert result[0] == ResultCode.QUEUED
@@ -57,8 +62,10 @@ def assign_resources_timeout(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
-    sdpsal_node.unsubscribe_event(lrcr_id)
+
     tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks)
+    sdpsal_node.unsubscribe_event(lrcr_id)
+    sdpsal_node.unsubscribe_event(obsstate_id)
 
 
 @pytest.mark.post_deployment
