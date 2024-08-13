@@ -70,11 +70,11 @@ def assign_resources(
         sdpsal_node.unsubscribe_event(lrcr_id)
         sdpsal_node.unsubscribe_event(obsstate_id)
     except Exception as exception:
-        sdpsal_node.unsubscribe_event(lrcr_id)
-        sdpsal_node.unsubscribe_event(obsstate_id)
         tear_down(
             dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks
         )
+        sdpsal_node.unsubscribe_event(lrcr_id)
+        sdpsal_node.unsubscribe_event(obsstate_id)
         raise Exception(exception)
 
 

@@ -61,23 +61,24 @@ def on_command(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+
         tear_down(
             dev_factory,
             sdp_subarray_proxy,
             sdp_subarray_ln_proxy,
             change_event_callbacks,
         )
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
     except Exception as exception:
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
         tear_down(
             dev_factory,
             sdp_subarray_proxy,
             sdp_subarray_ln_proxy,
             change_event_callbacks,
         )
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
         raise Exception(exception)
 
 

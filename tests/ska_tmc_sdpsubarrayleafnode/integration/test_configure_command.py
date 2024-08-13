@@ -115,26 +115,27 @@ def configure(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
-        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
+
         tear_down(
             dev_factory,
             sdp_subarray,
             sdp_subarray_ln_proxy,
             change_event_callbacks,
         )
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
 
     except Exception as exception:
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
-        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
         tear_down(
             dev_factory,
             sdp_subarray,
             sdp_subarray_ln_proxy,
             change_event_callbacks,
         )
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
         raise Exception(exception)
 
 

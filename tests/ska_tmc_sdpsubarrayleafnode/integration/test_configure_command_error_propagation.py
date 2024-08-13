@@ -77,18 +77,18 @@ def configure_error_propogation(
             change_event_callbacks,
             ["longRunningCommandResult"],
         )
-        sdpsln_device.unsubscribe_event(obsstate_id)
-        sdpsln_device.unsubscribe_event(lrcr_id)
         tear_down(
             dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks
         )
+        sdpsln_device.unsubscribe_event(obsstate_id)
+        sdpsln_device.unsubscribe_event(lrcr_id)
 
     except Exception as exception:
-        sdpsln_device.unsubscribe_event(obsstate_id)
-        sdpsln_device.unsubscribe_event(lrcr_id)
         tear_down(
             dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks
         )
+        sdpsln_device.unsubscribe_event(obsstate_id)
+        sdpsln_device.unsubscribe_event(lrcr_id)
         raise Exception(exception)
 
 
