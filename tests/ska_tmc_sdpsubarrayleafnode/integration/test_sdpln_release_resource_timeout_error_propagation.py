@@ -79,11 +79,12 @@ def release_all_resources_error_propagation(
         (unique_id[0], '[3, "Long running exception induced"]'),
         lookahead=6,
     )
-   
+
     tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks)
     sdp_subarray.SetDefective(RESET_DEFECT)
     sdpsal_node.unsubscribe_event(lrcr_id)
     sdpsal_node.unsubscribe_event(obsstate_id)
+
 
 def release_all_resources_timeout(
     tango_context,
@@ -144,10 +145,10 @@ def release_all_resources_timeout(
     )
     sdp_subarray.ResetDelayInfo()
 
-    
     tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks)
     sdpsal_node.unsubscribe_event(lrcr_id)
     sdpsal_node.unsubscribe_event(obsstate_id)
+
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
@@ -164,7 +165,6 @@ def test_release_all_res_command_timeout_mid(
     )
 
 
-@pytest.mark.test
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_release_all_res_command_error_propagation_mid(

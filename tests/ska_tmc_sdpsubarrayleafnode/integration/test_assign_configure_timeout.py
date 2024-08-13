@@ -63,7 +63,7 @@ def assign_resources_timeout(
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_release_all_res_command_timeout_mid(
+def test_assign_resources_command_timeout_mid(
     tango_context,
     json_factory,
     change_event_callbacks,
@@ -78,7 +78,7 @@ def test_release_all_res_command_timeout_mid(
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
-def test_release_all_res_command_timeout_low(
+def test_assign_resources_command_timeout_low(
     tango_context,
     json_factory,
     change_event_callbacks,
