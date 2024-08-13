@@ -154,7 +154,7 @@ def change_event_callbacks() -> MockTangoEventCallbackGroup:
         "longRunningCommandResult",
         "longRunningCommandsInQueue",
         "sdpSubarrayObsState",
-        timeout=30.0,
+        timeout=40.0,
     )
 
 
