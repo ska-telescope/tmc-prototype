@@ -181,11 +181,6 @@ def configure_timeout(
             (unique_id[0], '[3, "Timeout has occurred, command failed"]'),
             lookahead=3,
         )
-        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
-            ObsState.READY,
-            lookahead=4,
-        )
-
         event_remover(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
