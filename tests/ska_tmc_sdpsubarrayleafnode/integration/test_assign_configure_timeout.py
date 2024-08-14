@@ -60,7 +60,11 @@ def assign_resources_timeout(
 
     event_remover(
         change_event_callbacks,
-        ["longRunningCommandResult", "longRunningCommandsInQueue"],
+        [
+            "longRunningCommandResult",
+            "longRunningCommandsInQueue",
+            "sdpSubarrayObsState",
+        ],
     )
 
     tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks)
@@ -181,11 +185,15 @@ def configure_timeout(
             (unique_id[0], '[3, "Timeout has occurred, command failed"]'),
             lookahead=3,
         )
+        sdp_subarray.ResetDelayInfo()
         event_remover(
             change_event_callbacks,
-            ["longRunningCommandResult", "longRunningCommandsInQueue"],
+            [
+                "longRunningCommandResult",
+                "longRunningCommandsInQueue",
+                "sdpSubarrayObsState",
+            ],
         )
-        sdp_subarray.ResetDelayInfo()
         tear_down(
             dev_factory,
             sdp_subarray,

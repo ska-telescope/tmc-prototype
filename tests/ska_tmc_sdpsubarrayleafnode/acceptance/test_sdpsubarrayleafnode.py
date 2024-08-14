@@ -8,9 +8,6 @@ from tango import Database, DeviceProxy
 
 from tests.conftest import COMMAND_COMPLETED
 from tests.settings import event_remover, logger
-from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
-    wait_and_assert_sdp_subarray_obsstate,
-)
 
 
 @given(
@@ -118,30 +115,46 @@ def check_command(
         tango.EventType.CHANGE_EVENT,
         change_event_callbacks["longRunningCommandResult"],
     )
+    obsstate_id = sdpsubarrayleaf_node_dev.subscribe_event(
+        "sdpSubarrayObsState",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["sdpSubarrayObsState"],
+    )
 
     if command_name == "AssignResources":
-        wait_and_assert_sdp_subarray_obsstate(
-            sdpsubarrayleaf_node_dev, ObsState.IDLE
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.IDLE,
+            lookahead=4,
         )
+
     elif command_name == "Configure":
-        wait_and_assert_sdp_subarray_obsstate(
-            sdpsubarrayleaf_node_dev, ObsState.READY
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.READY,
+            lookahead=4,
         )
+
     elif command_name == "Scan":
-        wait_and_assert_sdp_subarray_obsstate(
-            sdpsubarrayleaf_node_dev, ObsState.SCANNING
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.SCANNING,
+            lookahead=4,
         )
+
     elif command_name == "EndScan":
-        wait_and_assert_sdp_subarray_obsstate(
-            sdpsubarrayleaf_node_dev, ObsState.READY
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.READY,
+            lookahead=4,
         )
+
     elif command_name == "End":
-        wait_and_assert_sdp_subarray_obsstate(
-            sdpsubarrayleaf_node_dev, ObsState.IDLE
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.IDLE,
+            lookahead=4,
         )
+
     elif command_name == "ReleaseAllResources":
-        wait_and_assert_sdp_subarray_obsstate(
-            sdpsubarrayleaf_node_dev, ObsState.EMPTY
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.EMPTY,
+            lookahead=4,
         )
 
     sdpsubarrayleaf_node.subscribe_event(
@@ -161,6 +174,7 @@ def check_command(
             "longRunningCommandResult",
         ],
     )
+    sdpsubarrayleaf_node.unsubscribe_event(obsstate_id)
 
 
 scenarios(
