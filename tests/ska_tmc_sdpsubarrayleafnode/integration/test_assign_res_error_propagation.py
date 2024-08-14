@@ -57,13 +57,13 @@ def assign_resources_error_propagation(
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
         tear_down(
-            dev_factory, sdp_subarray, sdpsln_name, change_event_callbacks
+            dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks
         )
         sdpsln_device.unsubscribe_event(lrcr_id)
         sdpsln_device.unsubscribe_event(obsstate_id)
     except Exception as exception:
         tear_down(
-            dev_factory, sdp_subarray, sdpsln_name, change_event_callbacks
+            dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks
         )
         sdpsln_device.unsubscribe_event(lrcr_id)
 
