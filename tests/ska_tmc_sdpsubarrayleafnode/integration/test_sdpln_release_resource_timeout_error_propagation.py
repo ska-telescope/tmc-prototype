@@ -84,9 +84,8 @@ def release_all_resources_error_propagation(
         (unique_id[0], '[3, "Long running exception induced"]'),
         lookahead=6,
     )
-
-    tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks)
     sdp_subarray.SetDefective(RESET_DEFECT)
+    tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks)
     sdpsal_node.unsubscribe_event(lrcr_id)
     sdpsal_node.unsubscribe_event(obsstate_id)
 

@@ -113,7 +113,11 @@ def configure(
 
         event_remover(
             change_event_callbacks,
-            ["longRunningCommandResult", "longRunningCommandsInQueue"],
+            [
+                "longRunningCommandResult",
+                "longRunningCommandsInQueue",
+                "sdpSubarrayObsState",
+            ],
         )
 
         tear_down(
