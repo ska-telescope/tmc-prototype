@@ -170,11 +170,9 @@ def check_command(
 
     event_remover(
         change_event_callbacks,
-        [
-            "longRunningCommandResult",
-        ],
+        ["longRunningCommandResult", "sdpSubarrayObsState"],
     )
-    sdpsubarrayleaf_node.unsubscribe_event(obsstate_id)
+    sdpsubarrayleaf_node_dev.unsubscribe_event(obsstate_id)
 
 
 scenarios(
