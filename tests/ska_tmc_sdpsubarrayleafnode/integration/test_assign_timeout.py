@@ -1,5 +1,4 @@
 """Test cases for testing timeout on assignResources."""
-import json
 from typing import Callable
 
 import pytest
@@ -8,6 +7,7 @@ from ska_tango_base.commands import ResultCode
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.settings import (
+    ASSIGN_TIMEOUT,
     SDP_SUBARRAY_DEVICE_LOW,
     SDP_SUBARRAY_DEVICE_MID,
     SDP_SUBARRAY_LEAF_NODE_LOW,
@@ -29,7 +29,7 @@ def assign_resources_timeout(
         sdp_subarray = dev_factory.get_device(SDP_SUBARRAY_DEVICE_MID)
     elif sdpsln_name == SDP_SUBARRAY_LEAF_NODE_LOW:
         sdp_subarray = dev_factory.get_device(SDP_SUBARRAY_DEVICE_LOW)
-    sdp_subarray.SetDelayInfo(json.dumps({"AssignResources": 35}))
+    sdp_subarray.SetDelayInfo(ASSIGN_TIMEOUT)
     # AssignResources
     result, unique_id = sdpsal_node.AssignResources(assign_input_str)
     logger.info(

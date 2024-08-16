@@ -1,6 +1,5 @@
 # TODO: This test needs to be refactored separately as we don't have a way to
 # raise and exception in ReleaseAllResources command.
-import json
 
 import pytest
 import tango
@@ -17,6 +16,7 @@ from tests.conftest import (
 )
 from tests.settings import (
     FAILED_RESULT_DEFECT,
+    RELEASE_TIMEOUT,
     RESET_DEFECT,
     event_remover,
     logger,
@@ -25,9 +25,9 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
 def release_all_resources_error_propagation(
-    device,
-    assign_input_str,
-    change_event_callbacks,
+    device: str,
+    assign_input_str: str,
+    change_event_callbacks: dict,
 ) -> None:
     dev_factory = DevFactory()
 
@@ -130,7 +130,7 @@ def release_all_resources_timeout(
         lookahead=4,
     )
 
-    sdp_subarray.SetDelayInfo(json.dumps({"ReleaseAllResources": 35}))
+    sdp_subarray.SetDelayInfo(RELEASE_TIMEOUT)
     result, unique_id = sdpsal_node.ReleaseAllResources()
 
     logger.info(

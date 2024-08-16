@@ -30,6 +30,9 @@ SDP_SUBARRAY_LEAF_NODE_MID = "ska_mid/tm_leaf_node/sdp_subarray01"
 SDP_SUBARRAY_LEAF_NODE_LOW = "ska_low/tm_leaf_node/sdp_subarray01"
 SDP_MASTER_LEAF_DEVICE_MID = "ska_mid/tm_leaf_node/sdp_master"
 SDP_MASTER_LEAF_DEVICE_LOW = "ska_low/tm_leaf_node/sdp_master"
+ASSIGN_TIMEOUT = json.dumps({"AssignResources": 35})
+RELEASE_TIMEOUT = json.dumps({"ReleaseAllResources": 35})
+CONFIGURE_TIMEOUT = json.dumps({"Configure": 35})
 
 TIMEOUT_DEFECT = json.dumps(
     {

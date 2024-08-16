@@ -1,5 +1,4 @@
 """Test cases for testing timeout on Configure command."""
-import json
 from typing import Callable
 
 import pytest
@@ -10,6 +9,7 @@ from ska_tmc_common.dev_factory import DevFactory
 
 from tests.conftest import COMMAND_COMPLETED
 from tests.settings import (
+    CONFIGURE_TIMEOUT,
     SDP_SUBARRAY_DEVICE_LOW,
     SDP_SUBARRAY_DEVICE_MID,
     SDP_SUBARRAY_LEAF_NODE_LOW,
@@ -91,7 +91,7 @@ def configure_timeout(
             lookahead=4,
         )
 
-        sdp_subarray.SetDelayInfo(json.dumps({"Configure": 35}))
+        sdp_subarray.SetDelayInfo(CONFIGURE_TIMEOUT)
         configure_input_str = json_factory("command_Configure")
 
         result, unique_id = sdp_subarray_ln_proxy.Configure(
