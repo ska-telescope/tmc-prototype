@@ -1,3 +1,4 @@
+"""Test cases for testing timeout on Configure command."""
 import json
 
 import pytest
