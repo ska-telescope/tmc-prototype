@@ -7,7 +7,7 @@ from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
-from tests.conftest import COMMAND_COMPLETED
+from tests.conftest import COMMAND_COMPLETED, TIMEOUT_EXCEPTION
 from tests.settings import (
     CONFIGURE_TIMEOUT,
     SDP_SUBARRAY_DEVICE_LOW,
@@ -102,7 +102,10 @@ def configure_timeout(
         assert result[0] == ResultCode.QUEUED
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], '[3, "Timeout has occurred, command failed"]'),
+            (
+                unique_id[0],
+                TIMEOUT_EXCEPTION,
+            ),
             lookahead=3,
         )
         sdp_subarray.ResetDelayInfo()

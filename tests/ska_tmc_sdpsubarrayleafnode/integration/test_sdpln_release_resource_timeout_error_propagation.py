@@ -13,6 +13,7 @@ from tests.conftest import (
     MID_SDP_SUBARRAY,
     SDPSUBARRAYLEAFNODE_LOW,
     SDPSUBARRAYLEAFNODE_MID,
+    TIMEOUT_EXCEPTION,
 )
 from tests.settings import (
     FAILED_RESULT_DEFECT,
@@ -142,7 +143,7 @@ def release_all_resources_timeout(
     assert result[0] == ResultCode.QUEUED
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], '[3, "Timeout has occurred, command failed"]'),
+        (unique_id[0], TIMEOUT_EXCEPTION),
         lookahead=3,
     )
     sdp_subarray.ResetDelayInfo()
