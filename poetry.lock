@@ -94,7 +94,7 @@ pyerfa = ">=2.0"
 PyYAML = ">=3.13"
 
 [package.extras]
-all = ["asdf (>=2.10.0)", "beautifulsoup4", "bleach", "bottleneck", "certifi", "dask[array]", "fsspec[http] (>=2022.8.2)", "h5py", "html5lib", "ipython (>=4.2)", "jplephem", "matplotlib (>=3.3,!=3.4.0,!=3.5.2)", "mpmath", "pandas", "pre-commit", "pyarrow (>=5.0.0)", "pytest (>=7.0,<8)", "pytz", "s3fs (>=2022.8.2)", "scipy (>=1.5)", "sortedcontainers", "typing_extensions (>=3.10.0.1)"]
+all = ["asdf (>=2.10.0)", "beautifulsoup4", "bleach", "bottleneck", "certifi", "dask[array]", "fsspec[http] (>=2022.8.2)", "h5py", "html5lib", "ipython (>=4.2)", "jplephem", "matplotlib (>=3.3,!=3.4.0,!=3.5.2)", "mpmath", "pandas", "pre-commit", "pyarrow (>=5.0.0)", "pytest (>=7.0,<8)", "pytz", "s3fs (>=2022.8.2)", "scipy (>=1.5)", "sortedcontainers", "typing-extensions (>=3.10.0.1)"]
 docs = ["Jinja2 (>=3.0)", "matplotlib (>=3.3,!=3.4.0,!=3.5.2)", "pytest (>=7.0,<8)", "scipy (>=1.3)", "sphinx", "sphinx-astropy (>=1.6)", "sphinx-changelog (>=1.2.0)"]
 recommended = ["matplotlib (>=3.3,!=3.4.0,!=3.5.2)", "scipy (>=1.5)"]
 test = ["pytest (>=7.0,<8)", "pytest-astropy (>=0.10)", "pytest-astropy-header (>=0.2.1)", "pytest-doctestplus (>=0.12)", "pytest-xdist"]
@@ -2107,7 +2107,7 @@ reference = 'ska-nexus'
 
 [[package]]
 name = "ska-tmc-common"
-version = "0.19.6"
+version = "0.19.7"
 description = "SKA TMC common contains common classes required for Telescope Monitoring and Control(TMC)."
 category = "main"
 optional = false
@@ -2641,7 +2641,7 @@ reference = "PyPI-public"
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.10"
-content-hash = "cd9e4097a25ac47dd3bfb3109dcd8ff10c087b57970afa1fd626532d8631ebc4"
+content-hash = "de957f38f46b16b0e205c111c84a783a87cd14e6e8d9697afb9a18ba4585757e"
 
 [metadata.files]
 alabaster = [
@@ -3758,8 +3758,8 @@ ska-tmc-cdm = [
     {file = "ska_tmc_cdm-12.0.0.tar.gz", hash = "sha256:fd5edcaa5ec02046ddce5b2c57f26062f7267271508f491460fc706688162c1d"},
 ]
 ska-tmc-common = [
-    {file = "ska_tmc_common-0.19.6-py3-none-any.whl", hash = "sha256:1f51c51b69a9424f018d8306f3a0acb3ef412513460fe4996b06efaa943d118d"},
-    {file = "ska_tmc_common-0.19.6.tar.gz", hash = "sha256:55c8b556110ec64e4bc28519e00b2be7186d7c6d54d63719e847ecb4381beac5"},
+    {file = "ska_tmc_common-0.19.7-py3-none-any.whl", hash = "sha256:c2cf8ff95f92bfeb8d12887ee913644d4e35c57ff4da3e3ab30bd1fdbb78013a"},
+    {file = "ska_tmc_common-0.19.7.tar.gz", hash = "sha256:a03ffef0da9a9699a6d3c0c184c3011ce8e7366c2c22f388d676f7082e65334b"},
 ]
 smmap = [
     {file = "smmap-5.0.1-py3-none-any.whl", hash = "sha256:e6d8668fa5f93e706934a62d7b4db19c8d9eb8cf2adbb75ef1b675aa332b69da"},
