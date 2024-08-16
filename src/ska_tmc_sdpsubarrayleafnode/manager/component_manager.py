@@ -129,6 +129,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.off_command = Off(self, self.logger)
         self.command_in_progress: str = ""
         self.tracker_thread = None
+
     def stop(self):
         """
         Method used to Stop the liveliness probe and event receiver
