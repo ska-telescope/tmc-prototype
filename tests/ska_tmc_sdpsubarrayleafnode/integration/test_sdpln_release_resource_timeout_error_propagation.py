@@ -175,6 +175,7 @@ def test_release_all_res_command_timeout_mid(
         change_event_callbacks,
     )
 
+
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_release_all_res_command_error_propagation_mid(
