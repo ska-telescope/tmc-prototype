@@ -18,7 +18,6 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
 def assign_resources_timeout(
-    tango_context,
     sdpsln_name,
     assign_input_str,
     change_event_callbacks,
@@ -74,12 +73,10 @@ def assign_resources_timeout(
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_assign_resources_command_timeout_mid(
-    tango_context,
     json_factory,
     change_event_callbacks,
 ):
     return assign_resources_timeout(
-        tango_context,
         SDP_SUBARRAY_LEAF_NODE_MID,
         json_factory("command_AssignResources"),
         change_event_callbacks,
@@ -89,12 +86,10 @@ def test_assign_resources_command_timeout_mid(
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_assign_resources_command_timeout_low(
-    tango_context,
     json_factory,
     change_event_callbacks,
 ):
     return assign_resources_timeout(
-        tango_context,
         SDP_SUBARRAY_LEAF_NODE_LOW,
         json_factory("command_AssignResources"),
         change_event_callbacks,

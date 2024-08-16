@@ -20,9 +20,8 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
 def configure_timeout(
-    tango_context, sdpsaln_name, device, json_factory, change_event_callbacks
+    sdpsaln_name, device, json_factory, change_event_callbacks
 ):
-    logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
@@ -137,11 +136,8 @@ def configure_timeout(
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_configure_command_timeout_mid(
-    tango_context, json_factory, change_event_callbacks
-):
+def test_configure_command_timeout_mid(json_factory, change_event_callbacks):
     return configure_timeout(
-        tango_context,
         SDP_SUBARRAY_LEAF_NODE_MID,
         SDP_SUBARRAY_DEVICE_MID,
         json_factory,
@@ -151,11 +147,8 @@ def test_configure_command_timeout_mid(
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
-def test_configure_command_timeout_low(
-    tango_context, json_factory, change_event_callbacks
-):
+def test_configure_command_timeout_low(json_factory, change_event_callbacks):
     return configure_timeout(
-        tango_context,
         SDP_SUBARRAY_LEAF_NODE_LOW,
         SDP_SUBARRAY_DEVICE_LOW,
         json_factory,

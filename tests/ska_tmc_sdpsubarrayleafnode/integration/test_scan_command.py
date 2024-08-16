@@ -9,9 +9,7 @@ from tests.settings import event_remover, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
-def scan(
-    tango_context, sdpsaln_name, device, json_factory, change_event_callbacks
-):
+def scan(sdpsaln_name, device, json_factory, change_event_callbacks):
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
@@ -158,11 +156,8 @@ def scan(
     "device",
     [("mid-sdp/subarray/01")],
 )
-def test_scan_command_mid(
-    tango_context, device, json_factory, change_event_callbacks
-):
+def test_scan_command_mid(device, json_factory, change_event_callbacks):
     return scan(
-        tango_context,
         "ska_mid/tm_leaf_node/sdp_subarray01",
         device,
         json_factory,
@@ -177,13 +172,11 @@ def test_scan_command_mid(
     [("low-sdp/subarray/01")],
 )
 def test_scan_command_low(
-    tango_context,
     device,
     json_factory,
     change_event_callbacks,
 ):
     return scan(
-        tango_context,
         "ska_low/tm_leaf_node/sdp_subarray01",
         device,
         json_factory,

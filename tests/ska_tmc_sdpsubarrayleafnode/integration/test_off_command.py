@@ -16,9 +16,7 @@ from tests.settings import (
 )
 
 
-def off_command(
-    tango_context, sdpsaln_fqdn, sdpsa_fqdn, change_event_callbacks
-):
+def off_command(sdpsaln_fqdn, sdpsa_fqdn, change_event_callbacks):
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_fqdn)
     event_remover(
@@ -79,9 +77,8 @@ def off_command(
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_off_command_mid(tango_context, change_event_callbacks):
+def test_off_command_mid(change_event_callbacks):
     off_command(
-        tango_context,
         SDP_SUBARRAY_LEAF_NODE_MID,
         SDP_SUBARRAY_DEVICE_MID,
         change_event_callbacks,
@@ -90,9 +87,8 @@ def test_off_command_mid(tango_context, change_event_callbacks):
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
-def test_off_command_low(tango_context, change_event_callbacks):
+def test_off_command_low(change_event_callbacks):
     off_command(
-        tango_context,
         SDP_SUBARRAY_LEAF_NODE_LOW,
         SDP_SUBARRAY_DEVICE_LOW,
         change_event_callbacks,

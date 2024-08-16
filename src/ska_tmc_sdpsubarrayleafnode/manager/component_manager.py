@@ -128,7 +128,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.on_command = On(self, self.logger)
         self.off_command = Off(self, self.logger)
         self.command_in_progress: str = ""
-        self.tracker_thread = None
 
     def stop(self):
         """
@@ -624,12 +623,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.abort_event.set()
         result_code, message = abort_command.do()
-        if (
-            hasattr(self, "tracker_thread")
-            and not self.tracker_thread.is_alive()
-        ):
-            self.abort_event.clear()
-            self.logger.info("Cleared")
         self.abort_event.clear()
         return result_code, message
 

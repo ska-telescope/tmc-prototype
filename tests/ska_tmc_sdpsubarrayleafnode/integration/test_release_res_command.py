@@ -10,9 +10,8 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
 def release_resources(
-    tango_context, sdpsaln_name, device, json_factory, change_event_callbacks
+    sdpsaln_name, device, json_factory, change_event_callbacks
 ):
-    logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
@@ -139,11 +138,8 @@ def release_resources(
     "device",
     [("mid-sdp/subarray/01")],
 )
-def test_release_res_command_mid(
-    tango_context, device, json_factory, change_event_callbacks
-):
+def test_release_res_command_mid(device, json_factory, change_event_callbacks):
     return release_resources(
-        tango_context,
         "ska_mid/tm_leaf_node/sdp_subarray01",
         device,
         json_factory,
@@ -158,13 +154,11 @@ def test_release_res_command_mid(
     [("low-sdp/subarray/01")],
 )
 def test_release_res_command_low(
-    tango_context,
     device,
     json_factory,
     change_event_callbacks,
 ):
     return release_resources(
-        tango_context,
         "ska_low/tm_leaf_node/sdp_subarray01",
         device,
         json_factory,

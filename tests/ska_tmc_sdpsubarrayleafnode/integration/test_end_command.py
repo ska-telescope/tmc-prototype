@@ -16,10 +16,7 @@ from tests.settings import (
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
-def end(
-    tango_context, sdpsaln_name, device, json_factory, change_event_callbacks
-):
-    logger.info("%s", tango_context)
+def end(sdpsaln_name, device, json_factory, change_event_callbacks):
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
@@ -169,9 +166,8 @@ def end(
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_end_command_mid(tango_context, json_factory, change_event_callbacks):
+def test_end_command_mid(json_factory, change_event_callbacks):
     return end(
-        tango_context,
         SDP_SUBARRAY_LEAF_NODE_MID,
         SDP_SUBARRAY_DEVICE_MID,
         json_factory,
@@ -182,12 +178,10 @@ def test_end_command_mid(tango_context, json_factory, change_event_callbacks):
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_end_command_low(
-    tango_context,
     json_factory,
     change_event_callbacks,
 ):
     return end(
-        tango_context,
         SDP_SUBARRAY_LEAF_NODE_LOW,
         SDP_SUBARRAY_DEVICE_LOW,
         json_factory,

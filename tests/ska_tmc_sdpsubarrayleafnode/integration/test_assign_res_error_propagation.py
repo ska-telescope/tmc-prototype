@@ -8,7 +8,6 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
 def assign_resources_error_propagation(
-    tango_context,
     sdpsln_name,
     invalid_assign_input_json,
     change_event_callbacks,
@@ -78,10 +77,9 @@ def assign_resources_error_propagation(
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_assign_resources_error_propagation(
-    tango_context, json_factory, change_event_callbacks
+    json_factory, change_event_callbacks
 ):
     return assign_resources_error_propagation(
-        tango_context,
         "ska_mid/tm_leaf_node/sdp_subarray01",
         json_factory("command_AssignResources_without_ebid"),
         change_event_callbacks,
@@ -91,10 +89,9 @@ def test_assign_resources_error_propagation(
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_assign_resources_error_propagation_low(
-    tango_context, json_factory, change_event_callbacks
+    json_factory, change_event_callbacks
 ):
     return assign_resources_error_propagation(
-        tango_context,
         "ska_low/tm_leaf_node/sdp_subarray01",
         json_factory("command_AssignResources_without_ebid"),
         change_event_callbacks,

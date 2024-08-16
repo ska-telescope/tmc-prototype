@@ -18,13 +18,11 @@ dev_factory = DevFactory()
 
 
 def configure_error_propogation(
-    tango_context,
     sdpsln_name,
     assign_input_str,
     configure_input_str,
     change_event_callbacks,
 ) -> None:
-    logger.info(f"{tango_context}")
     dev_factory = DevFactory()
     sdpsln_device = dev_factory.get_device(sdpsln_name)
 
@@ -95,12 +93,10 @@ def configure_error_propogation(
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_configure_command_error_propagation_mid(
-    tango_context,
     json_factory,
     change_event_callbacks,
 ):
     return configure_error_propogation(
-        tango_context,
         SDPSUBARRAYLEAFNODE_MID,
         json_factory("command_AssignResources"),
         json_factory("command_Configure_without_ScanType"),
@@ -111,12 +107,10 @@ def test_configure_command_error_propagation_mid(
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_configure_command_error_propagation_low(
-    tango_context,
     json_factory,
     change_event_callbacks,
 ):
     return configure_error_propogation(
-        tango_context,
         SDPSUBARRAYLEAFNODE_LOW,
         json_factory("command_AssignResources"),
         json_factory("command_Configure_without_ScanType"),
