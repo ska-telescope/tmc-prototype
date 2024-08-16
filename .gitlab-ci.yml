@@ -108,40 +108,6 @@ k8s-low-test:
     - exists:
         - tests/**/*
 
-k8s-test:
-  image: $SKA_K8S_TOOLS_BUILD_DEPLOY
-  stage: test
-  tags:
-    - k8srunner-large
-  variables:
-    TELESCOPE: 'SKA-mid'
-    CONFIG: 'mid'
-    KUBE_NAMESPACE: 'ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CONFIG'
-    SERVICE_ACCOUNT: 'ci-svc-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CONFIG'
-  before_script:
-    - '[ -f .make/k8s.mk ] || (echo "File k8s.mk not included in Makefile; exit 1")'
-    - 'make help | grep k8s-test'
-    - make cred SERVICE_ACCOUNT=$SERVICE_ACCOUNT
-    - make k8s-install-chart
-    - make k8s-wait
-  script:
-    - make k8s-test
-  artifacts:
-    name: "$CI_PROJECT_NAME-$CI_JOB_ID"
-    paths:
-      - "build/"
-    reports:
-      junit: build/report.xml
-    when: always
-  environment:
-    name: test/$CI_COMMIT_REF_SLUG
-    on_stop: stop-k8s-test
-    auto_stop_in: 1 minute
-  rules:
-    - exists:
-        - tests/**/*
-
-
 stop-k8s-test-low:
   image: $SKA_K8S_TOOLS_BUILD_DEPLOY
   stage: test
