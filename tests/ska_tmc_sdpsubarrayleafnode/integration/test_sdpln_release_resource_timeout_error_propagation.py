@@ -1,6 +1,5 @@
 # TODO: This test needs to be refactored separately as we don't have a way to
 # raise and exception in ReleaseAllResources command.
-
 import pytest
 import tango
 from ska_tango_base.commands import ResultCode
@@ -21,6 +20,7 @@ from tests.settings import (
     RESET_DEFECT,
     event_remover,
     logger,
+    wait_for_attribute_to_change_to,
 )
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
@@ -70,6 +70,9 @@ def release_all_resources_error_propagation(
     )
     # Check error propagation
     sdp_subarray.SetDefective(FAILED_RESULT_DEFECT)
+    wait_for_attribute_to_change_to(
+        sdp_subarray, "defective", FAILED_RESULT_DEFECT
+    )
     result, unique_id = sdpsal_node.ReleaseAllResources()
 
     logger.info(
@@ -85,6 +88,7 @@ def release_all_resources_error_propagation(
         lookahead=6,
     )
     sdp_subarray.SetDefective(RESET_DEFECT)
+    wait_for_attribute_to_change_to(sdp_subarray, "defective", RESET_DEFECT)
     tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks)
     sdpsal_node.unsubscribe_event(lrcr_id)
     sdpsal_node.unsubscribe_event(obsstate_id)
