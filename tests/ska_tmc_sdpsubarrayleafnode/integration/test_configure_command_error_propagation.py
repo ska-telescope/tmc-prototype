@@ -75,7 +75,7 @@ def configure_error_propogation(
         )
         event_remover(
             change_event_callbacks,
-            ["longRunningCommandResult"],
+            ["longRunningCommandResult", "sdpSubarrayObsState"],
         )
         tear_down(
             dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks

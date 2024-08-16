@@ -61,7 +61,11 @@ def assign_resources(
         )
         event_remover(
             change_event_callbacks,
-            ["longRunningCommandResult", "longRunningCommandsInQueue"],
+            [
+                "longRunningCommandResult",
+                "longRunningCommandsInQueue",
+                "sdpSubarrayObsState",
+            ],
         )
         tear_down(
             dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks
