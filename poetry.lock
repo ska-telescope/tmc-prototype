@@ -1853,7 +1853,7 @@ reference = "PyPI-public"
 
 [[package]]
 name = "setuptools"
-version = "72.1.0"
+version = "72.2.0"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 category = "main"
 optional = false
@@ -1861,7 +1861,7 @@ python-versions = ">=3.8"
 
 [package.extras]
 core = ["importlib-metadata (>=6)", "importlib-resources (>=5.10.2)", "jaraco.text (>=3.7)", "more-itertools (>=8.8)", "ordered-set (>=3.1.1)", "packaging (>=24)", "platformdirs (>=2.6.2)", "tomli (>=2.0.1)", "wheel (>=0.43.0)"]
-doc = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "pyproject-hooks (!=1.1)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-favicon", "sphinx-inline-tabs", "sphinx-lint", "sphinx-notfound-page (>=1,<2)", "sphinx-reredirects", "sphinxcontrib-towncrier"]
+doc = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "pyproject-hooks (!=1.1)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-favicon", "sphinx-inline-tabs", "sphinx-lint", "sphinx-notfound-page (>=1,<2)", "sphinx-reredirects", "sphinxcontrib-towncrier", "towncrier (<24.7)"]
 test = ["build[virtualenv] (>=1.0.3)", "filelock (>=3.4.0)", "importlib-metadata", "ini2toml[lite] (>=0.14)", "jaraco.develop (>=7.21)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "jaraco.test", "mypy (>=1.11.0,<1.12.0)", "packaging (>=23.2)", "pip (>=19.1)", "pyproject-hooks (!=1.1)", "pytest (>=6,!=8.1.*)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-home (>=0.5)", "pytest-mypy", "pytest-perf", "pytest-ruff (<0.4)", "pytest-ruff (>=0.2.1)", "pytest-ruff (>=0.3.2)", "pytest-subprocess", "pytest-timeout", "pytest-xdist (>=3)", "tomli", "tomli-w (>=1.0.0)", "virtualenv (>=13.0.0)", "wheel"]
 
 [package.source]
@@ -2062,7 +2062,7 @@ reference = 'ska-nexus'
 
 [[package]]
 name = "ska-telmodel"
-version = "1.19.1"
+version = "1.19.2"
 description = "SKA telescope model library"
 category = "main"
 optional = false
@@ -2085,7 +2085,7 @@ reference = 'ska-nexus'
 
 [[package]]
 name = "ska-tmc-cdm"
-version = "11.0.1"
+version = "12.0.0"
 description = "SKA Control Data Model serialisation library"
 category = "main"
 optional = false
@@ -2107,32 +2107,30 @@ reference = 'ska-nexus'
 
 [[package]]
 name = "ska-tmc-common"
-version = "0.19.5"
+version = "0.19.6"
 description = "SKA TMC common contains common classes required for Telescope Monitoring and Control(TMC)."
 category = "main"
 optional = false
-python-versions = "~3.10"
-develop = false
+python-versions = ">=3.10,<3.11"
 
 [package.dependencies]
-black = "^23.3.0"
-fire = "^0.5.0"
-jsonschema = "^4.0.1"
-katpoint = "^1.0a2"
-marshmallow = "^3.14.1"
-mock = "^4.0.3"
-numpy = "^1.23.0"
+black = ">=23.3.0,<24.0.0"
+fire = ">=0.5.0,<0.6.0"
+jsonschema = ">=4.0.1,<5.0.0"
+katpoint = ">=1.0a2,<2.0"
+marshmallow = ">=3.14.1,<4.0.0"
+mock = ">=4.0.3,<5.0.0"
+numpy = ">=1.23.0,<2.0.0"
 pytango = "9.5.0"
-ska-ser-logging = "^0.4.1"
+ska-ser-logging = ">=0.4.1,<0.5.0"
 ska-tango-base = "1.0.0"
 ska-tango-testing = "0.6.0"
-ska-telmodel = "^1.19.0"
+ska-telmodel = ">=1.19.0,<2.0.0"
 
 [package.source]
-type = "git"
-url = "https://gitlab.com/ska-telescope/ska-tmc/ska-tmc-common.git"
-reference = "hm-523"
-resolved_reference = "0457febd37c49cc89e0ba10d0731f5f94ea852d6"
+type = "legacy"
+url = "https://artefact.skao.int/repository/pypi-internal/simple"
+reference = 'ska-nexus'
 
 [[package]]
 name = "smmap"
@@ -2460,7 +2458,7 @@ reference = "PyPI-public"
 
 [[package]]
 name = "tomlkit"
-version = "0.13.0"
+version = "0.13.2"
 description = "Style preserving TOML library"
 category = "dev"
 optional = false
@@ -2643,7 +2641,7 @@ reference = "PyPI-public"
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.10"
-content-hash = "a93657cbdbc01c61d4e48c768463546c8612930d509c776c42b9165d02468811"
+content-hash = "cd9e4097a25ac47dd3bfb3109dcd8ff10c087b57970afa1fd626532d8631ebc4"
 
 [metadata.files]
 alabaster = [
@@ -3662,8 +3660,8 @@ schema = [
     {file = "schema-0.7.7.tar.gz", hash = "sha256:7da553abd2958a19dc2547c388cde53398b39196175a9be59ea1caf5ab0a1807"},
 ]
 setuptools = [
-    {file = "setuptools-72.1.0-py3-none-any.whl", hash = "sha256:5a03e1860cf56bb6ef48ce186b0e557fdba433237481a9a625176c2831be15d1"},
-    {file = "setuptools-72.1.0.tar.gz", hash = "sha256:8d243eff56d095e5817f796ede6ae32941278f542e0f941867cc05ae52b162ec"},
+    {file = "setuptools-72.2.0-py3-none-any.whl", hash = "sha256:f11dd94b7bae3a156a95ec151f24e4637fb4fa19c878e4d191bfb8b2d82728c4"},
+    {file = "setuptools-72.2.0.tar.gz", hash = "sha256:80aacbf633704e9c8bfa1d99fa5dd4dc59573efcf9e4042c13d3bcef91ac2ef9"},
 ]
 sgp4 = [
     {file = "sgp4-2.23-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:ebf585c09bebf7f7b9c89cff42e0f097654c4c5e092181fbbbee29c338dc11ed"},
@@ -3752,14 +3750,17 @@ ska-telescope-model = [
     {file = "ska_telescope_model-1.3.1-py3-none-any.whl", hash = "sha256:0366c7617169a8a3fe7901286513f078c0ec039cb2dc836fec41c00391aa90f9"},
 ]
 ska-telmodel = [
-    {file = "ska_telmodel-1.19.1-py3-none-any.whl", hash = "sha256:7223bc8f39598c16e89b449448cde1056f11134d4d3055897784dc886874bf55"},
-    {file = "ska_telmodel-1.19.1.tar.gz", hash = "sha256:2f91ba7ab2f4579c4b8d15fef331fa3ad956768ed219655e2a6bbafeb2c4cc7a"},
+    {file = "ska_telmodel-1.19.2-py3-none-any.whl", hash = "sha256:89f6605f4e0107a710e36ae35facd55ea25529216a8d82f7d01941acd62d4139"},
+    {file = "ska_telmodel-1.19.2.tar.gz", hash = "sha256:99a8725a9cce91965a820c5a2e0fb99502d76a9030bb4aef46e55748f61fed15"},
 ]
 ska-tmc-cdm = [
-    {file = "ska_tmc_cdm-11.0.1-py3-none-any.whl", hash = "sha256:c05b02474953718ae422896a2b70a786ede182097e58e6bcaa3854c46ca5248a"},
-    {file = "ska_tmc_cdm-11.0.1.tar.gz", hash = "sha256:2e8a7681386a5485e9430a55248ed769892a3622c4d0bb403908bff25526c66e"},
+    {file = "ska_tmc_cdm-12.0.0-py3-none-any.whl", hash = "sha256:358cec6868aa5199a7b11c741013a2febedab9d9c23870c9071f9ad240d6f3c7"},
+    {file = "ska_tmc_cdm-12.0.0.tar.gz", hash = "sha256:fd5edcaa5ec02046ddce5b2c57f26062f7267271508f491460fc706688162c1d"},
 ]
-ska-tmc-common = []
+ska-tmc-common = [
+    {file = "ska_tmc_common-0.19.6-py3-none-any.whl", hash = "sha256:1f51c51b69a9424f018d8306f3a0acb3ef412513460fe4996b06efaa943d118d"},
+    {file = "ska_tmc_common-0.19.6.tar.gz", hash = "sha256:55c8b556110ec64e4bc28519e00b2be7186d7c6d54d63719e847ecb4381beac5"},
+]
 smmap = [
     {file = "smmap-5.0.1-py3-none-any.whl", hash = "sha256:e6d8668fa5f93e706934a62d7b4db19c8d9eb8cf2adbb75ef1b675aa332b69da"},
     {file = "smmap-5.0.1.tar.gz", hash = "sha256:dceeb6c0028fdb6734471eb07c0cd2aae706ccaecab45965ee83f11c8d3b1f62"},
@@ -3832,8 +3833,8 @@ tomli = [
     {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
 ]
 tomlkit = [
-    {file = "tomlkit-0.13.0-py3-none-any.whl", hash = "sha256:7075d3042d03b80f603482d69bf0c8f345c2b30e41699fd8883227f89972b264"},
-    {file = "tomlkit-0.13.0.tar.gz", hash = "sha256:08ad192699734149f5b97b45f1f18dad7eb1b6d16bc72ad0c2335772650d7b72"},
+    {file = "tomlkit-0.13.2-py3-none-any.whl", hash = "sha256:7a974427f6e119197f670fbbbeae7bef749a6c14e793db934baefc1b5f03efde"},
+    {file = "tomlkit-0.13.2.tar.gz", hash = "sha256:fff5fe59a87295b278abd31bec92c15d9bc4a06885ab12bcea52c71119392e79"},
 ]
 toolz = [
     {file = "toolz-0.12.1-py3-none-any.whl", hash = "sha256:d22731364c07d72eea0a0ad45bafb2c2937ab6fd38a3507bf55eae8744aa7d85"},

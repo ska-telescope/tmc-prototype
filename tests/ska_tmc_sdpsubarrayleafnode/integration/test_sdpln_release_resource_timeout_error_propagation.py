@@ -16,7 +16,7 @@ from tests.conftest import (
     SDPSUBARRAYLEAFNODE_MID,
 )
 from tests.settings import (
-    ERROR_PROPAGATION_DEFECT,
+    FAILED_RESULT_DEFECT,
     RESET_DEFECT,
     event_remover,
     logger,
@@ -69,7 +69,7 @@ def release_all_resources_error_propagation(
         lookahead=4,
     )
     # Check error propagation
-    sdp_subarray.SetDefective(ERROR_PROPAGATION_DEFECT)
+    sdp_subarray.SetDefective(FAILED_RESULT_DEFECT)
     result, unique_id = sdpsal_node.ReleaseAllResources()
 
     logger.info(
@@ -81,7 +81,7 @@ def release_all_resources_error_propagation(
     assert result[0] == ResultCode.QUEUED
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], '[3, "Long running exception induced"]'),
+        (unique_id[0], '[3, "Exception occurred, command failed"]'),
         lookahead=6,
     )
     sdp_subarray.SetDefective(RESET_DEFECT)
@@ -174,7 +174,6 @@ def test_release_all_res_command_timeout_mid(
         json_factory("command_AssignResources"),
         change_event_callbacks,
     )
-
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
