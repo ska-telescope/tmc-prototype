@@ -1,5 +1,6 @@
 """Test cases for testing timeout on Configure command."""
 import json
+from typing import Callable
 
 import pytest
 import tango
@@ -20,7 +21,10 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
 def configure_timeout(
-    sdpsaln_name, device, json_factory, change_event_callbacks
+    sdpsaln_name: str,
+    device: str,
+    json_factory: Callable,
+    change_event_callbacks: dict,
 ):
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)

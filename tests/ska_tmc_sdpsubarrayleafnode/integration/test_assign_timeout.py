@@ -1,5 +1,6 @@
 """Test cases for testing timeout on assignResources."""
 import json
+from typing import Callable
 
 import pytest
 import tango
@@ -18,9 +19,9 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
 def assign_resources_timeout(
-    sdpsln_name,
-    assign_input_str,
-    change_event_callbacks,
+    sdpsln_name: str,
+    assign_input_str: str,
+    change_event_callbacks: Callable,
 ) -> None:
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsln_name)
