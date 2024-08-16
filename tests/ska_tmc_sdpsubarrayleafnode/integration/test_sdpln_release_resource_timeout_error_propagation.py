@@ -163,7 +163,7 @@ def release_all_resources_timeout(
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_release_all_res_command_timeout_mid(
+def test_release_all_resources_command_timeout_mid(
     tango_context,
     json_factory,
     change_event_callbacks,
@@ -178,7 +178,7 @@ def test_release_all_res_command_timeout_mid(
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_release_all_res_command_error_propagation_mid(
+def test_release_all_resources_command_error_propagation_mid(
     tango_context,
     json_factory,
     change_event_callbacks,
