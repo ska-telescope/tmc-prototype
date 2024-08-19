@@ -13,6 +13,11 @@ Fixed
 * Updated the .readthdocs.yaml
 * Fixed documentation missing information issue
 * Fixed Logger strings.
+* Improved the test case execution time.
+
+[0.16.4]
+******
+* Resolving the issues of error propagation.
 
 [0.16.3]
 ******
