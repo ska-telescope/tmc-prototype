@@ -45,9 +45,7 @@ class ReleaseAllResources(SdpSLNCommand):
         self.component_manager.command_in_progress = "ReleaseAllResources"
 
     @timeout_decorator
-    @error_propagation_decorator(
-        "get_obs_state", [ObsState.RESOURCING, ObsState.EMPTY]
-    )
+    @error_propagation_decorator("get_obs_state", [ObsState.EMPTY])
     def release_resources(
         self,
     ) -> Tuple[ResultCode, str]:
