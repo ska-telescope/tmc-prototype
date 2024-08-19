@@ -58,7 +58,9 @@ def tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks):
         )
 
         sdp_subarray.Off()
-        sdpsal_node_obsstate = sdp_subarray.read_attribute("obsState")
+        sdpsal_node_obsstate = sdpsal_node.read_attribute(
+            "sdpSubarrayObsState"
+        )
         logger.info(f"SDP Subarray ObsState: {sdpsal_node_obsstate.value}")
 
     if sdpsal_node_obsstate.value == ObsState.READY:
@@ -74,7 +76,9 @@ def tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks):
             lookahead=8,
         )
         sdp_subarray.Off()
-        sdpsal_node_obsstate = sdp_subarray.read_attribute("obsState")
+        sdpsal_node_obsstate = sdpsal_node.read_attribute(
+            "sdpSubarrayObsState"
+        )
         logger.info(f"SDP Subarray ObsState: {sdpsal_node_obsstate.value}")
 
     if sdpsal_node_obsstate.value in (
@@ -94,7 +98,7 @@ def tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks):
             lookahead=4,
         )
         sdp_subarray.Off()
-        sdpsal_node_obsstate = sdp_subarray.read_attribute(
+        sdpsal_node_obsstate = sdpsal_node.read_attribute(
             "sdpSubarrayObsState"
         )
         logger.info(f"SDP Subarray ObsState: {sdpsal_node_obsstate.value}")
