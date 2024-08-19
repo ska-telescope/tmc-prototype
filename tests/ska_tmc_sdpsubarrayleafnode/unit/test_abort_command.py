@@ -37,6 +37,7 @@ DEVICE_OBSSTATE = [
 def test_abort_command(tango_context, devices, obsstate):
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
+    cm.tracker_thread = mock.Mock()
 
     cm.update_device_obs_state(obsstate)
     cm.is_command_allowed("Abort")
