@@ -12,22 +12,17 @@ from tests.conftest import (
     SDPSUBARRAYLEAFNODE_MID,
 )
 from tests.settings import event_remover, logger
-from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
-    tear_down,
-    wait_and_assert_sdp_subarray_obsstate,
-)
+from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 dev_factory = DevFactory()
 
 
 def configure_error_propogation(
-    tango_context,
     sdpsln_name,
     assign_input_str,
     configure_input_str,
     change_event_callbacks,
 ) -> None:
-    logger.info(f"{tango_context}")
     dev_factory = DevFactory()
     sdpsln_device = dev_factory.get_device(sdpsln_name)
 
@@ -45,7 +40,7 @@ def configure_error_propogation(
         assert unique_id[0].endswith("AssignResources")
         assert result[0] == ResultCode.QUEUED
 
-        sdpsln_device.subscribe_event(
+        lrcr_id = sdpsln_device.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandResult"],
@@ -54,7 +49,15 @@ def configure_error_propogation(
             (unique_id[0], COMMAND_COMPLETED),
             lookahead=3,
         )
-        wait_and_assert_sdp_subarray_obsstate(sdpsln_device, ObsState.IDLE)
+        obsstate_id = sdpsln_device.subscribe_event(
+            "sdpSubarrayObsState",
+            tango.EventType.CHANGE_EVENT,
+            change_event_callbacks["sdpSubarrayObsState"],
+        )
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.IDLE,
+            lookahead=4,
+        )
 
         result, unique_id = sdpsln_device.Configure(configure_input_str)
         logger.info(
@@ -64,35 +67,36 @@ def configure_error_propogation(
         assert unique_id[0].endswith("Configure")
         assert result[0] == ResultCode.QUEUED
 
-        sdpsln_device.subscribe_event(
-            "longRunningCommandResult",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["longRunningCommandResult"],
-        )
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], '[3, "Missing scan_type key"]'),
             lookahead=3,
         )
         event_remover(
             change_event_callbacks,
-            ["longRunningCommandResult"],
+            ["longRunningCommandResult", "sdpSubarrayObsState"],
         )
-        tear_down(dev_factory, sdp_subarray, sdpsln_device)
+        tear_down(
+            dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks
+        )
+        sdpsln_device.unsubscribe_event(obsstate_id)
+        sdpsln_device.unsubscribe_event(lrcr_id)
 
     except Exception as exception:
-        tear_down(dev_factory, sdp_subarray, sdpsln_device)
+        tear_down(
+            dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks
+        )
+        sdpsln_device.unsubscribe_event(obsstate_id)
+        sdpsln_device.unsubscribe_event(lrcr_id)
         raise Exception(exception)
 
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_configure_command_error_propagation_mid(
-    tango_context,
     json_factory,
     change_event_callbacks,
 ):
     return configure_error_propogation(
-        tango_context,
         SDPSUBARRAYLEAFNODE_MID,
         json_factory("command_AssignResources"),
         json_factory("command_Configure_without_ScanType"),
@@ -103,12 +107,10 @@ def test_configure_command_error_propagation_mid(
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_configure_command_error_propagation_low(
-    tango_context,
     json_factory,
     change_event_callbacks,
 ):
     return configure_error_propogation(
-        tango_context,
         SDPSUBARRAYLEAFNODE_LOW,
         json_factory("command_AssignResources"),
         json_factory("command_Configure_without_ScanType"),

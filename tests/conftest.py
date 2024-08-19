@@ -25,6 +25,9 @@ SDPSUBARRAYLEAFNODE_LOW = "ska_low/tm_leaf_node/sdp_subarray01"
 MID_SDP_SUBARRAY = "mid-sdp/subarray/01"
 LOW_SDP_SUBARRAY = "low-sdp/subarray/01"
 COMMAND_COMPLETED = json.dumps([ResultCode.OK, "Command Completed"])
+TIMEOUT_EXCEPTION = json.dumps(
+    [ResultCode.FAILED, "Timeout has occurred, command failed"]
+)
 
 
 def pytest_sessionstart(session):
@@ -154,7 +157,7 @@ def change_event_callbacks() -> MockTangoEventCallbackGroup:
         "longRunningCommandResult",
         "longRunningCommandsInQueue",
         "sdpSubarrayObsState",
-        timeout=30.0,
+        timeout=40.0,
     )
 
 

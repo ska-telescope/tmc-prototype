@@ -30,6 +30,9 @@ SDP_SUBARRAY_LEAF_NODE_MID = "ska_mid/tm_leaf_node/sdp_subarray01"
 SDP_SUBARRAY_LEAF_NODE_LOW = "ska_low/tm_leaf_node/sdp_subarray01"
 SDP_MASTER_LEAF_DEVICE_MID = "ska_mid/tm_leaf_node/sdp_master"
 SDP_MASTER_LEAF_DEVICE_LOW = "ska_low/tm_leaf_node/sdp_master"
+ASSIGN_TIMEOUT = json.dumps({"AssignResources": 35})
+RELEASE_TIMEOUT = json.dumps({"ReleaseAllResources": 35})
+CONFIGURE_TIMEOUT = json.dumps({"Configure": 35})
 
 TIMEOUT_DEFECT = json.dumps(
     {
@@ -46,6 +49,22 @@ RESET_DEFECT = json.dumps(
         "enabled": False,
         "fault_type": FaultType.FAILED_RESULT,
         "error_message": "Default exception.",
+        "result": ResultCode.FAILED,
+    }
+)
+FAILED_RESULT_DEFECT = json.dumps(
+    {
+        "enabled": True,
+        "fault_type": FaultType.FAILED_RESULT,
+        "error_message": "Device is defective, cannot process command",
+        "result": ResultCode.FAILED,
+    }
+)
+ERROR_PROPAGATION_DEFECT = json.dumps(
+    {
+        "enabled": True,
+        "fault_type": FaultType.LONG_RUNNING_EXCEPTION,
+        "error_message": "Exception occurred, command failed.",
         "result": ResultCode.FAILED,
     }
 )
@@ -118,3 +137,28 @@ def wait_for_cm_obstate_attribute_value(cm, obs_state: ObsState) -> bool:
             )
             return False
     return True
+
+
+def wait_for_attribute_to_change_to(
+    device: str, attribute_name: str, attribute_value: str
+) -> None:
+    """Wait for the attribute to change to given value.
+
+    :param device: Name of the device
+    :param attribute_name: Attribute name as a string
+    :param attribute_value: Value of attribute to be asserted
+    """
+    device_proxy = DeviceProxy(device)
+    start_time = time.time()
+    elapsed_time = time.time() - start_time
+    current_value = device_proxy.read_attribute(attribute_name).value
+    while current_value != attribute_value:
+        elapsed_time = time.time() - start_time
+        if elapsed_time >= TIMEOUT:
+            raise AssertionError(
+                "Attribute value is not equal to given value. "
+                + f"Current value: {current_value}, expected value: "
+                + f"{attribute_value}"
+            )
+        current_value = device_proxy.read_attribute(attribute_name).value
+        time.sleep(1)

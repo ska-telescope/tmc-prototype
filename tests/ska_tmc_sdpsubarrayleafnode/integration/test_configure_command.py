@@ -13,16 +13,10 @@ from tests.settings import (
     event_remover,
     logger,
 )
-from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
-    tear_down,
-    wait_and_assert_sdp_subarray_obsstate,
-)
+from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
-def configure(
-    tango_context, sdpsaln_name, device, json_factory, change_event_callbacks
-):
-    logger.info("%s", tango_context)
+def configure(sdpsaln_name, device, json_factory, change_event_callbacks):
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
@@ -31,16 +25,21 @@ def configure(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
-        sdp_subarray_ln_proxy.subscribe_event(
+        lrcr_in_que_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandsInQueue",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandsInQueue"],
         )
 
-        sdp_subarray_ln_proxy.subscribe_event(
+        lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandResult"],
+        )
+        obsstate_id = sdp_subarray_ln_proxy.subscribe_event(
+            "sdpSubarrayObsState",
+            tango.EventType.CHANGE_EVENT,
+            change_event_callbacks["sdpSubarrayObsState"],
         )
 
         change_event_callbacks[
@@ -78,8 +77,9 @@ def configure(
             (unique_id[0], COMMAND_COMPLETED),
             lookahead=4,
         )
-        wait_and_assert_sdp_subarray_obsstate(
-            sdp_subarray_ln_proxy, ObsState.IDLE
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.IDLE,
+            lookahead=4,
         )
 
         configure_input_str = json_factory("command_Configure")
@@ -103,27 +103,47 @@ def configure(
             (unique_id[0], COMMAND_COMPLETED),
             lookahead=4,
         )
-        wait_and_assert_sdp_subarray_obsstate(
-            sdp_subarray_ln_proxy, ObsState.READY
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.READY,
+            lookahead=4,
         )
 
         event_remover(
             change_event_callbacks,
-            ["longRunningCommandResult", "longRunningCommandsInQueue"],
+            [
+                "longRunningCommandResult",
+                "longRunningCommandsInQueue",
+                "sdpSubarrayObsState",
+            ],
         )
-        tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
+
+        tear_down(
+            dev_factory,
+            sdp_subarray,
+            sdp_subarray_ln_proxy,
+            change_event_callbacks,
+        )
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
+
     except Exception as exception:
-        tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
+        tear_down(
+            dev_factory,
+            sdp_subarray,
+            sdp_subarray_ln_proxy,
+            change_event_callbacks,
+        )
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
         raise Exception(exception)
 
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_configure_command_mid(
-    tango_context, json_factory, change_event_callbacks
-):
+def test_configure_command_mid(json_factory, change_event_callbacks):
     return configure(
-        tango_context,
         SDP_SUBARRAY_LEAF_NODE_MID,
         SDP_SUBARRAY_DEVICE_MID,
         json_factory,
@@ -134,12 +154,10 @@ def test_configure_command_mid(
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_configure_command_low(
-    tango_context,
     json_factory,
     change_event_callbacks,
 ):
     return configure(
-        tango_context,
         SDP_SUBARRAY_LEAF_NODE_LOW,
         SDP_SUBARRAY_DEVICE_LOW,
         json_factory,

@@ -15,15 +15,12 @@ from tests.settings import (
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
-def on_command(
-    tango_context, sdpsaln_fqdn, sdpsa_fqdn, change_event_callbacks
-):
-    logger.info("%s", tango_context)
+def on_command(sdpsaln_fqdn, sdpsa_fqdn, change_event_callbacks):
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_fqdn)
     sdp_subarray_proxy = dev_factory.get_device(sdpsa_fqdn)
     try:
-        sdp_subarray_ln_proxy.subscribe_event(
+        lrcr_in_que_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandsInQueue",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandsInQueue"],
@@ -41,7 +38,7 @@ def on_command(
         )
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         assert result[0] == ResultCode.QUEUED
-        sdp_subarray_ln_proxy.subscribe_event(
+        lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandResult"],
@@ -61,17 +58,31 @@ def on_command(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
-        tear_down(dev_factory, sdp_subarray_proxy, sdp_subarray_ln_proxy)
+
+        tear_down(
+            dev_factory,
+            sdp_subarray_proxy,
+            sdp_subarray_ln_proxy,
+            change_event_callbacks,
+        )
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
     except Exception as exception:
-        tear_down(dev_factory, sdp_subarray_proxy, sdp_subarray_ln_proxy)
+        tear_down(
+            dev_factory,
+            sdp_subarray_proxy,
+            sdp_subarray_ln_proxy,
+            change_event_callbacks,
+        )
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
         raise Exception(exception)
 
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_on_command_mid(tango_context, change_event_callbacks):
+def test_on_command_mid(change_event_callbacks):
     on_command(
-        tango_context,
         SDP_SUBARRAY_LEAF_NODE_MID,
         SDP_SUBARRAY_DEVICE_MID,
         change_event_callbacks,
@@ -80,9 +91,8 @@ def test_on_command_mid(tango_context, change_event_callbacks):
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
-def test_on_command_low(tango_context, change_event_callbacks):
+def test_on_command_low(change_event_callbacks):
     on_command(
-        tango_context,
         SDP_SUBARRAY_LEAF_NODE_LOW,
         SDP_SUBARRAY_DEVICE_LOW,
         change_event_callbacks,

@@ -229,29 +229,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             self.logger.info(
                 f"Updating LRCRCallback with {value} for {command_name}"
             )
-            if (
-                command_name == "AssignResources"
-                and self.command_in_progress == command_name
-            ):
-                self.long_running_result_callback(
-                    self.assign_id, ResultCode.FAILED, exception_msg=value
-                )
-            elif (
-                command_name == "ReleaseAllResources"
-                and self.command_in_progress == command_name
-            ):
-                self.long_running_result_callback(
-                    self.release_id,
-                    ResultCode.FAILED,
-                    exception_msg=value,
-                )
-            elif (
-                command_name == "Configure"
-                and self.command_in_progress == command_name
-            ):
-                self.long_running_result_callback(
-                    self.configure_id, ResultCode.FAILED, exception_msg=value
-                )
+            self.long_running_result_callback(
+                self.command_id, ResultCode.FAILED, exception_msg=value
+            )
 
     @property
     def lrc_result(self) -> Tuple[str, str]:

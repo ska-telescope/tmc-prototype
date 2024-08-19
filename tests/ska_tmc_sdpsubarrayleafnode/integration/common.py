@@ -7,7 +7,7 @@ from ska_tmc_common.test_helpers.helper_sdp_subarray import HelperSdpSubarray
 from ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node import (
     SdpSubarrayLeafNode,
 )
-from tests.settings import TIMEOUT, logger
+from tests.settings import logger
 
 pytest.event_arrived = False
 
@@ -43,67 +43,65 @@ def checked_devices(json_model):
     return result
 
 
-def tear_down(dev_factory, sdp_subarray, sdpsal_node):
-    sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
-    logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
+def tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks):
+    sdpsal_node_obsstate = sdpsal_node.read_attribute("sdpSubarrayObsState")
+    logger.info(f"SDP Subarray ObsState: {sdpsal_node_obsstate.value}")
 
-    if sdp_subarray_obsstate.value == ObsState.EMPTY:
+    if sdpsal_node_obsstate.value == ObsState.EMPTY:
         sdp_subarray.Off()
 
-    if sdp_subarray_obsstate.value == ObsState.IDLE:
+    if sdpsal_node_obsstate.value == ObsState.IDLE:
         sdp_subarray.ReleaseAllResources()
-        wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
-        sdp_subarray.Off()
-        sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
-        logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.EMPTY,
+            lookahead=8,
+        )
 
-    if sdp_subarray_obsstate.value == ObsState.READY:
+        sdp_subarray.Off()
+        sdpsal_node_obsstate = sdpsal_node.read_attribute(
+            "sdpSubarrayObsState"
+        )
+        logger.info(f"SDP Subarray ObsState: {sdpsal_node_obsstate.value}")
+
+    if sdpsal_node_obsstate.value == ObsState.READY:
         sdp_subarray.End()
-        wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
-        sdp_subarray.ReleaseAllResources()
-        wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
-        sdp_subarray.Off()
-        sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
-        logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.IDLE,
+            lookahead=8,
+        )
 
-    if sdp_subarray_obsstate.value in (
+        sdp_subarray.ReleaseAllResources()
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.EMPTY,
+            lookahead=8,
+        )
+        sdp_subarray.Off()
+        sdpsal_node_obsstate = sdpsal_node.read_attribute(
+            "sdpSubarrayObsState"
+        )
+        logger.info(f"SDP Subarray ObsState: {sdpsal_node_obsstate.value}")
+
+    if sdpsal_node_obsstate.value in (
         ObsState.RESOURCING,
         ObsState.SCANNING,
         ObsState.CONFIGURING,
     ):
         sdp_subarray.Abort()
-        wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.ABORTED)
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.ABORTED,
+            lookahead=4,
+        )
+
         sdp_subarray.Restart()
-        wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.EMPTY,
+            lookahead=4,
+        )
         sdp_subarray.Off()
-        sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
-        logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
-
-
-def wait_and_assert_sdp_subarray_obsstate(sdp_subarray_leaf_node, obs_state):
-    logger.debug(f"Waiting for SdpSubarray obsState to be {obs_state}")
-    sdp_subarray_obsstate = sdp_subarray_leaf_node.read_attribute(
-        "sdpSubarrayObsState"
-    )
-    logger.debug(f"SdpSubarray obsState is {sdp_subarray_obsstate}")
-    wait_time = 0
-    while (sdp_subarray_obsstate.value) != obs_state:
-        time.sleep(0.5)
-        sdp_subarray_obsstate = sdp_subarray_leaf_node.read_attribute(
+        sdpsal_node_obsstate = sdpsal_node.read_attribute(
             "sdpSubarrayObsState"
         )
-        logger.debug(
-            f"SppSubarray obsState in loop: {sdp_subarray_obsstate.value}"
-        )
-        logger.debug(f"Expected SdpSubarray obsState: {obs_state}")
-        wait_time = wait_time + 1
-        logger.debug(f"wait_time in teardown  {wait_time}")
-        if wait_time > TIMEOUT:
-            pytest.fail(
-                f"Timeout occurred in transitioning SdpSubarray\
-                     obsState to {obs_state}"
-            )
-    assert sdp_subarray_obsstate.value == obs_state
+        logger.info(f"SDP Subarray ObsState: {sdpsal_node_obsstate.value}")
 
 
 def set_sdp_subarray_obsstate(dev_factory, obs_state, sdp_subarray):
