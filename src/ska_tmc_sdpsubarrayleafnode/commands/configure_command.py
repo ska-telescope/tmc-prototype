@@ -51,10 +51,10 @@ class Configure(SdpSLNCommand):
         )
         self.component_manager.command_in_progress = "Configure"
 
+    # Once we will refactor the tracker thread will enable this intermediate
+    # ObsState check.
     @timeout_decorator
-    @error_propagation_decorator(
-        "get_obs_state", [ObsState.CONFIGURING, ObsState.READY]
-    )
+    @error_propagation_decorator("get_obs_state", [ObsState.READY])
     def configure(
         self,
         argin: str,
