@@ -20,7 +20,7 @@ dependencies:
     version: 0.4.11
     repository: https://artefact.skao.int/repository/helm-internal
   - name: ska-tmc-sdpleafnodes
-    version: 0.16.4
+    version: 0.16.5
     repository: file://../ska-tmc-sdpleafnodes
     alias: tmc-sdpleafnodes
   - name: ska-taranta
