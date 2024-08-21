@@ -164,3 +164,7 @@ stop-k8s-test-low:
     name: test/$CI_COMMIT_REF_SLUG
     action: stop
 
+docs-build-rtd:
+  rules:
+    - when: never
+

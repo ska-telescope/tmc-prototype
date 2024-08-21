@@ -15,6 +15,10 @@ Fixed
 * Fixed Logger strings.
 * Improved the test case execution time.
 
+[0.16.5]
+******
+* Utilized the latest ska-tmc-common 0.19.7 which clears abort event in tracker thread.
+
 [0.16.4]
 ******
 * Resolving the issues of error propagation.
