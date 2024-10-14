@@ -85,6 +85,7 @@ def create_cm(cm_class, device):
         return SdpMLNComponentManager(
             device,
             logger=logger,
+            _liveliness_probe=(LivelinessProbeType.NONE),
         )
 
     return SdpSLNComponentManager(
