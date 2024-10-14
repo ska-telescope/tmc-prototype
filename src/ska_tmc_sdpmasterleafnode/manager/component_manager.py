@@ -23,6 +23,7 @@ configure_logging()
 LOGGER = logging.getLogger(__name__)
 
 
+# pylint: disable=too-many-positional-arguments
 class SdpMLNComponentManager(TmcLeafNodeComponentManager):
     """
     A component manager for The SDP Master Leaf Node component.
@@ -101,34 +102,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: DeviceInfo
         """
         return DeviceInfo(self.sdp_master_device_name)
-
-    # def update_ping_info(self, ping: int, device_name: str) -> None:
-    #     """
-    #     Update a device with the correct ping information.
-    #     :param ping: device response time
-    #     :type ping: int
-    #     """
-    #     with self.lock:
-    #         self._device.ping = ping
-    #         self._device.update_unresponsive(False)
-    #         if self.update_availablity_callback is not None:
-    #             self.update_availablity_callback(True)
-
-    # def update_device_ping_failure(
-    #     self, device_info: DeviceInfo, exception: str
-    # ) -> None:  # pylint: disable=arguments-differ
-    #     """
-    #     Set a device to failed and call the relative callback if available
-
-    #     :param device_info: a device info
-    #     :type device_info: DeviceInfo
-    #     :param exception: an exception
-    #     :type: Exception"""
-    #     device_info.update_unresponsive(True, exception)
-
-    #     with self.lock:
-    #         if self.update_availablity_callback is not None:
-    #             self.update_availablity_callback(False)
 
     def _check_if_sdp_master_is_responsive(self) -> None:
         """Checks if SDP Master device is responsive."""
@@ -280,6 +253,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             if self.update_availablity_callback is not None:
                 self.update_availablity_callback(False)
 
+    # pylint: disable=signature-differs
     # pylint: disable=unused-argument
     def update_responsiveness_info(self, device_name: str) -> None:
         """

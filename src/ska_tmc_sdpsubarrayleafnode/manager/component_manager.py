@@ -48,6 +48,7 @@ configure_logging()
 LOGGER: logging.Logger = logging.getLogger(__name__)
 
 
+# pylint: disable=too-many-positional-arguments
 class SdpSLNComponentManager(TmcLeafNodeComponentManager):
     """
     A component manager for The SDP Subarray Leaf Node component.
@@ -190,6 +191,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             if self._update_availablity_callback is not None:
                 self._update_availablity_callback(False)
 
+    # pylint: disable=signature-differs
     # pylint: disable=unused-argument
     def update_responsiveness_info(self, device_name: str) -> None:
         """

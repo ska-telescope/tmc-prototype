@@ -14,6 +14,7 @@ configure_logging()
 LOGGER: logging.Logger = logging.getLogger(__name__)
 
 
+# pylint: disable=too-many-positional-arguments
 class SdpSLNEventReceiver(EventReceiver):
     """
     The SdpSLNEventReceiver class has the responsibility to receive events
