@@ -14,6 +14,9 @@ Fixed
 * Fixed documentation missing information issue
 * Fixed Logger strings.
 * Improved the test case execution time.
+[0.17.0]
+********
+* Utilized the ska-tmc-common v0.20.2 which has new liveliness probe implementation
 
 [0.16.5]
 ******
