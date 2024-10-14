@@ -26,14 +26,14 @@ dsconfig:
   image:
     registry: artefact.skao.int
     image: ska-tango-images-tango-dsconfig
-    tag: 1.5.12
+    tag: 1.5.13
     pullPolicy: IfNotPresent
 
 itango:
   image:
     registry: artefact.skao.int
     image: ska-tango-images-tango-itango
-    tag: 9.4.3
+    tag: 9.5.0
     pullPolicy: IfNotPresent
 
 sdpleafnodes:

@@ -3,6 +3,7 @@
 This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
 import logging
+import threading
 from logging import Logger
 from typing import Callable, Optional, Tuple
 
@@ -77,7 +78,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         self.off_command = Off(self, logger)
         self.standby_command = Standby(self, logger)
         self.disable_command = Disable(self, logger)
-
+        self.rlock = threading.RLock()
         if _liveliness_probe:
             self.start_liveliness_probe(_liveliness_probe)
 
@@ -101,33 +102,33 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         """
         return DeviceInfo(self.sdp_master_device_name)
 
-    def update_ping_info(self, ping: int, device_name: str) -> None:
-        """
-        Update a device with the correct ping information.
-        :param ping: device response time
-        :type ping: int
-        """
-        with self.lock:
-            self._device.ping = ping
-            self._device.update_unresponsive(False)
-            if self.update_availablity_callback is not None:
-                self.update_availablity_callback(True)
+    # def update_ping_info(self, ping: int, device_name: str) -> None:
+    #     """
+    #     Update a device with the correct ping information.
+    #     :param ping: device response time
+    #     :type ping: int
+    #     """
+    #     with self.lock:
+    #         self._device.ping = ping
+    #         self._device.update_unresponsive(False)
+    #         if self.update_availablity_callback is not None:
+    #             self.update_availablity_callback(True)
 
-    def update_device_ping_failure(
-        self, device_info: DeviceInfo, exception: str
-    ) -> None:  # pylint: disable=arguments-differ
-        """
-        Set a device to failed and call the relative callback if available
+    # def update_device_ping_failure(
+    #     self, device_info: DeviceInfo, exception: str
+    # ) -> None:  # pylint: disable=arguments-differ
+    #     """
+    #     Set a device to failed and call the relative callback if available
 
-        :param device_info: a device info
-        :type device_info: DeviceInfo
-        :param exception: an exception
-        :type: Exception"""
-        device_info.update_unresponsive(True, exception)
+    #     :param device_info: a device info
+    #     :type device_info: DeviceInfo
+    #     :param exception: an exception
+    #     :type: Exception"""
+    #     device_info.update_unresponsive(True, exception)
 
-        with self.lock:
-            if self.update_availablity_callback is not None:
-                self.update_availablity_callback(False)
+    #     with self.lock:
+    #         if self.update_availablity_callback is not None:
+    #             self.update_availablity_callback(False)
 
     def _check_if_sdp_master_is_responsive(self) -> None:
         """Checks if SDP Master device is responsive."""
@@ -264,3 +265,30 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         * If you have subscribed to events, unsubscribe.
         * If you are running a polling loop, stop it.
         """
+
+    def update_exception_for_unresponsiveness(
+        self, device_info: DeviceInfo, exception: str
+    ) -> None:
+        """Set a device to failed and call the relative callback if available
+        :param device_info: a device info
+        :type device_info: DeviceInfo
+        :param exception: an exception
+        :type: Exception
+        """
+        with self.rlock:
+            device_info.update_unresponsive(True, exception)
+            if self.update_availablity_callback is not None:
+                self.update_availablity_callback(False)
+
+    # pylint: disable=unused-argument
+    def update_responsiveness_info(self, device_name: str) -> None:
+        """
+        Update a device with the correct availability information.
+
+        :param dev_name: name of the device
+        :type dev_name: str
+        """
+        with self.rlock:
+            self.get_device().update_unresponsive(False, "")
+            if self.update_availablity_callback is not None:
+                self.update_availablity_callback(True)
