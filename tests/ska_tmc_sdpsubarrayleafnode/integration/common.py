@@ -89,13 +89,13 @@ def tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks):
         sdp_subarray.Abort()
         change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
             ObsState.ABORTED,
-            lookahead=4,
+            lookahead=8,
         )
 
         sdp_subarray.Restart()
         change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
             ObsState.EMPTY,
-            lookahead=4,
+            lookahead=8,
         )
         sdp_subarray.Off()
         sdpsal_node_obsstate = sdpsal_node.read_attribute(
