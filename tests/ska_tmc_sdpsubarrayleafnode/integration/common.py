@@ -7,6 +7,7 @@ from ska_tmc_common.test_helpers.helper_sdp_subarray import HelperSdpSubarray
 from ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node import (
     SdpSubarrayLeafNode,
 )
+from tests.conftest import COMMAND_COMPLETED
 from tests.settings import logger
 
 pytest.event_arrived = False
@@ -92,7 +93,11 @@ def tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks):
             lookahead=8,
         )
 
-        sdp_subarray.Restart()
+        _, unique_id = sdp_subarray.Restart()
+        change_event_callbacks["longRunningCommandResult"].assert_change_event(
+            (unique_id[0], COMMAND_COMPLETED),
+            lookahead=4,
+        )
         change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
             ObsState.EMPTY,
             lookahead=8,
