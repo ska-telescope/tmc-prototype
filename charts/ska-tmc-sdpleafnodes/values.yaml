@@ -40,7 +40,7 @@ sdpleafnodes:
   image:
     registry: artefact.skao.int
     image: ska-tmc-sdpleafnodes
-    tag: 0.17.0-dirty
+    tag: 0.17.0
     pullPolicy: IfNotPresent
 
 resources:
