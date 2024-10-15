@@ -18,7 +18,6 @@ from tests.settings import (
     FAILED_RESULT_DEFECT,
     RELEASE_TIMEOUT,
     RESET_DEFECT,
-    event_remover,
     logger,
     wait_for_attribute_to_change_to,
 )
@@ -151,14 +150,6 @@ def release_all_resources_timeout(
         lookahead=3,
     )
     sdp_subarray.ResetDelayInfo()
-    event_remover(
-        change_event_callbacks,
-        [
-            "longRunningCommandResult",
-            "longRunningCommandsInQueue",
-            "sdpSubarrayObsState",
-        ],
-    )
     tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks)
     sdpsal_node.unsubscribe_event(lrcr_id)
     sdpsal_node.unsubscribe_event(obsstate_id)

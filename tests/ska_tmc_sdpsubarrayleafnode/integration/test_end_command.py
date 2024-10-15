@@ -10,7 +10,6 @@ from tests.settings import (
     SDP_SUBARRAY_DEVICE_MID,
     SDP_SUBARRAY_LEAF_NODE_LOW,
     SDP_SUBARRAY_LEAF_NODE_MID,
-    event_remover,
     logger,
 )
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
@@ -21,10 +20,6 @@ def end(sdpsaln_name, device, json_factory, change_event_callbacks):
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
     try:
-        event_remover(
-            change_event_callbacks,
-            ["longRunningCommandResult", "longRunningCommandsInQueue"],
-        )
         lrcr_in_que_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandsInQueue",
             tango.EventType.CHANGE_EVENT,
@@ -131,15 +126,6 @@ def end(sdpsaln_name, device, json_factory, change_event_callbacks):
         change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
             ObsState.IDLE,
             lookahead=4,
-        )
-
-        event_remover(
-            change_event_callbacks,
-            [
-                "longRunningCommandResult",
-                "longRunningCommandsInQueue",
-                "sdpSubarrayObsState",
-            ],
         )
 
         tear_down(

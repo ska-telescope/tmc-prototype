@@ -13,7 +13,6 @@ from tests.settings import (
     SDP_SUBARRAY_DEVICE_MID,
     SDP_SUBARRAY_LEAF_NODE_LOW,
     SDP_SUBARRAY_LEAF_NODE_MID,
-    event_remover,
     logger,
 )
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
@@ -57,15 +56,6 @@ def assign_resources_timeout(
     )
 
     sdp_subarray.ResetDelayInfo()
-
-    event_remover(
-        change_event_callbacks,
-        [
-            "longRunningCommandResult",
-            "longRunningCommandsInQueue",
-            "sdpSubarrayObsState",
-        ],
-    )
 
     tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks)
     sdpsal_node.unsubscribe_event(lrcr_id)

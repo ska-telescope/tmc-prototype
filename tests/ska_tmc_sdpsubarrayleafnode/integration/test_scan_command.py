@@ -5,7 +5,7 @@ from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.conftest import COMMAND_COMPLETED
-from tests.settings import event_remover, logger
+from tests.settings import logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
@@ -13,10 +13,6 @@ def scan(sdpsaln_name, device, json_factory, change_event_callbacks):
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
-    event_remover(
-        change_event_callbacks,
-        ["longRunningCommandResult", "longRunningCommandsInQueue"],
-    )
     lrcr_in_que_id = sdp_subarray_ln_proxy.subscribe_event(
         "longRunningCommandsInQueue",
         tango.EventType.CHANGE_EVENT,
@@ -128,15 +124,6 @@ def scan(sdpsaln_name, device, json_factory, change_event_callbacks):
             COMMAND_COMPLETED,
         ),
         lookahead=6,
-    )
-
-    event_remover(
-        change_event_callbacks,
-        [
-            "longRunningCommandResult",
-            "longRunningCommandsInQueue",
-            "sdpSubarrayObsState",
-        ],
     )
 
     tear_down(

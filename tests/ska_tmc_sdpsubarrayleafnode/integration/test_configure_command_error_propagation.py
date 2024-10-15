@@ -11,7 +11,7 @@ from tests.conftest import (
     SDPSUBARRAYLEAFNODE_LOW,
     SDPSUBARRAYLEAFNODE_MID,
 )
-from tests.settings import event_remover, logger
+from tests.settings import logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 dev_factory = DevFactory()
@@ -70,10 +70,6 @@ def configure_error_propogation(
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], '[3, "Missing scan_type key"]'),
             lookahead=3,
-        )
-        event_remover(
-            change_event_callbacks,
-            ["longRunningCommandResult", "sdpSubarrayObsState"],
         )
         tear_down(
             dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks
