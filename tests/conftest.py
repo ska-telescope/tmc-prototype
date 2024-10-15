@@ -155,7 +155,6 @@ def change_event_callbacks() -> MockTangoEventCallbackGroup:
     """
     return MockTangoEventCallbackGroup(
         "longRunningCommandResult",
-        "longRunningCommandsInQueue",
         "sdpSubarrayObsState",
         timeout=40.0,
     )
@@ -169,9 +168,7 @@ def group_callback() -> MockTangoEventCallbackGroup:
     :rtype: MockTangoEventCallbackGroup
     """
     group_callback = MockTangoEventCallbackGroup(
-        "longRunningCommandsInQueue",
         "longRunningCommandResult",
-        "longRunningCommandIDsInQueue",
         timeout=20,
     )
     return group_callback

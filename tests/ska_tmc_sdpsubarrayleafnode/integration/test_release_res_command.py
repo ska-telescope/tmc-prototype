@@ -5,7 +5,7 @@ from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.conftest import COMMAND_COMPLETED
-from tests.settings import event_remover, logger
+from tests.settings import logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
@@ -16,12 +16,6 @@ def release_resources(
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
     try:
-        lrcr_in_que_id = sdp_subarray_ln_proxy.subscribe_event(
-            "longRunningCommandsInQueue",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["longRunningCommandsInQueue"],
-        )
-
         lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
@@ -33,19 +27,8 @@ def release_resources(
             change_event_callbacks["sdpSubarrayObsState"],
         )
 
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            (),
-            lookahead=2,
-        )
         result, unique_id = sdp_subarray_ln_proxy.On()
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            ("On",),
-        )
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         assert result[0] == ResultCode.QUEUED
 
@@ -56,15 +39,6 @@ def release_resources(
         assign_input_str = json_factory("command_AssignResources")
         result, unique_id = sdp_subarray_ln_proxy.AssignResources(
             assign_input_str
-        )
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            (
-                "On",
-                "AssignResources",
-            ),
-            lookahead=2,
         )
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         assert result[0] == ResultCode.QUEUED
@@ -79,16 +53,6 @@ def release_resources(
         )
 
         result, unique_id = sdp_subarray_ln_proxy.ReleaseAllResources()
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            (
-                "On",
-                "AssignResources",
-                "ReleaseAllResources",
-            ),
-            lookahead=2,
-        )
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         assert result[0] == ResultCode.QUEUED
 
@@ -101,22 +65,12 @@ def release_resources(
             lookahead=4,
         )
 
-        event_remover(
-            change_event_callbacks,
-            [
-                "longRunningCommandResult",
-                "longRunningCommandsInQueue",
-                "sdpSubarrayObsState",
-            ],
-        )
-
         tear_down(
             dev_factory,
             sdp_subarray,
             sdp_subarray_ln_proxy,
             change_event_callbacks,
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
         sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
         sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
     except Exception as exception:
@@ -126,7 +80,6 @@ def release_resources(
             sdp_subarray_ln_proxy,
             change_event_callbacks,
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
         sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
         sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
         raise Exception(exception)

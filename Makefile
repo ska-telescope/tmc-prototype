@@ -10,7 +10,7 @@
 CAR_OCI_REGISTRY_HOST:=artefact.skao.int
 PROJECT = ska-tmc-sdpleafnodes
 PYTHON_SWITCHES_FOR_FLAKE8=--ignore=W503,E203 --max-line-length=79
-PYTHON_SWITCHES_FOR_PYLINT ?= --disable=C0209 
+PYTHON_SWITCHES_FOR_PYLINT ?= --disable=C0209,R0917 
 TANGO_HOST ?= tango-databaseds:10000 ## TANGO_HOST connection to the Tango DS
 PYTHON_VARS_BEFORE_PYTEST ?= PYTHONPATH=.:./src \
 							 TANGO_HOST=$(TANGO_HOST)
@@ -57,7 +57,7 @@ FAKE_DEVICES ?= true ## Install fake devices or not
 TANGO_HOST ?= tango-databaseds:10000## TANGO_HOST connection to the Tango DS
 COUNT ?= 1
 K8S_TIMEOUT=600s
-ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.4.3
+ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.5.0
 EXPOSE_ALL_DS ?=false
 OPERATOR ?=true
 CLUSTER_DOMAIN ?= cluster.local

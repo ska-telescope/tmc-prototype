@@ -180,11 +180,6 @@ class AssignResources(SdpSLNCommand):
                 + "The command has NOT been executed."
                 + "This device will continue with normal operation.",
             )
-        if json_argument["resources"]["receive_nodes"] == 0:
-            return self.component_manager.generate_command_result(
-                ResultCode.FAILED,
-                "Missing receive nodes in the AssignResources input json",
-            )
 
         return (
             ResultCode.OK,

@@ -14,7 +14,6 @@ from tests.settings import (
     SDP_SUBARRAY_DEVICE_MID,
     SDP_SUBARRAY_LEAF_NODE_LOW,
     SDP_SUBARRAY_LEAF_NODE_MID,
-    event_remover,
     logger,
 )
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
@@ -30,16 +29,6 @@ def configure_timeout(
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
     try:
-        event_remover(
-            change_event_callbacks,
-            ["longRunningCommandResult", "longRunningCommandsInQueue"],
-        )
-        lrcr_in_que_id = sdp_subarray_ln_proxy.subscribe_event(
-            "longRunningCommandsInQueue",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["longRunningCommandsInQueue"],
-        )
-
         lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
@@ -51,17 +40,8 @@ def configure_timeout(
             change_event_callbacks["sdpSubarrayObsState"],
         )
 
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            (),
-        )
         result, unique_id = sdp_subarray_ln_proxy.On()
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(("On",), lookahead=2)
-
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], COMMAND_COMPLETED),
             lookahead=4,
@@ -69,15 +49,6 @@ def configure_timeout(
         assign_input_str = json_factory("command_AssignResources")
         result, unique_id = sdp_subarray_ln_proxy.AssignResources(
             assign_input_str
-        )
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            (
-                "On",
-                "AssignResources",
-            ),
-            lookahead=2,
         )
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         assert result[0] == ResultCode.QUEUED
@@ -109,21 +80,12 @@ def configure_timeout(
             lookahead=3,
         )
         sdp_subarray.ResetDelayInfo()
-        event_remover(
-            change_event_callbacks,
-            [
-                "longRunningCommandResult",
-                "longRunningCommandsInQueue",
-                "sdpSubarrayObsState",
-            ],
-        )
         tear_down(
             dev_factory,
             sdp_subarray,
             sdp_subarray_ln_proxy,
             change_event_callbacks,
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
         sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
         sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
 
@@ -135,7 +97,6 @@ def configure_timeout(
             change_event_callbacks,
         )
         sdp_subarray.ResetDelayInfo()
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
         sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
         sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
         raise Exception(exception)

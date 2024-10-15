@@ -115,6 +115,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._update_availablity_callback = _update_availablity_callback
         self.timeout = timeout
         self.command_timeout = command_timeout
+        self.rlock = threading.RLock()
         self.assign_id: str = ""
         self.configure_id: str = ""
         self.release_id: str = ""
@@ -175,35 +176,31 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             if self._update_sdp_subarray_obs_state_callback:
                 self._update_sdp_subarray_obs_state_callback(obs_state)
 
-    def update_device_ping_failure(
+    def update_exception_for_unresponsiveness(
         self, device_info: SubArrayDeviceInfo, exception: str
     ) -> None:
-        """
-        Set a device to failed and call the relative callback if available
-
+        """Set a device to failed and call the relative callback if available
         :param device_info: a device info
         :type device_info: DeviceInfo
         :param exception: an exception
         :type: Exception
         """
-        device_info.update_unresponsive(True, exception)
-
-        with self.lock:
+        with self.rlock:
+            device_info.update_unresponsive(True, exception)
             if self._update_availablity_callback is not None:
                 self._update_availablity_callback(False)
 
-    def update_ping_info(self, ping: int, device_name: str) -> None:
+    # pylint: disable=signature-differs
+    # pylint: disable=unused-argument
+    def update_responsiveness_info(self, device_name: str) -> None:
         """
-        Update a device with the correct ping information.
+        Update a device with the correct availability information.
 
-        :param device_name: name of the device
-        :type device_name: str
-        :param ping: device response time
-        :type ping: int
+        :param dev_name: name of the device
+        :type dev_name: str
         """
-        with self.lock:
-            self._device.ping = ping
-            self._device.update_unresponsive(False)
+        with self.rlock:
+            self._device.update_unresponsive(False, "")
             if self._update_availablity_callback is not None:
                 self._update_availablity_callback(True)
 

@@ -5,7 +5,6 @@ from ska_tango_base.commands import ResultCode
 from tango import Database, DeviceProxy
 
 from tests.conftest import COMMAND_COMPLETED
-from tests.settings import event_remover
 
 
 @given(
@@ -48,37 +47,17 @@ def check_command(sdpmasterleaf_node, group_callback):
 
     assert pytest.command_result[0][0] == ResultCode.QUEUED
     unique_id = pytest.command_result[1][0]
-    sdpmasterleaf_node.subscribe_event(
-        "longRunningCommandIDsInQueue",
-        tango.EventType.CHANGE_EVENT,
-        group_callback["longRunningCommandIDsInQueue"],
-    )
-    sdpmasterleaf_node.subscribe_event(
-        "longRunningCommandsInQueue",
-        tango.EventType.CHANGE_EVENT,
-        group_callback["longRunningCommandsInQueue"],
-    )
-    sdpmasterleaf_node.subscribe_event(
+    lrcr_id = sdpmasterleaf_node.subscribe_event(
         "longRunningCommandResult",
         tango.EventType.CHANGE_EVENT,
         group_callback["longRunningCommandResult"],
-    )
-    group_callback["longRunningCommandIDsInQueue"].assert_change_event(
-        (str(unique_id),),
     )
 
     group_callback["longRunningCommandResult"].assert_change_event(
         (unique_id, COMMAND_COMPLETED), lookahead=2
     )
 
-    group_callback["longRunningCommandsInQueue"].assert_change_event(
-        (),
-        lookahead=2,
-    )
-    event_remover(
-        group_callback,
-        ["longRunningCommandResult", "longRunningCommandsInQueue"],
-    )
+    sdpmasterleaf_node.unsubscribe_event(lrcr_id)
 
 
 scenarios("../ska_tmc_sdpmasterleafnode/features/sdpmasterleafnode.feature")
