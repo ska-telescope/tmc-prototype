@@ -21,15 +21,6 @@ def disable_command(tango_context, sdpmln_name, group_callback):
     ).value
     assert availablity_value
 
-    # lrcq_id = sdpmln_node.subscribe_event(
-    #     "longRunningCommandsInQueue",
-    #     tango.EventType.CHANGE_EVENT,
-    #     group_callback["longRunningCommandsInQueue"],
-    # )
-    # group_callback["longRunningCommandsInQueue"].assert_change_event(
-    #     (),
-    # )
-
     result, unique_id = sdpmln_node.On()
 
     # group_callback["longRunningCommandsInQueue"].assert_change_event(
@@ -49,9 +40,6 @@ def disable_command(tango_context, sdpmln_name, group_callback):
     )
     result_disable, unique_id_disable = sdpmln_node.Disable()
     assert result_disable[0] == ResultCode.QUEUED
-    # group_callback["longRunningCommandsInQueue"].assert_change_event(
-    #     ("On", "Disable"),
-    # )
 
     group_callback["longRunningCommandResult"].assert_change_event(
         (
@@ -60,11 +48,6 @@ def disable_command(tango_context, sdpmln_name, group_callback):
         ),
         lookahead=2,
     )
-    # group_callback["longRunningCommandsInQueue"].assert_change_event(
-    #     (),
-    #     lookahead=3,
-    # )
-    # sdpmln_node.unsubscribe_event(lrcq_id)
     sdpmln_node.unsubscribe_event(lrcr_id)
     # Teardown
     sdpmln_node.Off()

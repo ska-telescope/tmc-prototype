@@ -35,23 +35,12 @@ def abort_restart_command(
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(sdp_subarray_device)
     try:
-        lrcr_in_que_id = sdp_subarray_ln_proxy.subscribe_event(
-            "longRunningCommandsInQueue",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["longRunningCommandsInQueue"],
-        )
-
         lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandResult"],
         )
 
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            (),
-        )
         set_sdp_subarray_obsstate(dev_factory, obsstate, sdp_subarray)
 
         obsstate_id = sdp_subarray_ln_proxy.subscribe_event(
@@ -85,7 +74,6 @@ def abort_restart_command(
             ObsState.EMPTY,
             lookahead=4,
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
         sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
         sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
 

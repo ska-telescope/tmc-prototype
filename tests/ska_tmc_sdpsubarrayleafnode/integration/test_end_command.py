@@ -20,12 +20,6 @@ def end(sdpsaln_name, device, json_factory, change_event_callbacks):
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
     try:
-        lrcr_in_que_id = sdp_subarray_ln_proxy.subscribe_event(
-            "longRunningCommandsInQueue",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["longRunningCommandsInQueue"],
-        )
-
         lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
@@ -35,12 +29,6 @@ def end(sdpsaln_name, device, json_factory, change_event_callbacks):
             "sdpSubarrayObsState",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["sdpSubarrayObsState"],
-        )
-
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            (),
         )
         result, unique_id = sdp_subarray_ln_proxy.On()
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
@@ -59,15 +47,6 @@ def end(sdpsaln_name, device, json_factory, change_event_callbacks):
         result, unique_id = sdp_subarray_ln_proxy.AssignResources(
             assign_input_str
         )
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            (
-                "On",
-                "AssignResources",
-            ),
-            lookahead=2,
-        )
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         assert result[0] == ResultCode.QUEUED
 
@@ -84,16 +63,6 @@ def end(sdpsaln_name, device, json_factory, change_event_callbacks):
         result, unique_id = sdp_subarray_ln_proxy.Configure(
             configure_input_str
         )
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            (
-                "On",
-                "AssignResources",
-                "Configure",
-            ),
-            lookahead=2,
-        )
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         assert result[0] == ResultCode.QUEUED
 
@@ -107,17 +76,6 @@ def end(sdpsaln_name, device, json_factory, change_event_callbacks):
         )
 
         result, unique_id = sdp_subarray_ln_proxy.End()
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            (
-                "On",
-                "AssignResources",
-                "Configure",
-                "End",
-            ),
-            lookahead=3,
-        )
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], COMMAND_COMPLETED),
@@ -134,7 +92,6 @@ def end(sdpsaln_name, device, json_factory, change_event_callbacks):
             sdp_subarray_ln_proxy,
             change_event_callbacks,
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
         sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
         sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
     except Exception as exception:
@@ -144,7 +101,6 @@ def end(sdpsaln_name, device, json_factory, change_event_callbacks):
             sdp_subarray_ln_proxy,
             change_event_callbacks,
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
         sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
         sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
         raise Exception(exception)

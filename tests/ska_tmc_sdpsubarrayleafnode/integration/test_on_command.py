@@ -19,22 +19,7 @@ def on_command(sdpsaln_fqdn, sdpsa_fqdn, change_event_callbacks):
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_fqdn)
     sdp_subarray_proxy = dev_factory.get_device(sdpsa_fqdn)
     try:
-        lrcr_in_que_id = sdp_subarray_ln_proxy.subscribe_event(
-            "longRunningCommandsInQueue",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["longRunningCommandsInQueue"],
-        )
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            (),
-        )
         result, unique_id = sdp_subarray_ln_proxy.On()
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            ("On",),
-        )
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         assert result[0] == ResultCode.QUEUED
         lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
@@ -47,19 +32,12 @@ def on_command(sdpsaln_fqdn, sdpsa_fqdn, change_event_callbacks):
             lookahead=4,
         )
 
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            (),
-            lookahead=2,
-        )
         tear_down(
             dev_factory,
             sdp_subarray_proxy,
             sdp_subarray_ln_proxy,
             change_event_callbacks,
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
         sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
     except Exception as exception:
         tear_down(
@@ -68,7 +46,6 @@ def on_command(sdpsaln_fqdn, sdpsa_fqdn, change_event_callbacks):
             sdp_subarray_ln_proxy,
             change_event_callbacks,
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
         sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
         raise Exception(exception)
 

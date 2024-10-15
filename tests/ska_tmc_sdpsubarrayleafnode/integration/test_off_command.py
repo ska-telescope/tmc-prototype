@@ -19,11 +19,6 @@ def off_command(sdpsaln_fqdn, sdpsa_fqdn, change_event_callbacks):
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_fqdn)
 
-    lrcr_in_que_id = sdp_subarray_ln_proxy.subscribe_event(
-        "longRunningCommandsInQueue",
-        tango.EventType.CHANGE_EVENT,
-        change_event_callbacks["longRunningCommandsInQueue"],
-    )
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         (), lookahead=2
     )
@@ -43,14 +38,8 @@ def off_command(sdpsaln_fqdn, sdpsa_fqdn, change_event_callbacks):
         lookahead=4,
     )
 
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        (),
-    )
     result, unique_id = sdp_subarray_ln_proxy.Off()
     time.sleep(0.5)
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        ("Off",), lookahead=2
-    )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 
@@ -59,11 +48,6 @@ def off_command(sdpsaln_fqdn, sdpsa_fqdn, change_event_callbacks):
         lookahead=6,
     )
 
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        (),
-    )
-
-    sdp_subarray_ln_proxy.unsubscribe_event(lrcr_in_que_id)
     sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
 
 

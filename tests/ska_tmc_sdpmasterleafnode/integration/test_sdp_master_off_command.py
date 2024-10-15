@@ -20,20 +20,8 @@ def off_command(tango_context, sdpmln_name, group_callback):
         "isSubsystemAvailable"
     ).value
     assert availablity_value
-
-    # lrcq_id = sdpmln_node.subscribe_event(
-    #     "longRunningCommandsInQueue",
-    #     tango.EventType.CHANGE_EVENT,
-    #     group_callback["longRunningCommandsInQueue"],
-    # )
-    # group_callback["longRunningCommandsInQueue"].assert_change_event(
-    #     (),
-    # )
     result, unique_id = sdpmln_node.On()
 
-    # group_callback["longRunningCommandsInQueue"].assert_change_event(
-    #     ("On",),
-    # )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 
@@ -48,19 +36,12 @@ def off_command(tango_context, sdpmln_name, group_callback):
     )
     result_off, unique_id_off = sdpmln_node.Off()
     assert result_off[0] == ResultCode.QUEUED
-    # group_callback["longRunningCommandsInQueue"].assert_change_event(
-    #     ("On", "Off"),
-    # )
 
     group_callback["longRunningCommandResult"].assert_change_event(
         (unique_id_off[0], COMMAND_COMPLETED),
         lookahead=2,
     )
-    # group_callback["longRunningCommandsInQueue"].assert_change_event(
-    #     (),
-    #     lookahead=3,
-    # )
-    # sdpmln_node.unsubscribe_event(lrcq_id)
+
     sdpmln_node.unsubscribe_event(lrcr_id)
 
 
