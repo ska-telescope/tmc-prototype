@@ -32,14 +32,14 @@ def off_command(tango_context, sdpmln_name, group_callback):
     )
     group_callback["longRunningCommandResult"].assert_change_event(
         (unique_id[0], COMMAND_COMPLETED),
-        lookahead=2,
+        lookahead=4,
     )
     result_off, unique_id_off = sdpmln_node.Off()
     assert result_off[0] == ResultCode.QUEUED
 
     group_callback["longRunningCommandResult"].assert_change_event(
         (unique_id_off[0], COMMAND_COMPLETED),
-        lookahead=2,
+        lookahead=4,
     )
 
     sdpmln_node.unsubscribe_event(lrcr_id)

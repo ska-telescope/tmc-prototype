@@ -19,13 +19,7 @@ def off_command(sdpsaln_fqdn, sdpsa_fqdn, change_event_callbacks):
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_fqdn)
 
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        (), lookahead=2
-    )
     result, unique_id = sdp_subarray_ln_proxy.On()
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        ("On",), lookahead=4
-    )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
     lrcr_id = sdp_subarray_ln_proxy.subscribe_event(

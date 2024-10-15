@@ -23,9 +23,6 @@ def disable_command(tango_context, sdpmln_name, group_callback):
 
     result, unique_id = sdpmln_node.On()
 
-    # group_callback["longRunningCommandsInQueue"].assert_change_event(
-    #     ("On",),
-    # )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 
