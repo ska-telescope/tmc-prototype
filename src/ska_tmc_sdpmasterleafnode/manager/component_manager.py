@@ -23,7 +23,6 @@ configure_logging()
 LOGGER = logging.getLogger(__name__)
 
 
-# pylint: disable=too-many-positional-arguments
 class SdpMLNComponentManager(TmcLeafNodeComponentManager):
     """
     A component manager for The SDP Master Leaf Node component.
