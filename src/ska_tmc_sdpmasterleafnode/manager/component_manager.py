@@ -252,6 +252,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             if self.update_availablity_callback is not None:
                 self.update_availablity_callback(False)
 
+    # pylint: disable=unused-argument
     def update_responsiveness_info(self, device_name: str = "") -> None:
         """
         Update a device with the correct availability information.
@@ -259,7 +260,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         :param dev_name: name of the device
         :type dev_name: str
         """
-        self.logger.info(f"Device name : {device_name}")
         with self.rlock:
             self.get_device().update_unresponsive(False, "")
             if self.update_availablity_callback is not None:
