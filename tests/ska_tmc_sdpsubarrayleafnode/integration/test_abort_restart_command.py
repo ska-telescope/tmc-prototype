@@ -56,6 +56,11 @@ def abort_restart_command(
 
         result, unique_id = sdp_subarray_ln_proxy.Abort()
         change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.ABORTING,
+            lookahead=4,
+        )
+
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
             ObsState.ABORTED,
             lookahead=4,
         )

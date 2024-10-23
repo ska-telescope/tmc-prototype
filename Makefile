@@ -59,7 +59,7 @@ COUNT ?= 1
 K8S_TIMEOUT=600s
 ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.5.0
 EXPOSE_ALL_DS ?=false
-OPERATOR ?=true
+OPERATOR ?=false
 CLUSTER_DOMAIN ?= cluster.local
 # Test runner - run to completion job in K8s
 # name of the pod running the k8s_tests

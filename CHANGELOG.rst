@@ -10,10 +10,17 @@ This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
 Fixed
 ------
+
+[0.17.2]
+********
+* Resolved skb-536
+* SDP Subarray Device is able to go to ABORTING state before ABORTED
 * Updated the .readthdocs.yaml
 * Fixed documentation missing information issue
 * Fixed Logger strings.
 * Improved the test case execution time.
+
+
 [0.17.1]
 ********
 * Remove a spam log from component manager method
