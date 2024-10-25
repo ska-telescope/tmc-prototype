@@ -100,10 +100,7 @@ def test_end_command_not_allowed_with_invalid_obsState(
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
-def test_end_fail_check_allowed_with_device_unresponsive(
-    tango_context, devices
-):
-    logger.info("%s", tango_context)
+def test_end_fail_check_allowed_with_device_unresponsive(devices):
     cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):

@@ -42,10 +42,7 @@ def test_endscan_command(tango_context, devices, task_callback):
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
-def test_endscan_fail_check_allowed_with_device_unresponsive(
-    tango_context, devices
-):
-    logger.info("%s", tango_context)
+def test_endscan_fail_check_allowed_with_device_unresponsive(devices):
     cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
