@@ -260,6 +260,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
     def _check_if_sdp_sa_is_responsive(self) -> None:
         """Checks if SdpSubarray device is responsive."""
+
         if self._device is None or self._device.unresponsive:
             raise DeviceUnresponsive(f"{self._device} not available")
 

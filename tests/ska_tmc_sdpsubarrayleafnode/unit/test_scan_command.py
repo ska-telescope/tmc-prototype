@@ -132,9 +132,8 @@ def test_scan_command_not_allowed_with_invalid_obsState(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
 def test_telescope_scan_command_fail_check_allowed_with_device_unresponsive(  # noqa:E501
-    tango_context, devices
+    devices,
 ):
-    logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):

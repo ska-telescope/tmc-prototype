@@ -104,9 +104,8 @@ def test_release_all_resources_command_not_allowed_with_invalid_obsState(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
 def test_release_resources_fail_check_allowed_with_device_unresponsive(
-    tango_context, devices
+    devices,
 ):
-    logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
