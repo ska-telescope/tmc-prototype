@@ -14,7 +14,7 @@ Fixed
 [0.17.2]
 ********
 * Resolved skb-536
-* SDP Subarray Device is able to go to ABORTING state before ABORTED
+* The SDP Subarray Device can transition to the ABORTING state before reaching the ABORTED state.
 * Updated the .readthdocs.yaml
 * Fixed documentation missing information issue
 * Fixed Logger strings.
