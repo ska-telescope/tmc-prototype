@@ -1,15 +1,27 @@
 """
 EndScan command class for SDPSubarrayLeafNode.
 """
-import threading
-from logging import Logger
-from typing import Optional, Tuple
+from __future__ import annotations
 
-from ska_tango_base.base import TaskCallbackType
+import logging
+import time
+from typing import TYPE_CHECKING, Tuple
+
+from ska_ser_logging import configure_logging
 from ska_tango_base.commands import ResultCode
-from ska_tango_base.executor import TaskStatus
+from ska_tango_base.control_model import ObsState
+from ska_tmc_common import TimeoutCallback
+from ska_tmc_common.v1.error_propagation_tracker import (
+    error_propagation_tracker,
+)
+from ska_tmc_common.v1.timeout_tracker import timeout_tracker
 
 from ska_tmc_sdpsubarrayleafnode.commands.sdp_sln_command import SdpSLNCommand
+
+configure_logging()
+LOGGER = logging.getLogger(__name__)
+if TYPE_CHECKING:
+    from ..manager.component_manager import SdpSLNComponentManager
 
 
 class EndScan(SdpSLNCommand):
@@ -20,45 +32,30 @@ class EndScan(SdpSLNCommand):
     This command is allowed when Sdp Subarray is in SCANNING obsState.
     """
 
+    def __init__(
+        self,
+        component_manager: SdpSLNComponentManager,
+        logger: logging.Logger = LOGGER,
+    ) -> None:
+        super().__init__(component_manager, logger)
+        self.timeout_id = f"{time.time()}_{__class__.__name__}"
+        self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
+        self.component_manager = component_manager
+        self.component_manager.command_in_progress = "ReleaseAllResources"
+
+    @timeout_tracker
+    @error_propagation_tracker("get_obs_state", [ObsState.READY])
     def end_scan(
         self,
-        logger: Logger,
-        task_callback: TaskCallbackType,
-        # pylint: disable=unused-argument
-        task_abort_event: Optional[threading.Event] = None,
-    ) -> None:
-        """This is a long running method for EndScan command, it
-        executes do hook, invokes EndScan command on SdpSubarray.
-
-        :param logger: logger
-        :type logger: logging.Logger
-        :param task_callback: Update task state, defaults to None
-        :type task_callback: TaskCallbackType
-        :param task_abort_event: Check for abort, defaults to None
-        :type task_abort_event: Event, optional
+    ) -> Tuple[ResultCode, str]:
         """
-        task_callback(status=TaskStatus.IN_PROGRESS)
-        result_code, message = self.do()
-        logger.info(
-            "EndScan command invoked on: %s: Result: %s, %s",
-            self.sdp_subarray_adapter.dev_name,
-            result_code,
-            message,
-        )
+        This is a long running method for EndScan command, it
+        executes do hook, invokes EndScan command on SdpSubarray.
+        """
+        return self.do()
 
-        if result_code == ResultCode.FAILED:
-            task_callback(
-                status=TaskStatus.COMPLETED,
-                result=(result_code, message),
-                exception=message,
-            )
-        else:
-            task_callback(
-                status=TaskStatus.COMPLETED,
-                result=(result_code, message),
-            )
-
-    def do(self, argin: Optional[str] = None) -> Tuple[ResultCode, str]:
+    # pylint: disable=arguments-differ
+    def do(self) -> Tuple[ResultCode, str]:
         """
         Method to invoke EndScan command on SDP Subarray.
 
