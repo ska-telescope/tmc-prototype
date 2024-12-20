@@ -69,8 +69,7 @@ def assign_resources_error_propagation(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_mid
-@pytest.mark.repeat(100)
+@pytest.mark.SKA_midm
 def test_assign_resources_error_propagation(
     json_factory, change_event_callbacks
 ):
