@@ -88,6 +88,7 @@ def configure_timeout(
         )
         sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
         sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
+        sdp_subarray.ClearCommandCallInfo()
 
     except Exception as exception:
         tear_down(
@@ -99,11 +100,13 @@ def configure_timeout(
         sdp_subarray.ResetDelayInfo()
         sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
         sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
+        sdp_subarray.ClearCommandCallInfo()
         raise Exception(exception)
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_midm
+@pytest.mark.SKA_mid
+@pytest.mark.repeat(100)
 def test_configure_command_timeout_mid(json_factory, change_event_callbacks):
     return configure_timeout(
         SDP_SUBARRAY_LEAF_NODE_MID,
