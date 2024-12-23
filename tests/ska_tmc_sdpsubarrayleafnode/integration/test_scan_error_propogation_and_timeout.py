@@ -87,6 +87,7 @@ def scan(sdpsaln_name, device, json_factory, change_event_callbacks):
         lookahead=6,
     )
     sdp_subarray.SetDefective(RESET_DEFECT)
+    sdp_subarray.ClearCommandCallInfo()
 
     tear_down(
         dev_factory,
