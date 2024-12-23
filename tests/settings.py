@@ -68,13 +68,6 @@ ERROR_PROPAGATION_DEFECT = json.dumps(
     }
 )
 
-SDP_ERROR = (
-    '[3, "The invocation of the Scan command is failed on SdpSubarray'
-    + " Device low-sdp/subarray/01Reason: Error in calling the Scan command "
-    + "on Sdp Subarray.The command has NOT been executed.This device will "
-    + 'continue with normal operation."]'
-)
-
 
 def count_faulty_devices(component_manager):
     """Count faulty devices"""
