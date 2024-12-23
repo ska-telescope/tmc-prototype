@@ -91,7 +91,7 @@ def configure(sdpsaln_name, device, json_factory, change_event_callbacks):
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_mid
+@pytest.mark.SKA_midm
 def test_configure_command_mid(json_factory, change_event_callbacks):
     return configure(
         SDP_SUBARRAY_LEAF_NODE_MID,

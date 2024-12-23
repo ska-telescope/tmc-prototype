@@ -86,7 +86,7 @@ def release_resources(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_mid
+@pytest.mark.SKA_midm
 @pytest.mark.parametrize(
     "device",
     [("mid-sdp/subarray/01")],
