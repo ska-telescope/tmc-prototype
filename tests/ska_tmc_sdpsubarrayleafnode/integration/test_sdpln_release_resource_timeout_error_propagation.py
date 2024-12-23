@@ -184,8 +184,7 @@ def test_release_all_resources_command_error_propagation_mid(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_low
-@pytest.mark.repeat(100)
+@pytest.mark.SKA_lowm
 def test_release_all_res_command_timeout_low(
     json_factory, change_event_callbacks
 ):
@@ -197,7 +196,8 @@ def test_release_all_res_command_timeout_low(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_lowm
+@pytest.mark.SKA_low
+@pytest.mark.repeat(100)
 def test_release_all_res_command_error_propagation_low(
     json_factory, change_event_callbacks
 ):
