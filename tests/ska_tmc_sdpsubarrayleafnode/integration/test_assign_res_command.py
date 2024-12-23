@@ -70,7 +70,7 @@ def assign_resources(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_midm
+@pytest.mark.SKA_mid
 def test_assign_res_command_mid(
     json_factory,
     change_event_callbacks,

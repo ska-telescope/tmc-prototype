@@ -101,7 +101,7 @@ def end(sdpsaln_name, device, json_factory, change_event_callbacks):
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_midm
+@pytest.mark.SKA_mid
 def test_end_command_mid(json_factory, change_event_callbacks):
     return end(
         SDP_SUBARRAY_LEAF_NODE_MID,

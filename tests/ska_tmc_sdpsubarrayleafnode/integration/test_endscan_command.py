@@ -99,7 +99,7 @@ def endscan(sdpsaln_name, device, json_factory, change_event_callbacks):
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_midm
+@pytest.mark.SKA_mid
 @pytest.mark.parametrize(
     "device",
     [("mid-sdp/subarray/01")],

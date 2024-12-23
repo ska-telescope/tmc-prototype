@@ -93,7 +93,7 @@ def abort_restart_command(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_midm
+@pytest.mark.SKA_mid
 @pytest.mark.parametrize("obsstate", device_obsstate)
 def test_abort_restart_command_mid(obsstate, change_event_callbacks):
     return abort_restart_command(
