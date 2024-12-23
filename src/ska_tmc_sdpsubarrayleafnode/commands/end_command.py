@@ -41,7 +41,7 @@ class End(SdpSLNCommand):
         self.timeout_id = f"{time.time()}_{__class__.__name__}"
         self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
         self.component_manager = component_manager
-        self.component_manager.command_in_progress = "ReleaseAllResources"
+        self.component_manager.command_in_progress = "End"
 
     @timeout_tracker
     @error_propagation_tracker("get_obs_state", [ObsState.IDLE])
