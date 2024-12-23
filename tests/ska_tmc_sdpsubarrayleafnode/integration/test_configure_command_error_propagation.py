@@ -89,7 +89,7 @@ def configure_error_propogation(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_midm
+@pytest.mark.SKA_mid
 def test_configure_command_error_propagation_mid(
     json_factory,
     change_event_callbacks,
@@ -103,7 +103,7 @@ def test_configure_command_error_propagation_mid(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_low
+@pytest.mark.SKA_lowm
 def test_configure_command_error_propagation_low(
     json_factory,
     change_event_callbacks,
