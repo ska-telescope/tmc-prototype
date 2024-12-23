@@ -73,11 +73,6 @@ def scan(sdpsaln_name, device, json_factory, change_event_callbacks):
     assert result[0] == ResultCode.QUEUED
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], COMMAND_COMPLETED),
-        lookahead=6,
-    )
-
-    change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (unique_id[0], '[3, "Exception occurred, command failed"]'),
         lookahead=6,
     )
