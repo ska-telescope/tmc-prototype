@@ -76,6 +76,7 @@ def configure_error_propogation(
         )
         sdpsln_device.unsubscribe_event(obsstate_id)
         sdpsln_device.unsubscribe_event(lrcr_id)
+        sdp_subarray.ClearCommandCallInfo()
 
     except Exception as exception:
         tear_down(
@@ -83,6 +84,7 @@ def configure_error_propogation(
         )
         sdpsln_device.unsubscribe_event(obsstate_id)
         sdpsln_device.unsubscribe_event(lrcr_id)
+        sdp_subarray.ClearCommandCallInfo()
         raise Exception(exception)
 
 
