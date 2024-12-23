@@ -65,8 +65,8 @@ def scan(sdpsaln_name, device, json_factory, change_event_callbacks):
     )
     sdp_subarray.SetDefective(FAILED_RESULT_DEFECT)
     scan_input_str = json_factory("command_Scan")
-    invalid_scan_str = json.loads(scan_input_str)
-    scan_input_str = invalid_scan_str.pop("scan_id")
+    # invalid_scan_str = json.loads(scan_input_str)
+    # scan_input_str = invalid_scan_str.pop("scan_id")
     result, unique_id = sdp_subarray_ln_proxy.Scan(json.dumps(scan_input_str))
 
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
