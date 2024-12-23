@@ -91,6 +91,7 @@ def release_all_resources_error_propagation(
     tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks)
     sdpsal_node.unsubscribe_event(lrcr_id)
     sdpsal_node.unsubscribe_event(obsstate_id)
+    sdp_subarray.ClearCommandCallInfo()
 
 
 def release_all_resources_timeout(
@@ -169,7 +170,8 @@ def test_release_all_resources_command_timeout_mid(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_midm
+@pytest.mark.SKA_mid
+@pytest.mark.repeat(100)
 def test_release_all_resources_command_error_propagation_mid(
     json_factory,
     change_event_callbacks,
