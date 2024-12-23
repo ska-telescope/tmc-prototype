@@ -487,7 +487,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         scan_command = Scan(self, self.logger)
         task_status, response = self.submit_task(
             scan_command.scan,
-            args=[argin, self.logger],
+            kwargs={"argin": argin},
             is_cmd_allowed=self.is_command_allowed_callable("Scan"),
             task_callback=task_callback,
         )

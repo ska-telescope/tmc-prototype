@@ -1,5 +1,5 @@
 """
-ReleaseAllResources command class for SdpSubarrayLeafNode.
+End command class for SdpSubarrayLeafNode.
 """
 from __future__ import annotations
 
