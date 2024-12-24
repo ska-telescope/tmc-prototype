@@ -47,7 +47,6 @@ def test_telescope_scan_command(tango_context, devices, task_callback):
     )
 
 
-@pytest.mark.kk
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]

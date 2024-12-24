@@ -44,78 +44,68 @@ def end_error_propogation(
         sdp_subarray = dev_factory.get_device(MID_SDP_SUBARRAY)
     else:
         sdp_subarray = dev_factory.get_device(LOW_SDP_SUBARRAY)
-    try:
-        result, unique_id = sdpsln_device.AssignResources(assign_input_str)
-        logger.info(
-            f"AssignResources Command ID: {unique_id} Returned \
-                result: {result}"
-        )
 
-        assert unique_id[0].endswith("AssignResources")
-        assert result[0] == ResultCode.QUEUED
+    result, unique_id = sdpsln_device.AssignResources(assign_input_str)
+    logger.info(
+        f"AssignResources Command ID: {unique_id} Returned \
+            result: {result}"
+    )
 
-        lrcr_id = sdpsln_device.subscribe_event(
-            "longRunningCommandResult",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["longRunningCommandResult"],
-        )
-        change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], COMMAND_COMPLETED),
-            lookahead=3,
-        )
-        obsstate_id = sdpsln_device.subscribe_event(
-            "sdpSubarrayObsState",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["sdpSubarrayObsState"],
-        )
-        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
-            ObsState.IDLE,
-            lookahead=4,
-        )
-        result, unique_id = sdpsln_device.Configure(configure_input_str)
-        logger.info(f"Command ID: {unique_id} Returned result: {result}")
-        assert result[0] == ResultCode.QUEUED
+    assert unique_id[0].endswith("AssignResources")
+    assert result[0] == ResultCode.QUEUED
 
-        change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], COMMAND_COMPLETED),
-            lookahead=6,
-        )
-        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
-            ObsState.READY,
-            lookahead=4,
-        )
-        sdp_subarray.SetDefective(FAILED_RESULT_DEFECT)
-        result, unique_id = sdpsln_device.End()
+    lrcr_id = sdpsln_device.subscribe_event(
+        "longRunningCommandResult",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["longRunningCommandResult"],
+    )
+    change_event_callbacks["longRunningCommandResult"].assert_change_event(
+        (unique_id[0], COMMAND_COMPLETED),
+        lookahead=3,
+    )
+    obsstate_id = sdpsln_device.subscribe_event(
+        "sdpSubarrayObsState",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["sdpSubarrayObsState"],
+    )
+    change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+        ObsState.IDLE,
+        lookahead=4,
+    )
+    result, unique_id = sdpsln_device.Configure(configure_input_str)
+    logger.info(f"Command ID: {unique_id} Returned result: {result}")
+    assert result[0] == ResultCode.QUEUED
 
-        logger.info(f"Command ID: {unique_id} Returned result: {result}")
-        assert result[0] == ResultCode.QUEUED
-        SDP_ERROR = (
-            '[3, "The invocation of the End command is failed on SdpSubarray'
-            + f" Device {sdpsln_name}Reason: Error in calling the Scan "
-            + "command on Sdp Subarray.The command has NOT been executed."
-            + 'This device will continue with normal operation."]'
-        )
-        change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (
-                unique_id[0],
-                SDP_ERROR,
-            ),
-            lookahead=6,
-        )
-        sdp_subarray.SetDefective(RESET_DEFECT)
-        sdpsln_device.unsubscribe_event(obsstate_id)
-        sdpsln_device.unsubscribe_event(lrcr_id)
-        tear_down(
-            dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks
-        )
+    change_event_callbacks["longRunningCommandResult"].assert_change_event(
+        (unique_id[0], COMMAND_COMPLETED),
+        lookahead=6,
+    )
+    change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+        ObsState.READY,
+        lookahead=4,
+    )
+    sdp_subarray.SetDefective(FAILED_RESULT_DEFECT)
+    result, unique_id = sdpsln_device.End()
 
-    except Exception as exception:
-        tear_down(
-            dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks
-        )
-        sdpsln_device.unsubscribe_event(obsstate_id)
-        sdpsln_device.unsubscribe_event(lrcr_id)
-        raise Exception(exception)
+    logger.info(f"Command ID: {unique_id} Returned result: {result}")
+    assert result[0] == ResultCode.QUEUED
+    SDP_ERROR = (
+        '[3, "The invocation of the End command is failed on SdpSubarray'
+        + f" Device {sdpsln_name}Reason: Error in calling the Scan "
+        + "command on Sdp Subarray.The command has NOT been executed."
+        + 'This device will continue with normal operation."]'
+    )
+    change_event_callbacks["longRunningCommandResult"].assert_change_event(
+        (
+            unique_id[0],
+            SDP_ERROR,
+        ),
+        lookahead=6,
+    )
+    sdp_subarray.SetDefective(RESET_DEFECT)
+    sdpsln_device.unsubscribe_event(obsstate_id)
+    sdpsln_device.unsubscribe_event(lrcr_id)
+    tear_down(dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks)
 
 
 @pytest.mark.post_deployment
