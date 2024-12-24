@@ -90,9 +90,9 @@ def end_error_propogation(
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
     SDP_ERROR = (
-        '[3, "The invocation of the End command is failed on SdpSubarray'
-        + f" Device {sdpsln_name}Reason: Error in calling the Scan "
-        + "command on Sdp Subarray.The command has NOT been executed."
+        '[3, "The invocation of the End command is failed on SDP Subarray'
+        + f" Device {sdpsln_name} Reason: Error in invoking End command "
+        + "on Sdp Subarray.The command has NOT been executed. "
         + 'This device will continue with normal operation."]'
     )
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
@@ -117,7 +117,7 @@ def test_end_command_error_propagation_mid(
     return end_error_propogation(
         SDPSUBARRAYLEAFNODE_MID,
         json_factory("command_AssignResources"),
-        json_factory("command_Configure_without_ScanType"),
+        json_factory("ccommand_Configure"),
         change_event_callbacks,
     )
 
@@ -131,7 +131,7 @@ def test_end_command_error_propagation_low(
     return end_error_propogation(
         SDPSUBARRAYLEAFNODE_LOW,
         json_factory("command_AssignResources"),
-        json_factory("command_Configure_without_ScanType"),
+        json_factory("command_Configure"),
         change_event_callbacks,
     )
 
