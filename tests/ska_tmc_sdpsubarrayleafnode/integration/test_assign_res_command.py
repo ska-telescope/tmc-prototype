@@ -83,7 +83,7 @@ def test_assign_res_command_mid(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_lowm
+@pytest.mark.SKA_low
 def test_assign_res_command_low(json_factory, change_event_callbacks):
     return assign_resources(
         SDPSUBARRAYLEAFNODE_LOW,

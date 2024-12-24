@@ -52,6 +52,6 @@ def test_off_command_mid(tango_context, group_callback):
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_lowm
+@pytest.mark.SKA_low
 def test_off_command_low(tango_context, group_callback):
     off_command(tango_context, SDP_MASTER_LEAF_DEVICE_LOW, group_callback)

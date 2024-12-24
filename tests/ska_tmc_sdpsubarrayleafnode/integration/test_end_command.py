@@ -112,7 +112,7 @@ def test_end_command_mid(json_factory, change_event_callbacks):
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_lowm
+@pytest.mark.SKA_low
 def test_end_command_low(
     json_factory,
     change_event_callbacks,
