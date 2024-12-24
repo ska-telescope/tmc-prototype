@@ -30,7 +30,7 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 dev_factory = DevFactory()
 
 
-def configure_error_propogation(
+def endscan_error_propogation(
     sdpsln_name,
     assign_input_str,
     configure_input_str,
@@ -125,11 +125,11 @@ def configure_error_propogation(
 @pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_configure_command_error_propagation_mid(
+def test_endscan_command_error_propagation_mid(
     json_factory,
     change_event_callbacks,
 ):
-    return configure_error_propogation(
+    return endscan_error_propogation(
         SDPSUBARRAYLEAFNODE_MID,
         json_factory("command_AssignResources"),
         json_factory("command_Configure"),
@@ -141,11 +141,11 @@ def test_configure_command_error_propagation_mid(
 @pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
-def test_configure_command_error_propagation_low(
+def test_endscan_command_error_propagation_low(
     json_factory,
     change_event_callbacks,
 ):
-    return configure_error_propogation(
+    return endscan_error_propogation(
         SDPSUBARRAYLEAFNODE_LOW,
         json_factory("command_AssignResources"),
         json_factory("command_Configure"),
@@ -154,7 +154,7 @@ def test_configure_command_error_propagation_low(
     )
 
 
-def configure_timeout(
+def endscan_timeout(
     sdpsaln_name: str,
     device: str,
     json_factory: Callable,
@@ -254,8 +254,8 @@ def configure_timeout(
 @pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_configure_command_timeout_mid(json_factory, change_event_callbacks):
-    return configure_timeout(
+def test_endscan_command_timeout_mid(json_factory, change_event_callbacks):
+    return endscan_timeout(
         SDP_SUBARRAY_LEAF_NODE_MID,
         SDP_SUBARRAY_DEVICE_MID,
         json_factory,
@@ -266,8 +266,8 @@ def test_configure_command_timeout_mid(json_factory, change_event_callbacks):
 @pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
-def test_configure_command_timeout_low(json_factory, change_event_callbacks):
-    return configure_timeout(
+def test_endscan_command_timeout_low(json_factory, change_event_callbacks):
+    return endscan_timeout(
         SDP_SUBARRAY_LEAF_NODE_LOW,
         SDP_SUBARRAY_DEVICE_LOW,
         json_factory,
