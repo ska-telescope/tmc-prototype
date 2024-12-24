@@ -33,17 +33,14 @@ dev_factory = DevFactory()
 
 def end_error_propogation(
     sdpsln_name,
+    sdp_subarray_device,
     assign_input_str,
     configure_input_str,
     change_event_callbacks,
 ) -> None:
     dev_factory = DevFactory()
     sdpsln_device = dev_factory.get_device(sdpsln_name)
-
-    if sdpsln_name == SDPSUBARRAYLEAFNODE_MID:
-        sdp_subarray = dev_factory.get_device(MID_SDP_SUBARRAY)
-    else:
-        sdp_subarray = dev_factory.get_device(LOW_SDP_SUBARRAY)
+    sdp_subarray = dev_factory.get_device(sdp_subarray_device)
 
     result, unique_id = sdpsln_device.AssignResources(assign_input_str)
     logger.info(
@@ -91,8 +88,8 @@ def end_error_propogation(
     assert result[0] == ResultCode.QUEUED
     SDP_ERROR = (
         '[3, "The invocation of the End command is failed on SDP Subarray'
-        + f" Device {sdp_subarray} Reason: Error in invoking End command "
-        + "on SDP Subarray.The command has NOT been executed. "
+        + f" Device {sdp_subarray_device} Reason: Error in invoking End "
+        + "command on SDP Subarray.The command has NOT been executed. "
         + 'This device will continue with normal operation."]'
     )
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
@@ -116,6 +113,7 @@ def test_end_command_error_propagation_mid(
 ):
     return end_error_propogation(
         SDPSUBARRAYLEAFNODE_MID,
+        MID_SDP_SUBARRAY,
         json_factory("command_AssignResources"),
         json_factory("command_Configure"),
         change_event_callbacks,
@@ -130,6 +128,7 @@ def test_end_command_error_propagation_low(
 ):
     return end_error_propogation(
         SDPSUBARRAYLEAFNODE_LOW,
+        LOW_SDP_SUBARRAY,
         json_factory("command_AssignResources"),
         json_factory("command_Configure"),
         change_event_callbacks,
