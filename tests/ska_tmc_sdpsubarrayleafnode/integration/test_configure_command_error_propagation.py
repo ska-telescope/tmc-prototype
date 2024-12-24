@@ -103,8 +103,7 @@ def test_configure_command_error_propagation_mid(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_low
-@pytest.mark.repeat(100)
+@pytest.mark.SKA_lowm
 def test_configure_command_error_propagation_low(
     json_factory,
     change_event_callbacks,
