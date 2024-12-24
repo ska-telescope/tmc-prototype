@@ -86,7 +86,7 @@ def release_resources(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_mid
+@pytest.mark.SKA_midm
 @pytest.mark.parametrize(
     "device",
     [("mid-sdp/subarray/01")],
@@ -101,7 +101,7 @@ def test_release_res_command_mid(device, json_factory, change_event_callbacks):
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_lowm
+@pytest.mark.SKA_low
 @pytest.mark.parametrize(
     "device",
     [("low-sdp/subarray/01")],
