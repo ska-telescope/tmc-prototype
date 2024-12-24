@@ -13,11 +13,11 @@ from typing import TYPE_CHECKING, Callable, Tuple
 from ska_ser_logging import configure_logging
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-from ska_tmc_common import (
-    TimeoutCallback,
-    error_propagation_decorator,
-    timeout_decorator,
+from ska_tmc_common import TimeoutCallback
+from ska_tmc_common.v1.error_propagation_tracker import (
+    error_propagation_tracker,
 )
+from ska_tmc_common.v1.timeout_tracker import timeout_tracker
 
 from ska_tmc_sdpsubarrayleafnode.commands.sdp_sln_command import SdpSLNCommand
 
@@ -53,8 +53,8 @@ class Configure(SdpSLNCommand):
 
     # Once we will refactor the tracker thread will enable this intermediate
     # ObsState check.
-    @timeout_decorator
-    @error_propagation_decorator("get_obs_state", [ObsState.READY])
+    @timeout_tracker
+    @error_propagation_tracker("get_obs_state", [ObsState.READY])
     def configure(
         self,
         argin: str,

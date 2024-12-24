@@ -165,7 +165,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :type obs_state: ObsState
         """
 
-        with self.lock:
+        with self.rlock:
             dev_info = self.get_device()
             dev_info.obs_state = obs_state
             dev_info.last_event_arrived = time.time()
@@ -175,6 +175,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             )
             if self._update_sdp_subarray_obs_state_callback:
                 self._update_sdp_subarray_obs_state_callback(obs_state)
+            self.observable.notify_observers(attribute_value_change=True)
 
     def update_exception_for_unresponsiveness(
         self, device_info: SubArrayDeviceInfo, exception: str
@@ -230,6 +231,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             self.long_running_result_callback(
                 self.command_id, ResultCode.FAILED, exception_msg=value
             )
+            self.observable.notify_observers(command_exception=True)
 
     @property
     def lrc_result(self) -> Tuple[str, str]:
@@ -602,12 +604,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.abort_event.set()
         result_code, message = abort_command.do()
-        if (
-            hasattr(self, "tracker_thread")
-            and not self.tracker_thread.is_alive()
-        ):
-            self.abort_event.clear()
-            self.logger.info("Cleared")
+        self.abort_event.clear()
+        self.logger.info("Abort Event cleared")
         return result_code, message
 
     def restart(
