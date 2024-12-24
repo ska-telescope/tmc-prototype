@@ -105,7 +105,7 @@ def configure_timeout(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_midm
+@pytest.mark.SKA_mid
 def test_configure_command_timeout_mid(json_factory, change_event_callbacks):
     return configure_timeout(
         SDP_SUBARRAY_LEAF_NODE_MID,
@@ -116,7 +116,7 @@ def test_configure_command_timeout_mid(json_factory, change_event_callbacks):
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_low
+@pytest.mark.SKA_lowm
 def test_configure_command_timeout_low(json_factory, change_event_callbacks):
     return configure_timeout(
         SDP_SUBARRAY_LEAF_NODE_LOW,
