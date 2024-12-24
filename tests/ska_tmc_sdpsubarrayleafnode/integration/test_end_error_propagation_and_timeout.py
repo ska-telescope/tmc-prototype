@@ -1,5 +1,6 @@
 """Test cases for testing timeout on Configure command."""
 
+import time
 from typing import Callable
 
 import pytest
@@ -100,6 +101,7 @@ def end_error_propogation(
         lookahead=6,
     )
     sdp_subarray.SetDefective(RESET_DEFECT)
+    time.sleep(2)
     sdpsln_device.unsubscribe_event(obsstate_id)
     sdpsln_device.unsubscribe_event(lrcr_id)
     tear_down(dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks)
