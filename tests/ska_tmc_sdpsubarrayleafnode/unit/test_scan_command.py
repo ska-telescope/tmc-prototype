@@ -45,6 +45,7 @@ def test_telescope_scan_command(tango_context, devices, task_callback):
         status=TaskStatus.COMPLETED,
         result=(ResultCode.OK, "Command Completed"),
     )
+    
 
 
 @pytest.mark.sdpsln
@@ -97,7 +98,7 @@ def test_scan_command_empty_input_json(tango_context, devices, task_callback):
         result=(
             ResultCode.FAILED,
             "Exception occurred while parsing the JSON."
-            + "\n                    Please check the logs for details.",
+            + "\n                  Please check the logs for details.",
         ),
     )
 
