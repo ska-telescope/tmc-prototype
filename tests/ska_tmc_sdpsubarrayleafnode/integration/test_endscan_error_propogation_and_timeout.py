@@ -14,9 +14,10 @@ from tests.conftest import (
     MID_SDP_SUBARRAY,
     SDPSUBARRAYLEAFNODE_LOW,
     SDPSUBARRAYLEAFNODE_MID,
+    TIMEOUT_EXCEPTION,
 )
 from tests.settings import (
-    CONFIGURE_TIMEOUT,
+    ENDSCAN_TIMEOUT,
     FAILED_RESULT_DEFECT,
     RESET_DEFECT,
     SDP_SUBARRAY_DEVICE_LOW,
@@ -32,6 +33,7 @@ dev_factory = DevFactory()
 
 def endscan_error_propogation(
     sdpsln_name,
+    sdp_device,
     assign_input_str,
     configure_input_str,
     scan_input_str,
@@ -39,11 +41,7 @@ def endscan_error_propogation(
 ) -> None:
     dev_factory = DevFactory()
     sdpsln_device = dev_factory.get_device(sdpsln_name)
-
-    if sdpsln_name == SDPSUBARRAYLEAFNODE_MID:
-        sdp_subarray = dev_factory.get_device(MID_SDP_SUBARRAY)
-    else:
-        sdp_subarray = dev_factory.get_device(LOW_SDP_SUBARRAY)
+    sdp_subarray = dev_factory.get_device(sdp_device)
 
     result, unique_id = sdpsln_device.AssignResources(assign_input_str)
     logger.info(
@@ -104,11 +102,12 @@ def endscan_error_propogation(
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
     SDP_ERROR = (
-        '[3, "The invocation of the End command is failed on SdpSubarray'
-        + f" Device {sdpsln_name}Reason: Error in calling the Scan "
-        + "command on Sdp Subarray.The command has NOT been executed."
-        + 'This device will continue with normal operation."]'
+        '[3, "The invocation of the EndScan command is failed on '
+        + f"SDP Subarray Device {sdp_device} Reason: Error in invoking "
+        "EndScan command on SDP Subarray.The command has NOT been executed. "
+        'This device will continue with normal operation."]'
     )
+
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (
             unique_id[0],
@@ -117,12 +116,11 @@ def endscan_error_propogation(
         lookahead=6,
     )
     sdp_subarray.SetDefective(RESET_DEFECT)
+    tear_down(dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks)
     sdpsln_device.unsubscribe_event(obsstate_id)
     sdpsln_device.unsubscribe_event(lrcr_id)
-    tear_down(dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks)
 
 
-@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_endscan_command_error_propagation_mid(
@@ -131,6 +129,7 @@ def test_endscan_command_error_propagation_mid(
 ):
     return endscan_error_propogation(
         SDPSUBARRAYLEAFNODE_MID,
+        MID_SDP_SUBARRAY,
         json_factory("command_AssignResources"),
         json_factory("command_Configure"),
         json_factory("command_Scan"),
@@ -138,7 +137,6 @@ def test_endscan_command_error_propagation_mid(
     )
 
 
-@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_endscan_command_error_propagation_low(
@@ -147,6 +145,7 @@ def test_endscan_command_error_propagation_low(
 ):
     return endscan_error_propogation(
         SDPSUBARRAYLEAFNODE_LOW,
+        LOW_SDP_SUBARRAY,
         json_factory("command_AssignResources"),
         json_factory("command_Configure"),
         json_factory("command_Scan"),
@@ -195,16 +194,17 @@ def endscan_timeout(
         lookahead=4,
     )
 
-    sdp_subarray.SetDelayInfo(CONFIGURE_TIMEOUT)
     configure_input_str = json_factory("command_Configure")
-
     result, unique_id = sdp_subarray_ln_proxy.Configure(configure_input_str)
-
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (unique_id[0], COMMAND_COMPLETED),
+        lookahead=6,
+    )
+    change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+        ObsState.READY,
         lookahead=4,
     )
     scan_input_str = json_factory("command_Scan")
@@ -222,36 +222,30 @@ def endscan_timeout(
         ObsState.SCANNING,
         lookahead=4,
     )
-    sdp_subarray.SetDefective(FAILED_RESULT_DEFECT)
+    sdp_subarray.SetDelayInfo(ENDSCAN_TIMEOUT)
     result, unique_id = sdp_subarray_ln_proxy.EndScan()
 
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
-    SDP_ERROR = (
-        '[3, "The invocation of the End command is failed on SdpSubarray'
-        + f" Device {sdp_subarray}Reason: Error in calling the Scan "
-        + "command on Sdp Subarray.The command has NOT been executed."
-        + 'This device will continue with normal operation."]'
-    )
+
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (
             unique_id[0],
-            SDP_ERROR,
+            TIMEOUT_EXCEPTION,
         ),
-        lookahead=6,
+        lookahead=3,
     )
     sdp_subarray.ResetDelayInfo()
-    sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
-    sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
     tear_down(
         dev_factory,
         sdp_subarray,
         sdp_subarray_ln_proxy,
         change_event_callbacks,
     )
+    sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+    sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
 
 
-@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_endscan_command_timeout_mid(json_factory, change_event_callbacks):
@@ -263,7 +257,6 @@ def test_endscan_command_timeout_mid(json_factory, change_event_callbacks):
     )
 
 
-@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_endscan_command_timeout_low(json_factory, change_event_callbacks):

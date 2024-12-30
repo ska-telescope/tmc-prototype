@@ -1,6 +1,6 @@
 """Test cases for testing timeout on Configure command."""
 
-import time
+import json
 from typing import Callable
 
 import pytest
@@ -18,9 +18,8 @@ from tests.conftest import (
     TIMEOUT_EXCEPTION,
 )
 from tests.settings import (
-    CONFIGURE_TIMEOUT,
+    END_TIMEOUT,
     FAILED_RESULT_DEFECT,
-    RESET_DEFECT,
     SDP_SUBARRAY_DEVICE_LOW,
     SDP_SUBARRAY_DEVICE_MID,
     SDP_SUBARRAY_LEAF_NODE_LOW,
@@ -84,8 +83,6 @@ def end_error_propogation(
     )
     sdp_subarray.SetDefective(FAILED_RESULT_DEFECT)
     result, unique_id = sdpsln_device.End()
-
-    logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
     SDP_ERROR = (
         '[3, "The invocation of the End command is failed on SDP Subarray'
@@ -100,11 +97,10 @@ def end_error_propogation(
         ),
         lookahead=6,
     )
-    sdp_subarray.SetDefective(RESET_DEFECT)
-    time.sleep(2)
+    sdp_subarray.SetDefective(json.dumps({"enabled": False}))
+    tear_down(dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks)
     sdpsln_device.unsubscribe_event(obsstate_id)
     sdpsln_device.unsubscribe_event(lrcr_id)
-    tear_down(dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks)
 
 
 @pytest.mark.post_deployment
@@ -180,12 +176,24 @@ def end_timeout(
             lookahead=4,
         )
 
-        sdp_subarray.SetDelayInfo(CONFIGURE_TIMEOUT)
         configure_input_str = json_factory("command_Configure")
-
         result, unique_id = sdp_subarray_ln_proxy.Configure(
             configure_input_str
         )
+        logger.info(f"Command ID: {unique_id} Returned result: {result}")
+        assert result[0] == ResultCode.QUEUED
+
+        change_event_callbacks["longRunningCommandResult"].assert_change_event(
+            (unique_id[0], COMMAND_COMPLETED),
+            lookahead=6,
+        )
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.READY,
+            lookahead=4,
+        )
+
+        sdp_subarray.SetDelayInfo(END_TIMEOUT)
+        result, unique_id = sdp_subarray_ln_proxy.End()
 
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         assert result[0] == ResultCode.QUEUED
@@ -220,7 +228,6 @@ def end_timeout(
         raise Exception(exception)
 
 
-@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_end_command_timeout_mid(json_factory, change_event_callbacks):
@@ -232,7 +239,6 @@ def test_end_command_timeout_mid(json_factory, change_event_callbacks):
     )
 
 
-@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_end_command_timeout_low(json_factory, change_event_callbacks):
