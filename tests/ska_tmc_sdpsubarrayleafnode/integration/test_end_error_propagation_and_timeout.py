@@ -229,8 +229,7 @@ def end_timeout(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_mid
-@pytest.mark.repeat(100)
+@pytest.mark.SKA_midm
 def test_end_command_timeout_mid(json_factory, change_event_callbacks):
     return end_timeout(
         SDP_SUBARRAY_LEAF_NODE_MID,
@@ -241,8 +240,7 @@ def test_end_command_timeout_mid(json_factory, change_event_callbacks):
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_low
-@pytest.mark.repeat(100)
+@pytest.mark.SKA_lowm
 def test_end_command_timeout_low(json_factory, change_event_callbacks):
     return end_timeout(
         SDP_SUBARRAY_LEAF_NODE_LOW,
