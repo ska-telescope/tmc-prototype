@@ -51,12 +51,12 @@ def disable_command(tango_context, sdpmln_name, group_callback):
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_midm
+@pytest.mark.SKA_mid
 def test_disable_command_mid(tango_context, group_callback):
     disable_command(tango_context, SDP_MASTER_LEAF_DEVICE_MID, group_callback)
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_lowm
+@pytest.mark.SKA_low
 def test_disable_command_low(tango_context, group_callback):
     disable_command(tango_context, SDP_MASTER_LEAF_DEVICE_LOW, group_callback)

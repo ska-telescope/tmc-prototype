@@ -156,7 +156,7 @@ def release_all_resources_timeout(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_midm
+@pytest.mark.SKA_mid
 def test_release_all_resources_command_timeout_mid(
     json_factory,
     change_event_callbacks,
@@ -169,7 +169,7 @@ def test_release_all_resources_command_timeout_mid(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_midm
+@pytest.mark.SKA_mid
 def test_release_all_resources_command_error_propagation_mid(
     json_factory,
     change_event_callbacks,
@@ -182,7 +182,7 @@ def test_release_all_resources_command_error_propagation_mid(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_lowm
+@pytest.mark.SKA_low
 def test_release_all_res_command_timeout_low(
     json_factory, change_event_callbacks
 ):
@@ -194,7 +194,7 @@ def test_release_all_res_command_timeout_low(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_lowm
+@pytest.mark.SKA_low
 def test_release_all_res_command_error_propagation_low(
     json_factory, change_event_callbacks
 ):

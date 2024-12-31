@@ -46,7 +46,7 @@ def off_command(sdpsaln_fqdn, sdpsa_fqdn, change_event_callbacks):
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_midm
+@pytest.mark.SKA_mid
 def test_off_command_mid(change_event_callbacks):
     off_command(
         SDP_SUBARRAY_LEAF_NODE_MID,
@@ -56,7 +56,7 @@ def test_off_command_mid(change_event_callbacks):
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_lowm
+@pytest.mark.SKA_low
 def test_off_command_low(change_event_callbacks):
     off_command(
         SDP_SUBARRAY_LEAF_NODE_LOW,
