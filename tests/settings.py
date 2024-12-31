@@ -33,7 +33,8 @@ ASSIGN_TIMEOUT = json.dumps({"AssignResources": 35})
 RELEASE_TIMEOUT = json.dumps({"ReleaseAllResources": 35})
 CONFIGURE_TIMEOUT = json.dumps({"Configure": 35})
 END_TIMEOUT = json.dumps({"End": 35})
-ENDSCAN_TIMEOUT = json.dumps({"EndScan": 50})
+ENDSCAN_TIMEOUT = json.dumps({"EndScan": 35})
+SCAN_TIMEOUT = json.dumps({"Scan": 35})
 
 
 TIMEOUT_DEFECT = json.dumps(
