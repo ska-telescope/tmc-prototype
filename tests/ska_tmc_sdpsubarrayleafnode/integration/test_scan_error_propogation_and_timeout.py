@@ -21,7 +21,9 @@ from tests.settings import (
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
-def scan(sdpsaln_name, device, json_factory, change_event_callbacks):
+def scan_error_propagation(
+    sdpsaln_name, device, json_factory, change_event_callbacks
+):
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
@@ -110,13 +112,16 @@ def scan(sdpsaln_name, device, json_factory, change_event_callbacks):
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_midm
+@pytest.mark.SKA_mid
+@pytest.mark.repeat(100)
 @pytest.mark.parametrize(
     "device",
     [("mid-sdp/subarray/01")],
 )
-def test_scan_command_mid(device, json_factory, change_event_callbacks):
-    return scan(
+def test_scan_error_propagation_command_mid(
+    device, json_factory, change_event_callbacks
+):
+    return scan_error_propagation(
         "ska_mid/tm_leaf_node/sdp_subarray01",
         device,
         json_factory,
@@ -125,17 +130,18 @@ def test_scan_command_mid(device, json_factory, change_event_callbacks):
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_lowm
+@pytest.mark.SKA_low
+@pytest.mark.repeat(100)
 @pytest.mark.parametrize(
     "device",
     [("low-sdp/subarray/01")],
 )
-def test_scan_command_low(
+def test_scan_error_propagation_command_low(
     device,
     json_factory,
     change_event_callbacks,
 ):
-    return scan(
+    return scan_error_propagation(
         "ska_low/tm_leaf_node/sdp_subarray01",
         device,
         json_factory,
