@@ -63,7 +63,7 @@ def assign_resources_timeout(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_mid
+@pytest.mark.SKA_midm
 def test_assign_resources_command_timeout_mid(
     json_factory,
     change_event_callbacks,
@@ -76,7 +76,7 @@ def test_assign_resources_command_timeout_mid(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_low
+@pytest.mark.SKA_lowm
 def test_assign_resources_command_timeout_low(
     json_factory,
     change_event_callbacks,
