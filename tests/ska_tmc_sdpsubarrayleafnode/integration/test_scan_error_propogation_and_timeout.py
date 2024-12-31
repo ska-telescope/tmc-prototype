@@ -112,8 +112,7 @@ def scan_error_propagation(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_mid
-@pytest.mark.repeat(100)
+@pytest.mark.SKA_midm
 @pytest.mark.parametrize(
     "device",
     [("mid-sdp/subarray/01")],
@@ -130,8 +129,7 @@ def test_scan_error_propagation_command_mid(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_low
-@pytest.mark.repeat(100)
+@pytest.mark.SKA_lowm
 @pytest.mark.parametrize(
     "device",
     [("low-sdp/subarray/01")],
@@ -230,7 +228,8 @@ def scan_timeout(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_midm
+@pytest.mark.SKA_mid
+@pytest.mark.repeat(100)
 def test_scan_command_timeout_mid(json_factory, change_event_callbacks):
     return scan_timeout(
         SDP_SUBARRAY_LEAF_NODE_MID,
@@ -241,7 +240,8 @@ def test_scan_command_timeout_mid(json_factory, change_event_callbacks):
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_lowm
+@pytest.mark.SKA_low
+@pytest.mark.repeat(100)
 def test_scan_command_timeout_low(json_factory, change_event_callbacks):
     return scan_timeout(
         SDP_SUBARRAY_LEAF_NODE_LOW,
