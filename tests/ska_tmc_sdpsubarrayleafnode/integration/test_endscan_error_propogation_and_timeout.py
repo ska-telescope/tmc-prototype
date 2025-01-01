@@ -1,4 +1,4 @@
-"""Test cases for testing timeout on Configure command."""
+"""Test cases for testing timeout and Error Propagation on EndScan command."""
 
 from typing import Callable
 

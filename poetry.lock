@@ -2153,37 +2153,35 @@ reference = 'ska-nexus'
 
 [[package]]
 name = "ska-tmc-common"
-version = "0.22.14"
+version = "0.22.16"
 description = "SKA TMC common contains common classes required for Telescope Monitoring and Control(TMC)."
 category = "main"
 optional = false
-python-versions = "^3.10"
-develop = false
+python-versions = ">=3.10,<4.0"
 
 [package.dependencies]
 attrs = "*"
-fire = "^0.5.0"
-jsonschema = "^4.17.3"
+fire = ">=0.5.0,<0.6.0"
+jsonschema = ">=4.17.3,<5.0.0"
 jsonschema-specifications = "*"
-katpoint = "^1.0a2"
-marshmallow = "^3.14.1"
-mock = "^4.0.3"
+katpoint = ">=1.0a2,<2.0"
+marshmallow = ">=3.14.1,<4.0.0"
+mock = ">=4.0.3,<5.0.0"
 numpy = {version = ">=1.21.6", markers = "python_version == \"3.10\""}
 pytango = "9.5.0"
 referencing = "*"
 rpds-py = "*"
 ska-control-model = "*"
-ska-ser-logging = "^0.4.1"
+ska-ser-logging = ">=0.4.1,<0.5.0"
 ska-tango-base = "1.0.0"
 ska-tango-testing = "0.6.0"
-ska-telmodel = "^1.19.0"
+ska-telmodel = ">=1.19.0,<2.0.0"
 typing_extensions = "*"
 
 [package.source]
-type = "git"
-url = "https://gitlab.com/ska-telescope/ska-tmc/ska-tmc-common.git"
-reference = "sah-1635"
-resolved_reference = "440bad82642484005e8a41b37f647c128b5b80d1"
+type = "legacy"
+url = "https://artefact.skao.int/repository/pypi-internal/simple"
+reference = 'ska-nexus'
 
 [[package]]
 name = "smmap"
@@ -2681,7 +2679,7 @@ reference = "PyPI-public"
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.10"
-content-hash = "7dda37710ee700a66665b56271de2c2ffcb1c33f29385bfa82401467f3c75488"
+content-hash = "60619642aac582698702c1f7919608de8d3c01646b740b22c37b316a020e8763"
 
 [metadata.files]
 alabaster = [
@@ -3931,7 +3929,10 @@ ska-tmc-cdm = [
     {file = "ska_tmc_cdm-12.5.1-py3-none-any.whl", hash = "sha256:8cf9bb0c0b5e23260919a4b521b305c457a1b55078b73a4f95cb74affc0c8a1d"},
     {file = "ska_tmc_cdm-12.5.1.tar.gz", hash = "sha256:98ddc304b2efd07a80f1d60a6d3bdd594364b0c753a03d26ab172b6db12f2639"},
 ]
-ska-tmc-common = []
+ska-tmc-common = [
+    {file = "ska_tmc_common-0.22.16-py3-none-any.whl", hash = "sha256:79f0d21e2903b70f17e6ffb8fdaaee62e05c04230898381eebe748aa6da6e61d"},
+    {file = "ska_tmc_common-0.22.16.tar.gz", hash = "sha256:5d8274ca12923b52be7ad628dadf0e941765a2fbd50240acf391ffdb25b44d40"},
+]
 smmap = [
     {file = "smmap-5.0.1-py3-none-any.whl", hash = "sha256:e6d8668fa5f93e706934a62d7b4db19c8d9eb8cf2adbb75ef1b675aa332b69da"},
     {file = "smmap-5.0.1.tar.gz", hash = "sha256:dceeb6c0028fdb6734471eb07c0cd2aae706ccaecab45965ee83f11c8d3b1f62"},

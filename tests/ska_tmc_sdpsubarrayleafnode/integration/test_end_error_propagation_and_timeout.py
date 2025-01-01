@@ -1,4 +1,4 @@
-"""Test cases for testing timeout on Configure command."""
+"""Test cases for testing timeout and error propagation on End command."""
 
 import json
 from typing import Callable

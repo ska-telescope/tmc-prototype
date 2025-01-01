@@ -1,3 +1,4 @@
+"""Test cases for testing timeout and Error Propagation on Scan command."""
 import json
 from typing import Callable
 
