@@ -10,6 +10,9 @@ This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
 Fixed
 ------
+[0.18.1]
+*  Implemented Exception handling for End, Scan and EndScan commands.
+
 [0.18.0]
 *  Resolve SKB-525 update with command callback tracker changes.
 
