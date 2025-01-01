@@ -10,6 +10,9 @@ This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
 Fixed
 ------
+[0.18.0]
+*  Resolve SKB-525 update with command callback tracker changes.
+
 [0.17.3]
 *  Fixed SKB-618(Fix KeyError for Missing 'resources' Key in SDP Subarray AssignResources Command)
 

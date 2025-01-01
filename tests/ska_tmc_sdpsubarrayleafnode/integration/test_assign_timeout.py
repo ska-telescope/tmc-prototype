@@ -60,6 +60,7 @@ def assign_resources_timeout(
     tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks)
     sdpsal_node.unsubscribe_event(lrcr_id)
     sdpsal_node.unsubscribe_event(obsstate_id)
+    sdp_subarray.ClearCommandCallInfo()
 
 
 @pytest.mark.post_deployment
