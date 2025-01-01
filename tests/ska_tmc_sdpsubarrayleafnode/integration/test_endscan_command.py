@@ -79,13 +79,13 @@ def endscan(sdpsaln_name, device, json_factory, change_event_callbacks):
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 
-    change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], COMMAND_COMPLETED),
-        lookahead=8,
-    )
     change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
         ObsState.READY,
         lookahead=4,
+    )
+    change_event_callbacks["longRunningCommandResult"].assert_change_event(
+        (unique_id[0], COMMAND_COMPLETED),
+        lookahead=8,
     )
 
     tear_down(

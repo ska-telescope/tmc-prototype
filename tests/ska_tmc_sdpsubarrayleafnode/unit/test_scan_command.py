@@ -60,9 +60,16 @@ def test_scan_command_fail_subarray(tango_context, devices, task_callback):
     attrs = {"Scan.side_effect": Exception}
     sdpsubarrayrMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(devices, proxy=sdpsubarrayrMock)
-    scan_command = Scan(cm, logger)
+    scan_command = Scan(
+        cm,
+        logger,
+    )
     scan_command.adapter_factory = adapter_factory
-    scan_command.scan(scan_input_str, logger, task_callback)
+    scan_command.scan(
+        argin=scan_input_str,
+        task_abort_event=None,
+        task_callback=task_callback,
+    )
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )

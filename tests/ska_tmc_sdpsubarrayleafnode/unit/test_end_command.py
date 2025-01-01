@@ -56,7 +56,7 @@ def test_telescope_end_command_fail_subarray(
 
     end_command = End(cm, logger)
     end_command.adapter_factory = adapter_factory
-    end_command.end(logger, task_callback)
+    end_command.end(logger, task_abort_event=None, task_callback=task_callback)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )

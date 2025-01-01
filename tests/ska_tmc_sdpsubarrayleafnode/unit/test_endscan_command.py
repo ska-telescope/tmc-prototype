@@ -90,7 +90,9 @@ def test_telescope_end_scan_command_fail_subarray(
     adapter_factory.get_or_create_adapter(devices, proxy=sdpsubarrayrMock)
     release_command = EndScan(cm, logger)
     release_command.adapter_factory = adapter_factory
-    release_command.end_scan(logger, task_callback)
+    release_command.end_scan(
+        logger, task_abort_event=None, task_callback=task_callback
+    )
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
