@@ -10,7 +10,7 @@ This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
 Fixed
 ------
-[0.18.1]
+[0.19.0]
 *  Implemented Exception handling for End, Scan and EndScan commands.
 
 [0.18.0]
