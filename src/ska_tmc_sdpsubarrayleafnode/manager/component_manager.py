@@ -221,6 +221,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         try:
             # Ignoring ResultCode events
             int(value)
+            self.observable.notify_observers(attribute_value_change=True)
         except ValueError as value_error:
             self.logger.exception(
                 f"Exception occurred in command {command_name}: {value_error}"
