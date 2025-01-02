@@ -209,7 +209,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         Get Current device obsState
         """
-        return self.get_device().obs_state
+        with self.rlock:
+            return self.get_device().obs_state
 
     def update_command_result(self, command_name: str, value: str) -> None:
         """Updates the long running command result callback"""
@@ -221,8 +222,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         try:
             # Ignoring ResultCode events
             int(value)
-            self.observable.notify_observers(attribute_value_change=True)
-            self.logger.info("Success")
         except ValueError as value_error:
             self.logger.exception(
                 f"Exception occurred in command {command_name}: {value_error}"
