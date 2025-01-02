@@ -604,6 +604,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             logger=self.logger,
         )
         self.abort_event.set()
+        self.observable.notify_observers(attribute_value_change=True)
         result_code, message = abort_command.do()
         self.abort_event.clear()
         self.logger.info("Abort Event cleared")
