@@ -74,7 +74,7 @@ def test_assign_resources_error_propagation(
     json_factory, change_event_callbacks
 ):
     return assign_resources_error_propagation(
-        "ska_mid/tm_leaf_node/sdp_subarray01",
+        "mid-tmc/leaf-node-sdp/0",
         json_factory("command_AssignResources_without_ebid"),
         change_event_callbacks,
     )
@@ -86,7 +86,7 @@ def test_assign_resources_error_propagation_low(
     json_factory, change_event_callbacks
 ):
     return assign_resources_error_propagation(
-        "ska_low/tm_leaf_node/sdp_subarray01",
+        "low-tmc/leaf-node-sdp/0",
         json_factory("command_AssignResources_without_ebid"),
         change_event_callbacks,
     )

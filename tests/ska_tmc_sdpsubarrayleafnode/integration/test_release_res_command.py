@@ -93,7 +93,7 @@ def release_resources(
 )
 def test_release_res_command_mid(device, json_factory, change_event_callbacks):
     return release_resources(
-        "ska_mid/tm_leaf_node/sdp_subarray01",
+        "mid-tmc/leaf-node-sdp/0",
         device,
         json_factory,
         change_event_callbacks,
@@ -112,7 +112,7 @@ def test_release_res_command_low(
     change_event_callbacks,
 ):
     return release_resources(
-        "ska_low/tm_leaf_node/sdp_subarray01",
+        "low-tmc/leaf-node-sdp/0",
         device,
         json_factory,
         change_event_callbacks,

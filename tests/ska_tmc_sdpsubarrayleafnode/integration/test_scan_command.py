@@ -114,7 +114,7 @@ def scan(sdpsaln_name, device, json_factory, change_event_callbacks):
 )
 def test_scan_command_mid(device, json_factory, change_event_callbacks):
     return scan(
-        "ska_mid/tm_leaf_node/sdp_subarray01",
+        "mid-tmc/leaf-node-sdp/0",
         device,
         json_factory,
         change_event_callbacks,
@@ -133,7 +133,7 @@ def test_scan_command_low(
     change_event_callbacks,
 ):
     return scan(
-        "ska_low/tm_leaf_node/sdp_subarray01",
+        "low-tmc/leaf-node-sdp/0",
         device,
         json_factory,
         change_event_callbacks,

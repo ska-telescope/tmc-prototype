@@ -122,7 +122,7 @@ def test_scan_error_propagation_command_mid(
     device, json_factory, change_event_callbacks
 ):
     return scan_error_propagation(
-        "ska_mid/tm_leaf_node/sdp_subarray01",
+        "mid-tmc/leaf-node-sdp/0",
         device,
         json_factory,
         change_event_callbacks,
@@ -141,7 +141,7 @@ def test_scan_error_propagation_command_low(
     change_event_callbacks,
 ):
     return scan_error_propagation(
-        "ska_low/tm_leaf_node/sdp_subarray01",
+        "low-tmc/leaf-node-sdp/0",
         device,
         json_factory,
         change_event_callbacks,

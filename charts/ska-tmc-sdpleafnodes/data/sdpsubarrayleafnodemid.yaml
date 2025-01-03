@@ -10,7 +10,7 @@ server:
     classes:
     - name: "SdpSubarrayLeafNode"
       devices:
-      - name: "ska_mid/tm_leaf_node/sdp_subarray01"
+      - name: "mid-tmc/leaf-node-sdp/0"
         properties:
         - name: "SdpSubarrayFQDN"
           values:
