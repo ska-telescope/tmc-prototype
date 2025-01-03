@@ -106,7 +106,7 @@ def endscan(sdpsaln_name, device, json_factory, change_event_callbacks):
 )
 def test_endscan_command_mid(device, json_factory, change_event_callbacks):
     return endscan(
-        "mid-tmc/leaf-node-sdp/0",
+        "mid-tmc/subarray-leaf-node-sdp/01",
         device,
         json_factory,
         change_event_callbacks,
@@ -125,7 +125,7 @@ def test_endscan_command_low(
     change_event_callbacks,
 ):
     return endscan(
-        "low-tmc/leaf-node-sdp/0",
+        "low-tmc/subarray-leaf-node-sdp/01",
         device,
         json_factory,
         change_event_callbacks,
