@@ -65,6 +65,8 @@ deviceServers:
     enabled: true
     instances: ["01"]
     subarray_count: 1
+    command_timeout: 50
+    adapter_timeout: 2
     mid:
       file: "data/sdpsubarrayleafnodemid.yaml"
       SdpSubarrayFQDN: "mid-sdp/subarray/01"
@@ -75,6 +77,7 @@ deviceServers:
     enabled: true
     instances: ["01"]
     subarray_count: 1
+    adapter_timeout: 2
     mid:
       file: "data/sdpmasterleafnodemid.yaml"
       SdpMasterFQDN: "mid-sdp/control/0"

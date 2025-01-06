@@ -26,7 +26,10 @@ server:
             - "5"
         - name: "CommandTimeOut"
           values:
-            - "30"
+            - "{{.Values.deviceServers.sdpsln.command_timeout}}"
+        - name: "AdapterTimeOut"
+          values:
+            - "{{.Values.deviceServers.sdpsln.adapter_timeout}}"
 depends_on:
   - device: sys/database/2
 image:

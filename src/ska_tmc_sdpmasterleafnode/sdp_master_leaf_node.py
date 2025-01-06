@@ -47,7 +47,7 @@ class SdpMasterLeafNode(TMCBaseLeafDevice):
         access=AttrWriteType.READ_WRITE,
     )
     SleepTime = device_property(dtype="DevFloat", default_value=1)
-    TimeOut = device_property(dtype="DevFloat", default_value=2)
+    AdapterTimeOut = device_property(dtype="DevFloat", default_value=2)
 
     # ---------------
     # General methods
@@ -228,7 +228,7 @@ class SdpMasterLeafNode(TMCBaseLeafDevice):
             _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
             _event_receiver=False,
             sleep_time=self.SleepTime,
-            timeout=self.TimeOut,
+            adapter_timeout=self.AdapterTimeOut,
             _update_availablity_callback=self.update_availablity_callback,
         )
         component_manager.sdp_master_device_name = self.SdpMasterFQDN or ""

@@ -44,7 +44,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         _event_receiver: bool = False,
         proxy_timeout: int = 500,
         sleep_time: int = 1,
-        timeout: int = 30,
+        adapter_timeout: int = 30,
         _update_availablity_callback: Optional[Callable[[bool], None]] = None,
     ):
         """
@@ -60,6 +60,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         :param _event_receiver: Optional. Object of EventReceiver class
         :param proxy_timeout: Optional. Time period to wait for event and
         responses. Default 500 milliseconds
+        :param adapter_timeout: Time period to wait for adapter creation
         :param sleep_time: Optional. Sleep time between reties. Default 1 Sec
         """
         self.sdp_master_device_name = sdp_master_device_name
@@ -72,7 +73,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         )
         self._device: DeviceInfo = DeviceInfo(sdp_master_device_name)
 
-        self.timeout = timeout
+        self.adapter_timeout = adapter_timeout
         self.update_availablity_callback = _update_availablity_callback
         self.on_command = On(self, logger)
         self.off_command = Off(self, logger)

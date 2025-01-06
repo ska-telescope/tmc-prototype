@@ -60,9 +60,9 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
     )
 
     SleepTime = device_property(dtype="DevFloat", default_value=1)
-    TimeOut = device_property(dtype="DevFloat", default_value=2)
+    AdapterTimeOut = device_property(dtype="DevFloat", default_value=2)
 
-    CommandTimeout = device_property(dtype="DevUShort", default_value=50)
+    CommandTimeout = device_property(dtype="DevFloat", default_value=50)
 
     # -----------------
     # Attributes
@@ -483,7 +483,7 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
             ),
             _update_lrcr_callback=self.update_lrcr_callback,
             sleep_time=self.SleepTime,
-            timeout=self.TimeOut,
+            adapter_timeout=self.AdapterTimeOut,
             _update_availablity_callback=self.update_availablity_callback,
             command_timeout=self.CommandTimeout,
         )

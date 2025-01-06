@@ -74,7 +74,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         _update_lrcr_callback: Optional[Callable[..., None]] = None,
         proxy_timeout: int = 500,
         sleep_time: int = 1,
-        timeout: int = 30,
+        adapter_timeout: int = 30,
         _update_availablity_callback: Optional[Callable[..., None]] = None,
         command_timeout: int = 30,
     ):
@@ -113,7 +113,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             )
             self.event_receiver.start()
         self._update_availablity_callback = _update_availablity_callback
-        self.timeout = timeout
+        self.adapter_timeout = adapter_timeout
         self.command_timeout = command_timeout
         self.rlock = threading.RLock()
         self.assign_id: str = ""

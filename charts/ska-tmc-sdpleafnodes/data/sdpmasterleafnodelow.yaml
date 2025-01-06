@@ -23,7 +23,10 @@ server:
             - "tango::logger"
         - name: "LoggingLevelDefault"
           values:
-            - "5"
+            - "{{.Values.deviceServers.sdpmln.low.SdpMasterFQDN}}"
+        - name: "AdapterTimeOut"
+          values:
+            - "{{.Values.deviceServers.sdpmln.adapter_timeout}}"
 depends_on:
   - device: sys/database/2
 image:
