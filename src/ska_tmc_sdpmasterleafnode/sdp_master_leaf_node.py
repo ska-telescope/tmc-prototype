@@ -15,10 +15,10 @@ from tango.server import attribute, command, device_property, run
 from ska_tmc_sdpmasterleafnode import release
 from ska_tmc_sdpmasterleafnode.manager import SdpMLNComponentManager
 
-__all__ = ["MidTmcLeafNodeSdp", "main"]
+__all__ = ["TmcLeafNodeSdp", "main"]
 
 
-class MidTmcLeafNodeSdp(TMCBaseLeafDevice):
+class TmcLeafNodeSdp(TMCBaseLeafDevice):
     """
     SDP Master Leaf node acts as a SDP contact point for Master Node and
     also to monitor
@@ -264,15 +264,15 @@ class MidTmcLeafNodeSdp(TMCBaseLeafDevice):
 
 def main(args=None, **kwargs):
     """
-    Runs the MidTmcLeafNodeSdp.
+    Runs the TmcLeafNodeSdp.
 
     :param args: Arguments internal to TANGO
 
     :param kwargs: Arguments internal to TANGO
 
-    :return: MidTmcLeafNodeSdp TANGO object.
+    :return: TmcLeafNodeSdp TANGO object.
     """
-    return run((MidTmcLeafNodeSdp,), args=args, **kwargs)
+    return run((TmcLeafNodeSdp,), args=args, **kwargs)
 
 
 if __name__ == "__main__":
