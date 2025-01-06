@@ -5,8 +5,8 @@ from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.conftest import (
-    COMMAND_COMPLETED, 
-    SDPSUBARRAYLEAFNODE_LOW, 
+    COMMAND_COMPLETED,
+    SDPSUBARRAYLEAFNODE_LOW,
     SDPSUBARRAYLEAFNODE_MID,
 )
 from tests.settings import logger

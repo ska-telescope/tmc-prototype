@@ -4,7 +4,11 @@ from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
-from tests.conftest import COMMAND_COMPLETED
+from tests.conftest import (
+    COMMAND_COMPLETED,
+    SDPSUBARRAYLEAFNODE_LOW,
+    SDPSUBARRAYLEAFNODE_MID,
+)
 from tests.settings import logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
