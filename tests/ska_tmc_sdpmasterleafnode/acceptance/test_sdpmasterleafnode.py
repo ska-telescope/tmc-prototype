@@ -22,7 +22,7 @@ def device_list():
 )
 def sdpmasterleaf_node():
     database = Database()
-    instance_list = database.get_device_exported_for_class("SdpMasterLeafNode")
+    instance_list = database.get_device_exported_for_class("TmcLeafNodeSdp")
     for instance in instance_list.value_string:
         return DeviceProxy(instance)
 
