@@ -8,7 +8,7 @@ server:
   instances:
   - name: "01"
     classes:
-    - name: "TmcLeafNodeSd"
+    - name: "SdpSubarrayLeafNode"
       devices:
       - name: "mid-tmc/leaf-node-sdp/0"
         properties:
