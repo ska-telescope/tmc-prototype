@@ -23,7 +23,7 @@ server:
             - "tango::logger"
         - name: "LoggingLevelDefault"
           values:
-            - "{{.Values.deviceServers.sdpmln.low.SdpMasterFQDN}}"
+            - "5"
         - name: "AdapterTimeOut"
           values:
             - "{{.Values.deviceServers.sdpmln.adapter_timeout}}"
