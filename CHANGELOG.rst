@@ -10,6 +10,9 @@ This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
 Fixed
 ------
+[0.19.1]
+*  Updated FQDNs and device servers as per ADR-9 in process of resolution of bug SKB-690 
+
 [0.19.0]
 *  Implemented Exception handling for End, Scan and EndScan commands.
 
