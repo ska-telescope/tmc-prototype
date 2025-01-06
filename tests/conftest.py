@@ -20,8 +20,8 @@ from tango.test_context import MultiDeviceTestContext
 #     SdpSubarrayLeafNode,
 # )
 
-SDPSUBARRAYLEAFNODE_MID = "mid-tmc/subarray-leaf-node-sdp/01"
-SDPSUBARRAYLEAFNODE_LOW = "low-tmc/subarray-leaf-node-sdp/01"
+SDPSUBARRAYLEAFNODE_MID = "mid-tmc/leaf-node-sdp/0"
+SDPSUBARRAYLEAFNODE_LOW = "low-tmc/leaf-node-sdp/0"
 MID_SDP_SUBARRAY = "mid-sdp/subarray/01"
 LOW_SDP_SUBARRAY = "low-sdp/subarray/01"
 COMMAND_COMPLETED = json.dumps([ResultCode.OK, "Command Completed"])

@@ -8,9 +8,9 @@ server:
   instances:
   - name: "01"
     classes:
-    - name: "SdpSubarrayLeafNode"
+    - name: "MidTmcLeafNodeSd"
       devices:
-      - name: "mid-tmc/subarray-leaf-node-sdp/01"
+      - name: "mid-tmc/leaf-node-sdp/0"
         properties:
         - name: "SdpSubarrayFQDN"
           values:

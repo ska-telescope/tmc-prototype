@@ -8,9 +8,9 @@ server:
   instances:
   - name: "01"
     classes:
-    - name: "SdpMasterLeafNode"
+    - name: "MidTmcLeafNodeSdp"
       devices:
-      - name: "ska_mid/tm_leaf_node/sdp_master"
+      - name: "mid-tmc/leaf-node-sdp/0"
         properties:
         - name: "SdpMasterFQDN"
           values:
