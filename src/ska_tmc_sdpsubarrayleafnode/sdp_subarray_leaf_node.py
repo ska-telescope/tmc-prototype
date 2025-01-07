@@ -58,7 +58,7 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
     SdpSubarrayFQDN = device_property(
         dtype="str", doc="FQDN of the SDP Subarray Tango Device Server."
     )
-    CommandTimeout = device_property(dtype="DevFloat", default_value=50)
+    CommandTimeOut = device_property(dtype="DevFloat", default_value=50)
 
     # -----------------
     # Attributes
@@ -482,7 +482,7 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
             liveliness_check_period=self.LivelinessCheckPeriod,
             adapter_timeout=self.AdapterTimeOut,
             _update_availablity_callback=self.update_availablity_callback,
-            command_timeout=self.CommandTimeout,
+            command_timeout=self.CommandTimeOut,
         )
         return cm
 
