@@ -19,6 +19,10 @@ global:
   retry:
     - "--tries=10"
     - "--sleep=5"
+  mid:
+    domain: "mid-tmc"
+  low:
+    domain: "low-tmc"
 
 dsconfig:
   configuration_file: data/configuration.json
@@ -65,6 +69,7 @@ deviceServers:
     enabled: true
     instances: ["01"]
     subarray_count: 1
+    family: "subarray-leaf-node-sdp"
     mid:
       file: "data/sdpsubarrayleafnodemid.yaml"
       SdpSubarrayFQDN: "mid-sdp/subarray/01"
@@ -75,6 +80,8 @@ deviceServers:
     enabled: true
     instances: ["01"]
     subarray_count: 1
+    family: "leaf-node-sdp"
+    member : "0"    
     mid:
       file: "data/sdpmasterleafnodemid.yaml"
       SdpMasterFQDN: "mid-sdp/control/0"
