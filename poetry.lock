@@ -762,7 +762,7 @@ reference = "PyPI-public"
 
 [[package]]
 name = "marshmallow"
-version = "3.24.0"
+version = "3.24.1"
 description = "A lightweight library for converting complex datatypes to and from native Python datatypes."
 category = "main"
 optional = false
@@ -1838,37 +1838,35 @@ reference = 'ska-nexus'
 
 [[package]]
 name = "ska-tmc-common"
-version = "0.23.0"
+version = "0.23.1"
 description = "SKA TMC common contains common classes required for Telescope Monitoring and Control(TMC)."
 category = "main"
 optional = false
-python-versions = "^3.10"
-develop = false
+python-versions = ">=3.10,<4.0"
 
 [package.dependencies]
 attrs = "*"
-fire = "^0.5.0"
-jsonschema = "^4.17.3"
+fire = ">=0.5.0,<0.6.0"
+jsonschema = ">=4.17.3,<5.0.0"
 jsonschema-specifications = "*"
-katpoint = "^1.0a2"
-marshmallow = "^3.14.1"
-mock = "^4.0.3"
+katpoint = ">=1.0a2,<2.0"
+marshmallow = ">=3.14.1,<4.0.0"
+mock = ">=4.0.3,<5.0.0"
 numpy = {version = ">=1.21.6", markers = "python_version == \"3.10\""}
 pytango = "9.5.0"
 referencing = "*"
 rpds-py = "*"
 ska-control-model = "*"
-ska-ser-logging = "^0.4.1"
+ska-ser-logging = ">=0.4.1,<0.5.0"
 ska-tango-base = "1.0.0"
 ska-tango-testing = "0.6.0"
-ska-telmodel = "^1.19.0"
+ska-telmodel = ">=1.19.0,<2.0.0"
 typing_extensions = "*"
 
 [package.source]
-type = "git"
-url = "https://gitlab.com/ska-telescope/ska-tmc/ska-tmc-common.git"
-reference = "sah-1646"
-resolved_reference = "e16491c0d98768e6d0887731ea2df7a21684364c"
+type = "legacy"
+url = "https://artefact.skao.int/repository/pypi-internal/simple"
+reference = 'ska-nexus'
 
 [[package]]
 name = "smmap"
@@ -2334,7 +2332,7 @@ reference = "PyPI-public"
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.10"
-content-hash = "ec800ddc46148c74b9f41b0f1745c29bc0fcf3916dbc0fa54dfdd81aa784d9cc"
+content-hash = "3778833c3606a4a49e28c993111de5d360c4229484d896a2ae3097057bd66312"
 
 [metadata.files]
 alabaster = [
@@ -2787,8 +2785,8 @@ markupsafe = [
     {file = "markupsafe-3.0.2.tar.gz", hash = "sha256:ee55d3edf80167e48ea11a923c7386f4669df67d7994554387f84e7d8b0a2bf0"},
 ]
 marshmallow = [
-    {file = "marshmallow-3.24.0-py3-none-any.whl", hash = "sha256:459922b7a1fd3d29d5082ddcadfcea0efd98985030e71d3ef0dd8f44f406e41d"},
-    {file = "marshmallow-3.24.0.tar.gz", hash = "sha256:378572f727e52123d00de1bdd9b7ea7bed18bbfedc7f9bfbcddaf78925a8d602"},
+    {file = "marshmallow-3.24.1-py3-none-any.whl", hash = "sha256:ddb5c9987017d37be351c184e4e867e7bf55f7331f4da730dedad6b7af662cdd"},
+    {file = "marshmallow-3.24.1.tar.gz", hash = "sha256:efdcb656ac8788f0e3d1d938f8dc0f237bf1a99aff8f6dfbffa594981641cea0"},
 ]
 marshmallow-enum = [
     {file = "marshmallow-enum-1.5.1.tar.gz", hash = "sha256:38e697e11f45a8e64b4a1e664000897c659b60aa57bfa18d44e226a9920b6e58"},
@@ -3302,7 +3300,10 @@ ska-tmc-cdm = [
     {file = "ska_tmc_cdm-8.3.0-py3-none-any.whl", hash = "sha256:bd381638a8c8a16fb4dde706dcb5aaea06135283e2186cd9aa0dec84af5076d5"},
     {file = "ska_tmc_cdm-8.3.0.tar.gz", hash = "sha256:7152a597cfcb22776cadbabc9a02dddeec9c1915668e5dfbc008c9406f647bc0"},
 ]
-ska-tmc-common = []
+ska-tmc-common = [
+    {file = "ska_tmc_common-0.23.1-py3-none-any.whl", hash = "sha256:20e4cc573e06ea5141140f57a7ee9484dad5d1111c41258c10290d1b2ed8f013"},
+    {file = "ska_tmc_common-0.23.1.tar.gz", hash = "sha256:2e6212b581cdd67f8d90edd0b51190e787146e017b42fc96ad324bbafe7b9b81"},
+]
 smmap = [
     {file = "smmap-5.0.2-py3-none-any.whl", hash = "sha256:b30115f0def7d7531d22a0fb6502488d879e75b260a9db4d0819cfb25403af5e"},
     {file = "smmap-5.0.2.tar.gz", hash = "sha256:26ea65a03958fa0c8a1c7e8c7a58fdc77221b8910f6be2131affade476898ad5"},
