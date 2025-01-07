@@ -2,32 +2,37 @@ name: "sdpsubarrayleafnode-test"
 function: telescope-monitoring
 domain: general-monitoring
 instances: ["01"]
+{{- $Domain := .Values.global.low.domain }}
+{{- $Family := .Values.deviceServers.sdpsln.family }}
+{{- $instances := .Values.deviceServers.sdpsln.instances }}
+{{- $sdpsubarray := .Values.deviceServers.sdpsln.low.SdpSubarrayFQDN }}
 command: "python3 /app/src/ska_tmc_sdpsubarrayleafnode/sdp_subarray_leaf_node.py"
 server:
   name: "sdp_subarray_leaf_node"
   instances:
-  - name: "01"
-    classes:
-    - name: "SdpSubarrayLeafNode"
-      devices:
-      - name: "{{.Values.global.low.domain }}/{{.Values.deviceServers.sdpsln.family }}/{{ . }}"
-
-        properties:
-        - name: "SdpSubarrayFQDN"
-          values:
-          - "{{.Values.deviceServers.sdpsln.low.SdpSubarrayFQDN}}"
-        - name: "SkaLevel"
-          values:
-            - "3"
-        - name: "LoggingTargetsDefault"
-          values:
-            - "tango::logger"
-        - name: "LoggingLevelDefault"
-          values:
-            - "5"
-        - name: "CommandTimeOut"
-          values:
-            - "30"
+  {{- range  $instances }}
+    - name: "{{ . }}"
+      classes:
+      - name: "SdpSubarrayLeafNode"
+        devices:
+        - name: "{{ $Domain }}/{{ $Family }}/{{ . }}"
+          properties:
+          - name: "SdpSubarrayFQDN"
+            values:
+            - "{{ $sdpsubarray }}"
+          - name: "SkaLevel"
+            values:
+              - "3"
+          - name: "LoggingTargetsDefault"
+            values:
+              - "tango::logger"
+          - name: "LoggingLevelDefault"
+            values:
+              - "5"
+          - name: "CommandTimeOut"
+            values:
+              - "30"
+  {{- end}}
 depends_on:
   - device: sys/database/2
 image:
