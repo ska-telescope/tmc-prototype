@@ -1909,8 +1909,8 @@ typing_extensions = "*"
 [package.source]
 type = "git"
 url = "https://gitlab.com/ska-telescope/ska-tmc/ska-tmc-common.git"
-reference = "hm-585"
-resolved_reference = "9b1e0be8946af96dd3c0a06b1456c6c3e3d564ed"
+reference = "master"
+resolved_reference = "8380c1b911260c06c0e8ce662ea48c8576ef966a"
 
 [[package]]
 name = "smmap"
@@ -2382,7 +2382,7 @@ reference = "PyPI-public"
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.10"
-content-hash = "7506825895afb06d643184ee1ea98e83ace339a7b2f24df1c4ffdd301a1c0df2"
+content-hash = "877365bf2d43719f4b6c9b6f608e84338d952826f8653632159c4d016d1b99f9"
 
 [metadata.files]
 alabaster = [
