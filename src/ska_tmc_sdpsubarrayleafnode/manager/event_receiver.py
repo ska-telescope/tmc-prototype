@@ -8,7 +8,7 @@ import tango
 from ska_ser_logging import configure_logging
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.device_info import SubArrayDeviceInfo
-from ska_tmc_common.event_receiver import EventReceiver
+from ska_tmc_common.v1.event_receiver import EventReceiver
 
 configure_logging()
 LOGGER: logging.Logger = logging.getLogger(__name__)
@@ -31,17 +31,17 @@ class SdpSLNEventReceiver(EventReceiver):
         logger: logging.Logger = LOGGER,
         max_workers: int = 1,
         proxy_timeout: int = 500,
-        sleep_time: int = 1,
+        event_subscription_check_period: int = 1,
     ):
         super().__init__(
             component_manager=component_manager,
             logger=logger,
             max_workers=max_workers,
             proxy_timeout=proxy_timeout,
-            sleep_time=sleep_time,
+            event_subscription_check_period=event_subscription_check_period,
         )
         self._max_workers = max_workers
-        self._sleep_time = sleep_time
+        self._event_subscription_check_period = event_subscription_check_period
         self._stop = False
         self._component_manager = component_manager
 
@@ -53,7 +53,7 @@ class SdpSLNEventReceiver(EventReceiver):
                 dev_info = self._component_manager.get_device()
                 if dev_info.last_event_arrived is None:
                     executor.submit(self.subscribe_events, dev_info)
-            sleep(self._sleep_time)
+            sleep(self._event_subscription_check_period)
 
     def subscribe_events(
         self,

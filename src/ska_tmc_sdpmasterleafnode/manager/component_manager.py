@@ -14,7 +14,7 @@ from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
-from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
+from ska_tmc_common.v1.tmc_component_manager import TmcLeafNodeComponentManager
 from tango import DevState
 
 from ska_tmc_sdpmasterleafnode.commands import Disable, Off, On, Standby
@@ -43,7 +43,8 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         ),
         _event_receiver: bool = False,
         proxy_timeout: int = 500,
-        sleep_time: int = 1,
+        event_subscription_check_period: int = 1,
+        liveliness_check_period: int = 1,
         adapter_timeout: int = 30,
         _update_availablity_callback: Optional[Callable[[bool], None]] = None,
     ):
@@ -69,7 +70,8 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             _liveliness_probe=_liveliness_probe,
             _event_receiver=False,
             proxy_timeout=proxy_timeout,
-            sleep_time=sleep_time,
+            event_subscription_check_period=event_subscription_check_period,
+            liveliness_check_period=liveliness_check_period,
         )
         self._device: DeviceInfo = DeviceInfo(sdp_master_device_name)
 

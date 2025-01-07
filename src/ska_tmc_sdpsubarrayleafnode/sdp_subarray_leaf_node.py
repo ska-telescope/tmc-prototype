@@ -18,7 +18,7 @@ from ska_tmc_common.exceptions import (
     DeviceUnresponsive,
     InvalidObsStateError,
 )
-from ska_tmc_common.tmc_base_leaf_device import TMCBaseLeafDevice
+from ska_tmc_common.v1.tmc_base_leaf_device import TMCBaseLeafDevice
 from tango import ApiUtil, AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
@@ -59,7 +59,7 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
         dtype="str", doc="FQDN of the SDP Subarray Tango Device Server."
     )
 
-    SleepTime = device_property(dtype="DevFloat", default_value=1)
+    # SleepTime = device_property(dtype="DevFloat", default_value=1)
     AdapterTimeOut = device_property(dtype="DevFloat", default_value=2)
 
     CommandTimeout = device_property(dtype="DevFloat", default_value=50)
@@ -482,7 +482,8 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
                 self.update_sdp_subarray_obs_state_callback
             ),
             _update_lrcr_callback=self.update_lrcr_callback,
-            sleep_time=self.SleepTime,
+            event_subscription_check_period=self.EventSubscriptionCheckPeriod,
+            liveliness_check_period=self.LivelinessCheckPeriod,
             adapter_timeout=self.AdapterTimeOut,
             _update_availablity_callback=self.update_availablity_callback,
             command_timeout=self.CommandTimeout,

@@ -23,7 +23,7 @@ from ska_tmc_common.exceptions import (
     InvalidObsStateError,
 )
 from ska_tmc_common.lrcr_callback import LRCRCallback
-from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
+from ska_tmc_common.v1.tmc_component_manager import TmcLeafNodeComponentManager
 from tango import DevState
 
 from ska_tmc_sdpsubarrayleafnode.commands.abort_command import Abort
@@ -73,7 +73,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         ] = None,
         _update_lrcr_callback: Optional[Callable[..., None]] = None,
         proxy_timeout: int = 500,
-        sleep_time: int = 1,
+        event_subscription_check_period: int = 1,
+        liveliness_check_period: int = 1,
         adapter_timeout: int = 30,
         _update_availablity_callback: Optional[Callable[..., None]] = None,
         command_timeout: int = 30,
@@ -95,7 +96,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             communication_state_callback=communication_state_callback,
             component_state_callback=component_state_callback,
             proxy_timeout=proxy_timeout,
-            sleep_time=sleep_time,
+            event_subscription_check_period=event_subscription_check_period,
+            liveliness_check_period=liveliness_check_period,
         )
         self._device: SubArrayDeviceInfo = SubArrayDeviceInfo(
             self._sdp_subarray_dev_name, False
@@ -105,11 +107,12 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             self.start_liveliness_probe(_liveliness_probe)
 
         if _event_receiver:
+            evt_subscription_check_period = event_subscription_check_period
             self.event_receiver = SdpSLNEventReceiver(
                 self,
                 logger,
                 proxy_timeout=proxy_timeout,
-                sleep_time=sleep_time,
+                event_subscription_check_period=evt_subscription_check_period,
             )
             self.event_receiver.start()
         self._update_availablity_callback = _update_availablity_callback
