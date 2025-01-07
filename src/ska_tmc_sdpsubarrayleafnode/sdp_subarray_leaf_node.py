@@ -60,7 +60,7 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
     )
 
     # SleepTime = device_property(dtype="DevFloat", default_value=1)
-    AdapterTimeOut = device_property(dtype="DevFloat", default_value=2)
+    # AdapterTimeOut = device_property(dtype="DevFloat", default_value=2)
 
     CommandTimeout = device_property(dtype="DevFloat", default_value=50)
 

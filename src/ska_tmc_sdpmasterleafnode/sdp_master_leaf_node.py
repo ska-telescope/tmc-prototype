@@ -47,7 +47,7 @@ class SdpMasterLeafNode(TMCBaseLeafDevice):
         access=AttrWriteType.READ_WRITE,
     )
     # SleepTime = device_property(dtype="DevFloat", default_value=1)
-    AdapterTimeOut = device_property(dtype="DevFloat", default_value=2)
+    # AdapterTimeOut = device_property(dtype="DevFloat", default_value=2)
 
     # ---------------
     # General methods
