@@ -58,10 +58,6 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
     SdpSubarrayFQDN = device_property(
         dtype="str", doc="FQDN of the SDP Subarray Tango Device Server."
     )
-
-    # SleepTime = device_property(dtype="DevFloat", default_value=1)
-    # AdapterTimeOut = device_property(dtype="DevFloat", default_value=2)
-
     CommandTimeout = device_property(dtype="DevFloat", default_value=50)
 
     # -----------------
