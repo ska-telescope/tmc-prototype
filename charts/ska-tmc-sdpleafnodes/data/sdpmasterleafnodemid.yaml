@@ -10,7 +10,7 @@ server:
     classes:
     - name: "TmcLeafNodeSdp"
       devices:
-      - name: "{{ $.Values.global.mid.domain }}/{{ $.Values.deviceServers.sdpmln.family }}/{{ $.Values.deviceServers.sdpmln.member }}"
+      - name: "{{.Values.global.mid.domain }}/{{.Values.deviceServers.sdpmln.family }}/{{.Values.deviceServers.sdpmln.member }}"
         properties:
         - name: "SdpMasterFQDN"
           values:

@@ -10,7 +10,7 @@ server:
     classes:
     - name: "SdpSubarrayLeafNode"
       devices:
-      - name: "{{ $.Values.global.mid.domain }}/{{ $.Values.deviceServers.sdpsln.family }}/{{ . }}"
+      - name: "{{.Values.global.mid.domain }}/{{.Values.deviceServers.sdpsln.family }}/{{ . }}"
         properties:
         - name: "SdpSubarrayFQDN"
           values:
