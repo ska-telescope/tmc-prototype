@@ -242,13 +242,15 @@ reference = "PyPI-public"
 [[package]]
 name = "click"
 version = "8.1.8"
+<<<<<<< HEAD
 description = "Composable command line interface toolkit"
 category = "main"
+=======
+description = ""
+category = "dev"
+>>>>>>> f0c73ea385a34a78de36a4ef936efc0b9a659865
 optional = false
-python-versions = ">=3.7"
-
-[package.dependencies]
-colorama = {version = "*", markers = "platform_system == \"Windows\""}
+python-versions = "*"
 
 [package.source]
 type = "legacy"
@@ -768,16 +770,15 @@ reference = "PyPI-public"
 [[package]]
 name = "jinja2"
 version = "3.1.5"
+<<<<<<< HEAD
 description = "A very fast and expressive template engine."
 category = "main"
+=======
+description = ""
+category = "dev"
+>>>>>>> f0c73ea385a34a78de36a4ef936efc0b9a659865
 optional = false
-python-versions = ">=3.7"
-
-[package.dependencies]
-MarkupSafe = ">=2.0"
-
-[package.extras]
-i18n = ["Babel (>=2.7)"]
+python-versions = "*"
 
 [package.source]
 type = "legacy"
@@ -2219,7 +2220,11 @@ reference = 'ska-nexus'
 
 [[package]]
 name = "ska-tmc-common"
+<<<<<<< HEAD
 version = "0.23.0"
+=======
+version = "0.22.16"
+>>>>>>> f0c73ea385a34a78de36a4ef936efc0b9a659865
 description = "SKA TMC common contains common classes required for Telescope Monitoring and Control(TMC)."
 category = "main"
 optional = false
@@ -2684,7 +2689,11 @@ reference = "PyPI-public"
 [[package]]
 name = "urllib3"
 version = "2.3.0"
+<<<<<<< HEAD
 description = "HTTP library with thread-safe connection pooling, file post, and more."
+=======
+description = ""
+>>>>>>> f0c73ea385a34a78de36a4ef936efc0b9a659865
 category = "main"
 optional = false
 python-versions = ">=3.9"
@@ -2756,7 +2765,11 @@ reference = "PyPI-public"
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.10"
+<<<<<<< HEAD
 content-hash = "b3389e806a623fb772c6b2c4cc8b630711c2b29aa3ed3707c111e03b29b8aca1"
+=======
+content-hash = "60619642aac582698702c1f7919608de8d3c01646b740b22c37b316a020e8763"
+>>>>>>> f0c73ea385a34a78de36a4ef936efc0b9a659865
 
 [metadata.files]
 alabaster = [
@@ -2959,10 +2972,13 @@ charset-normalizer = [
 click = [
     {file = "click-8.1.8-py3-none-any.whl", hash = "sha256:63c132bbbed01578a06712a2d1f497bb62d9c1c0d329b7903a866228027263b2"},
     {file = "click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a"},
+<<<<<<< HEAD
 ]
 clickclick = [
     {file = "clickclick-20.10.2-py2.py3-none-any.whl", hash = "sha256:c8f33e6d9ec83f68416dd2136a7950125bd256ec39ccc9a85c6e280a16be2bb5"},
     {file = "clickclick-20.10.2.tar.gz", hash = "sha256:4efb13e62353e34c5eef7ed6582c4920b418d7dedc86d819e22ee089ba01802c"},
+=======
+>>>>>>> f0c73ea385a34a78de36a4ef936efc0b9a659865
 ]
 colorama = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
@@ -4008,8 +4024,17 @@ ska-telmodel = [
     {file = "ska_telmodel-1.19.7.tar.gz", hash = "sha256:111d33f1f6fa7d3faf026dbab6cc3257a43643163a13aac234d805cacd37d902"},
 ]
 ska-tmc-cdm = [
+<<<<<<< HEAD
     {file = "ska_tmc_cdm-12.5.1-py3-none-any.whl", hash = "sha256:8cf9bb0c0b5e23260919a4b521b305c457a1b55078b73a4f95cb74affc0c8a1d"},
     {file = "ska_tmc_cdm-12.5.1.tar.gz", hash = "sha256:98ddc304b2efd07a80f1d60a6d3bdd594364b0c753a03d26ab172b6db12f2639"},
+=======
+    {file = "ska_tmc_cdm-8.3.0-py3-none-any.whl", hash = "sha256:bd381638a8c8a16fb4dde706dcb5aaea06135283e2186cd9aa0dec84af5076d5"},
+    {file = "ska_tmc_cdm-8.3.0.tar.gz", hash = "sha256:7152a597cfcb22776cadbabc9a02dddeec9c1915668e5dfbc008c9406f647bc0"},
+]
+ska-tmc-common = [
+    {file = "ska_tmc_common-0.22.16-py3-none-any.whl", hash = "sha256:79f0d21e2903b70f17e6ffb8fdaaee62e05c04230898381eebe748aa6da6e61d"},
+    {file = "ska_tmc_common-0.22.16.tar.gz", hash = "sha256:5d8274ca12923b52be7ad628dadf0e941765a2fbd50240acf391ffdb25b44d40"},
+>>>>>>> f0c73ea385a34a78de36a4ef936efc0b9a659865
 ]
 ska-tmc-common = []
 smmap = [

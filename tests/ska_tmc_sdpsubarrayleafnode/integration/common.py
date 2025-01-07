@@ -103,6 +103,7 @@ def tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks):
             "sdpSubarrayObsState"
         )
         logger.info(f"SDP Subarray ObsState: {sdpsal_node_obsstate.value}")
+    sdp_subarray.ClearCommandCallInfo()
 
 
 def set_sdp_subarray_obsstate(dev_factory, obs_state, sdp_subarray):

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ska-tmc-sdpleafnodes"
-version = "0.18.1"
+version = "0.19.1"
 description = "SKA-TMC-SDPLEAFNODES"
 authors = ["Team HIMALAYA" , "Team SAHYADRI"]
 license = "BSD-3-Clause"
@@ -35,7 +35,11 @@ ska-ser-log-transactions = "*"
 ska-tmc-cdm = "*"
 ska-telescope-model = "1.3.1"
 fire = "^0.5.0"
+<<<<<<< HEAD
 ska-tmc-common = {git = "https://gitlab.com/ska-telescope/ska-tmc/ska-tmc-common.git", branch = "hm-585"}
+=======
+ska-tmc-common = "0.22.16"
+>>>>>>> f0c73ea385a34a78de36a4ef936efc0b9a659865
 ska-ser-logging = "^0.4.1"
 ska-tango-base = "1.0.0"
 astropy = "^5.0.4"
@@ -52,6 +56,7 @@ ska-ser-sphinx-theme = "^0.1.1"
 sphinx-autodoc-typehints = "^1.19.3"
 sphinxcontrib-plantuml = "^0.22"
 sphinx-rtd-theme = "^1.2.2"
+MarkupSafe = "3.0.2"
 
 [tool.poetry.dev-dependencies]
 pylint = "^3.1.0"

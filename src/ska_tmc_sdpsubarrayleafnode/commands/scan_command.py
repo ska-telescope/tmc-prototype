@@ -1,17 +1,31 @@
 """
 Scan command class for SdpSubarrayLeafNode.
 """
-import json
-import threading
-from json import JSONDecodeError
-from logging import Logger
-from typing import Optional, Tuple
+from __future__ import annotations
 
-from ska_tango_base.base import TaskCallbackType
+import json
+import logging
+import time
+from json import JSONDecodeError
+from typing import TYPE_CHECKING, Callable, Tuple
+
+from ska_ser_logging import configure_logging
 from ska_tango_base.commands import ResultCode
-from ska_tango_base.executor import TaskStatus
+from ska_tango_base.control_model import ObsState
+from ska_tmc_common import TimeoutCallback
+from ska_tmc_common.v1.error_propagation_tracker import (
+    error_propagation_tracker,
+)
+from ska_tmc_common.v1.timeout_tracker import timeout_tracker
 
 from ska_tmc_sdpsubarrayleafnode.commands.sdp_sln_command import SdpSLNCommand
+
+configure_logging()
+LOGGER = logging.getLogger(__name__)
+
+
+if TYPE_CHECKING:
+    from ..manager.component_manager import SdpSLNComponentManager
 
 
 class Scan(SdpSLNCommand):
@@ -23,43 +37,32 @@ class Scan(SdpSLNCommand):
     of the Scan command.
     """
 
+    def __init__(
+        self,
+        component_manager: SdpSLNComponentManager,
+        logger: logging.Logger = LOGGER,
+    ) -> None:
+        super().__init__(component_manager, logger)
+        self.component_manager = component_manager
+        self.timeout_id: str = f"{time.time()}_{__class__.__name__}"
+        self.timeout_callback: Callable = TimeoutCallback(
+            self.timeout_id, self.logger
+        )
+        self.component_manager.command_in_progress = "Scan"
+
+    @timeout_tracker
+    @error_propagation_tracker("get_obs_state", [ObsState.SCANNING])
     def scan(
         self,
         argin: str,
-        logger: Logger,
-        task_callback: TaskCallbackType,
-        # pylint: disable=unused-argument
-        task_abort_event: Optional[threading.Event] = None,
-    ) -> None:
+    ) -> Tuple[ResultCode, str]:
         """This is a long running method for Scan command, it
         executes do hook, invokes Scan command on SdpSubarray.
 
-        :param logger: logger
-        :type logger: logging.Logger
-        :param task_callback: Update task state, defaults to None
-        :type task_callback: TaskCallbackType
-        :param task_abort_event: Check for abort, defaults to None
-        :type task_abort_event: Event, optional
+        :param argin : Input json string for Configure Command.
+        :type argin  : str
         """
-        task_callback(status=TaskStatus.IN_PROGRESS)
-        result_code, message = self.do(argin)
-        logger.info(
-            "Scan command invoked on: %s: Result: %s, %s",
-            self.sdp_subarray_adapter.dev_name,
-            result_code,
-            message,
-        )
-        if result_code == ResultCode.FAILED:
-            task_callback(
-                status=TaskStatus.COMPLETED,
-                result=(result_code, message),
-                exception=message,
-            )
-        else:
-            task_callback(
-                status=TaskStatus.COMPLETED,
-                result=(result_code, message),
-            )
+        return self.do(argin)
 
     def do(self, argin: str = "") -> Tuple[ResultCode, str]:
         """

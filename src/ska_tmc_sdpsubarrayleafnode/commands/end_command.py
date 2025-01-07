@@ -1,16 +1,27 @@
 """
 End command class for SdpSubarrayLeafNode.
 """
+from __future__ import annotations
 
-import threading
-from logging import Logger
-from typing import Any, Optional, Tuple
+import logging
+import time
+from typing import TYPE_CHECKING, Tuple
 
-from ska_tango_base.base import TaskCallbackType
+from ska_ser_logging import configure_logging
 from ska_tango_base.commands import ResultCode
-from ska_tango_base.executor import TaskStatus
+from ska_tango_base.control_model import ObsState
+from ska_tmc_common import TimeoutCallback
+from ska_tmc_common.v1.error_propagation_tracker import (
+    error_propagation_tracker,
+)
+from ska_tmc_common.v1.timeout_tracker import timeout_tracker
 
 from ska_tmc_sdpsubarrayleafnode.commands.sdp_sln_command import SdpSLNCommand
+
+configure_logging()
+LOGGER = logging.getLogger(__name__)
+if TYPE_CHECKING:
+    from ..manager.component_manager import SdpSLNComponentManager
 
 
 class End(SdpSLNCommand):
@@ -21,45 +32,29 @@ class End(SdpSLNCommand):
 
     """
 
-    # pylint: disable=unused-argument
+    def __init__(
+        self,
+        component_manager: SdpSLNComponentManager,
+        logger: logging.Logger = LOGGER,
+    ) -> None:
+        super().__init__(component_manager, logger)
+        self.timeout_id = f"{time.time()}_{__class__.__name__}"
+        self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
+        self.component_manager = component_manager
+        self.component_manager.command_in_progress = "End"
+
+    @timeout_tracker
+    @error_propagation_tracker("get_obs_state", [ObsState.IDLE])
     def end(
         self,
-        logger: Logger,
-        task_callback: TaskCallbackType,
-        task_abort_event: Optional[threading.Event] = None,
-    ) -> None:
+    ) -> Tuple[ResultCode, str]:
         """This is a long running method for End command, it
         executes do hook, invokes End command on SdpSubarray.
-
-        :param logger: logger
-        :type logger: logging.Logger
-        :param task_callback: Update task state, defaults to None
-        :type task_callback: TaskCallbackType
-        :param task_abort_event: Check for abort, defaults to None
-        :type task_abort_event: Event, optional
         """
-        task_callback(status=TaskStatus.IN_PROGRESS)
-        result_code, message = self.do()
-        logger.info(
-            "End command invoked on: %s: Result: %s, %s",
-            self.sdp_subarray_adapter.dev_name,
-            result_code,
-            message,
-        )
+        return self.do()
 
-        if result_code == ResultCode.FAILED:
-            task_callback(
-                status=TaskStatus.COMPLETED,
-                result=(result_code, message),
-                exception=message,
-            )
-        else:
-            task_callback(
-                status=TaskStatus.COMPLETED,
-                result=(result_code, message),
-            )
-
-    def do(self, argin: Optional[Any] = None) -> Tuple[ResultCode, str]:
+    # pylint: disable=arguments-differ
+    def do(self) -> Tuple[ResultCode, str]:
         """
         Method to invoke End command on SdpSubarray.
 
