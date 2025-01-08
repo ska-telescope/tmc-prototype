@@ -82,8 +82,8 @@ k8s-low-test:
   variables:
     TELESCOPE: 'SKA-low'
     CONFIG: 'low'
-    KUBE_NAMESPACE: 'ci-$CI_PROJECT_NAME-$CI_JOB_ID-$CONFIG'
-    SERVICE_ACCOUNT: 'ci-svc-$CI_PROJECT_NAME-$CI_JOB_ID-$CONFIG'
+    KUBE_NAMESPACE: 'ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CONFIG'
+    SERVICE_ACCOUNT: 'ci-svc-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CONFIG'
   before_script:
     - '[ -f .make/k8s.mk ] || (echo "File k8s.mk not included in Makefile; exit 1")'
     - 'make help | grep k8s-test'
@@ -114,7 +114,7 @@ k8s-test:
   tags:
     - k8srunner-large
   variables:
-    KUBE_NAMESPACE: 'ci-$CI_PROJECT_NAME-$CI_JOB_ID'
+    KUBE_NAMESPACE: 'ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA'
   before_script:
     - '[ -f .make/k8s.mk ] || (echo "File k8s.mk not included in Makefile; exit 1")'
     - 'make help | grep k8s-test'
