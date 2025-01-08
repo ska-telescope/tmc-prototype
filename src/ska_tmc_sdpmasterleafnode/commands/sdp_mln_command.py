@@ -37,10 +37,12 @@ class SdpMLNCommand(TmcLeafNodeCommand):
 
     def init_adapter(self) -> Tuple[ResultCode, str]:
         dev_name: str = self.component_manager.sdp_master_device_name
-        timeout: int = self.component_manager.timeout
+        adapter_timeout: int = self.component_manager.adapter_timeout
         elapsed_time = 0
         start_time = time.time()
-        while self.sdp_master_adapter is None and elapsed_time < timeout:
+        while (
+            self.sdp_master_adapter is None and elapsed_time < adapter_timeout
+        ):
             try:
                 self.sdp_master_adapter = (
                     self.adapter_factory.get_or_create_adapter(
@@ -49,7 +51,7 @@ class SdpMLNCommand(TmcLeafNodeCommand):
                 )
             except ConnectionFailed as connection_failed:
                 elapsed_time = time.time() - start_time
-                if elapsed_time > timeout:
+                if elapsed_time > adapter_timeout:
                     message = (
                         f"Error in creating adapter for "
                         f"{dev_name}: {connection_failed}"
@@ -57,7 +59,7 @@ class SdpMLNCommand(TmcLeafNodeCommand):
                     return ResultCode.FAILED, message
             except DevFailed as dev_failed:
                 elapsed_time = time.time() - start_time
-                if elapsed_time > timeout:
+                if elapsed_time > adapter_timeout:
                     message = (
                         f"Error in creating adapter for "
                         f"{dev_name}: {dev_failed}"

@@ -13,6 +13,9 @@ Fixed
 [0.19.2]
 *  Update Abort() to notify observers
 
+[0.19.1]
+*  Resolved SKB-658.
+
 [0.19.0]
 *  Implemented Exception handling for End, Scan and EndScan commands.
 

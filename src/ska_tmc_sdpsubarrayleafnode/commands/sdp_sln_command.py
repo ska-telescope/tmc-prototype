@@ -80,11 +80,14 @@ class SdpSLNCommand(TmcLeafNodeCommand):
             )
 
     def init_adapter(self) -> Tuple[ResultCode, str]:
-        timeout = self.component_manager.timeout
+        adapter_timeout = self.component_manager.adapter_timeout
         elapsed_time: float = 0
         start_time: float = time.time()
         device = self.component_manager._sdp_subarray_dev_name
-        while self.sdp_subarray_adapter is None and elapsed_time < timeout:
+        while (
+            self.sdp_subarray_adapter is None
+            and elapsed_time < adapter_timeout
+        ):
             try:
                 get_adapter = self.adapter_factory.get_or_create_adapter
                 self.sdp_subarray_adapter: SdpSubArrayAdapter = get_adapter(
@@ -93,7 +96,7 @@ class SdpSLNCommand(TmcLeafNodeCommand):
                 )
             except ConnectionFailed as connection_failed:
                 elapsed_time = time.time() - start_time
-                if elapsed_time > timeout:
+                if elapsed_time > adapter_timeout:
                     message = (
                         "Error in creating adapter for %s : %s",
                         device,
@@ -102,7 +105,7 @@ class SdpSLNCommand(TmcLeafNodeCommand):
                     return ResultCode.FAILED, message
             except DevFailed as device_failed:
                 elapsed_time = time.time() - start_time
-                if elapsed_time > timeout:
+                if elapsed_time > adapter_timeout:
                     message = (
                         "Error in creating adapter for %s : %s",
                         device,

@@ -8,7 +8,7 @@ from ska_control_model import HealthState
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
 from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
-from ska_tmc_common.tmc_base_leaf_device import TMCBaseLeafDevice
+from ska_tmc_common.v1.tmc_base_leaf_device import TMCBaseLeafDevice
 from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
@@ -46,8 +46,6 @@ class SdpMasterLeafNode(TMCBaseLeafDevice):
         dtype="DevString",
         access=AttrWriteType.READ_WRITE,
     )
-    SleepTime = device_property(dtype="DevFloat", default_value=1)
-    TimeOut = device_property(dtype="DevFloat", default_value=2)
 
     # ---------------
     # General methods
@@ -227,8 +225,9 @@ class SdpMasterLeafNode(TMCBaseLeafDevice):
             logger=self.logger,
             _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
             _event_receiver=False,
-            sleep_time=self.SleepTime,
-            timeout=self.TimeOut,
+            event_subscription_check_period=self.EventSubscriptionCheckPeriod,
+            liveliness_check_period=self.LivelinessCheckPeriod,
+            adapter_timeout=self.AdapterTimeOut,
             _update_availablity_callback=self.update_availablity_callback,
         )
         component_manager.sdp_master_device_name = self.SdpMasterFQDN or ""
