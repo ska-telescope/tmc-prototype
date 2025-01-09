@@ -10,6 +10,9 @@ This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
 Fixed
 ------
+[0.19.2]
+*  Update Abort() to notify observers
+
 [0.19.1]
 *  Resolved SKB-658.
 

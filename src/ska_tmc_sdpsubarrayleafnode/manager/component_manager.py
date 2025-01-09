@@ -212,7 +212,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         Get Current device obsState
         """
-        return self.get_device().obs_state
+        with self.rlock:
+            return self.get_device().obs_state
 
     def update_command_result(self, command_name: str, value: str) -> None:
         """Updates the long running command result callback"""
@@ -606,6 +607,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             logger=self.logger,
         )
         self.abort_event.set()
+        self.observable.notify_observers(attribute_value_change=True)
         result_code, message = abort_command.do()
         self.abort_event.clear()
         self.logger.info("Abort Event cleared")
