@@ -39,11 +39,11 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
         self._issubsystemavailable: bool = False
 
     def init_device(self):
-        super().init_device()
         self._sdp_subarray_obs_state = ObsState.EMPTY
         self._LastDeviceInfoChanged = ""
         self._command_result = ("", "")
         self._issubsystemavailable = False
+        super().init_device()
         for attribute_name in [
             "sdpSubarrayObsState",
             "longRunningCommandResult",
