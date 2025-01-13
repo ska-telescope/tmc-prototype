@@ -52,8 +52,8 @@ class SdpMasterLeafNode(TMCBaseLeafDevice):
     # ---------------
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         self._issubsystemavailable: bool = False
+        super().__init__(*args, **kwargs)
 
     class InitCommand(TMCBaseLeafDevice.InitCommand):
         """
