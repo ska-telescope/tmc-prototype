@@ -10,6 +10,7 @@ import threading
 import time
 from typing import Callable, Optional, Tuple, Union
 
+from ska_control_model import AdminMode
 from ska_ser_logging import configure_logging
 from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
@@ -60,6 +61,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
     def __init__(
         self,
+        _update_admin_mode_callback: Callable,
+        _sdp_subarray_admin_mode_enabled: bool,
         sdp_subarray_dev_name: str,
         logger: logging.Logger = LOGGER,
         communication_state_callback: Optional[Callable[..., None]] = None,
@@ -133,6 +136,54 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.off_command = Off(self, self.logger)
         self.command_in_progress: str = ""
         self.tracker_thread = None
+        self._is_admin_mode_enabled: bool = _sdp_subarray_admin_mode_enabled
+        self._update_admin_mode_callback = _update_admin_mode_callback
+
+    @property
+    def is_admin_mode_enabled(self):
+        """
+        Return the admin mode enabled flag.
+
+        :return: admin mode enabled flag
+        :rtype: bool
+        """
+        with self.rlock:
+            return self._is_admin_mode_enabled
+
+    @is_admin_mode_enabled.setter
+    def is_admin_mode_enabled(self, value):
+        """
+        Set the admin mode enabled flag.
+
+        :param value: admin mode enabled flag
+        :type value: bool
+        """
+        if not isinstance(value, bool):
+            raise ValueError("is_admin_mode_enabled must be a boolean value.")
+        with self.rlock:
+            self._is_admin_mode_enabled = value
+
+    @property
+    def lrc_result(self) -> Tuple[str, str]:
+        """
+        Returns the longRunningCommandResult attribute.
+
+        :return: the longRunningCommandResult
+        :rtype: spectrum
+        """
+        return self._lrc_result
+
+    @lrc_result.setter
+    def lrc_result(self, value: Tuple[str, str]) -> None:
+        """
+        Sets the longRunningCommandResult value
+
+        :param value: the new longRunningCommandResult value
+        :type value: str
+        """
+        if self._lrc_result != value:
+            self._lrc_result = value
+            self._invoke_lrcr_callback()
 
     def stop(self):
         """
@@ -236,28 +287,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 self.command_id, ResultCode.FAILED, exception_msg=value
             )
             self.observable.notify_observers(command_exception=True)
-
-    @property
-    def lrc_result(self) -> Tuple[str, str]:
-        """
-        Returns the longRunningCommandResult attribute.
-
-        :return: the longRunningCommandResult
-        :rtype: spectrum
-        """
-        return self._lrc_result
-
-    @lrc_result.setter
-    def lrc_result(self, value: Tuple[str, str]) -> None:
-        """
-        Sets the longRunningCommandResult value
-
-        :param value: the new longRunningCommandResult value
-        :type value: str
-        """
-        if self._lrc_result != value:
-            self._lrc_result = value
-            self._invoke_lrcr_callback()
 
     def _invoke_lrcr_callback(self) -> None:
         """This method calls longRunningCommandResult callback"""
@@ -668,3 +697,23 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         * If you have subscribed to events, unsubscribe.
         * If you are running a polling loop, stop it.
         """
+
+    def update_device_admin_mode(
+        self, device_name: str, admin_mode: AdminMode
+    ) -> None:
+        """
+        Update a monitored device admin mode,
+        and call the relative callbacks if available
+        :param admin_state: admin mode of the device
+        :type admin_mode: AdminMode
+        """
+        with self.rlock:
+            dev_info = self.get_device()
+            dev_info.adminMode = admin_mode
+            dev_info.last_event_arrived = time.time()
+            dev_info.update_unresponsive(False)
+            self.logger.info(
+                "Admin Mode value updated to :%s", AdminMode(admin_mode).name
+            )
+            if self._update_admin_mode_callback:
+                self._update_admin_mode_callback(admin_mode)

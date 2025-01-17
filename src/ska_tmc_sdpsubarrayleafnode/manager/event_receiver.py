@@ -5,6 +5,7 @@ from time import sleep
 from typing import Dict, Optional
 
 import tango
+from ska_control_model import AdminMode
 from ska_ser_logging import configure_logging
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.device_info import SubArrayDeviceInfo
@@ -60,20 +61,32 @@ class SdpSLNEventReceiver(EventReceiver):
         dev_info: SubArrayDeviceInfo,
         attribute_dictionary: Optional[Dict[str, str]] = None,
     ):
+        sdp_subarray_proxy = None
         try:
-            proxy = self._dev_factory.get_device(dev_info.dev_name)
-            proxy.subscribe_event(
+            sdp_subarray_proxy = self._dev_factory.get_device(
+                dev_info.dev_name
+            )
+            sdp_subarray_proxy.subscribe_event(
                 "obsState",
                 tango.EventType.CHANGE_EVENT,
                 self.handle_obs_state_event,
                 stateless=True,
             )
-        except Exception as exception:
-            self._logger.debug(
-                "Error on Device %s while event subscription. Exception: %s",
-                proxy.dev_name,
-                exception,
+            sdp_subarray_proxy.subscribe_event(
+                "adminMode",
+                tango.EventType.CHANGE_EVENT,
+                self.handle_admin_mode_event,
+                stateless=True,
             )
+            self.stop()
+        except Exception as exception:
+            if sdp_subarray_proxy:
+                self._logger.debug(
+                    "Error on Device %s while event subscription."
+                    " Exception: %s",
+                    sdp_subarray_proxy.dev_name,
+                    exception,
+                )
 
     def handle_obs_state_event(self, event):
         """
@@ -93,3 +106,31 @@ class SdpSLNEventReceiver(EventReceiver):
         self._logger.info(
             "Obs State value changed to :%s", ObsState(new_value).name
         )
+
+    def handle_admin_mode_event(
+        self, event: tango.EventType.CHANGE_EVENT
+    ) -> None:
+        """Handle SDP subarray change event"""
+        if self._component_manager.is_admin_mode_enabled:
+            if not event.err:
+                new_value = event.attr_value.value
+                self._logger.info(
+                    "Received an adminMode event with value:"
+                    " %s for device: %s",
+                    new_value,
+                    event.device.dev_name(),
+                )
+                self._component_manager.update_device_admin_mode(
+                    event.device.dev_name(), new_value
+                )
+                self._logger.info(
+                    "Admin Mode value updated to :%s",
+                    AdminMode(new_value).name,
+                )
+            else:
+                error = event.errors[0]
+                error_msg = f"{error.reason},{error.desc}"
+                self._logger.error(error_msg)
+                self._component_manager.update_event_failure(
+                    event.device.dev_name()
+                )

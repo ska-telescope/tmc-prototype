@@ -7,7 +7,7 @@ It also acts as a SDP contact point for Subarray Node for observation execution
 from typing import List, Tuple, Union
 
 import tango
-from ska_control_model import HealthState
+from ska_control_model import AdminMode, HealthState
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
@@ -23,6 +23,9 @@ from tango import ApiUtil, AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_sdpsubarrayleafnode import release
+from ska_tmc_sdpsubarrayleafnode.commands.set_sdp_subarray_admin_mode import (
+    SetAdminMode,
+)
 from ska_tmc_sdpsubarrayleafnode.manager import SdpSLNComponentManager
 
 
@@ -34,6 +37,7 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
 
     def __init__(self, *args, **kwargs):
         self._sdp_subarray_obs_state = ObsState.EMPTY
+        self._sdp_subarray_admin_mode = AdminMode.ONLINE
         self._LastDeviceInfoChanged = ""
         self._command_result = ("", "")
         self._issubsystemavailable = False
@@ -53,9 +57,16 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
     # Device Properties
     # -----------------
     SdpSubarrayFQDN = device_property(
-        dtype="str", doc="FQDN of the SDP Subarray Tango Device Server."
+        dtype="str",
+        doc="FQDN of the SDP Subarray Tango Device Server.",
     )
     CommandTimeOut = device_property(dtype="DevFloat", default_value=50)
+
+    SDPSubarrayAdminModeEnabled = device_property(
+        dtype=bool,
+        doc="Toggle admin mode of SDP subarray leaf node",
+        default_value=True,
+    )
 
     # -----------------
     # Attributes
@@ -86,7 +97,6 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
     # ---------------
     # General methods
     # ---------------
-
     def update_device_callback(self, dev_info: SdpSubarrayDeviceInfo) -> None:
         """Updates device callback info"""
         self._LastDeviceInfoChanged = dev_info.to_json()
@@ -118,6 +128,26 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
                 "isSubsystemAvailable", self._issubsystemavailable
             )
 
+    def update_admin_mode_callback(self, admin_mode: AdminMode) -> None:
+        """Update SDP subarray admin mode attribute callback"""
+        try:
+            self._sdp_subarray_admin_mode = admin_mode
+            self.push_change_archive_events(
+                "sdpSubarrayAdminMode",
+                self._sdp_subarray_admin_mode,
+            )
+            self.logger.info(
+                "Updated and pushed sdpSubarrayAdminMode "
+                "attribute value to: %s",
+                self._sdp_subarray_admin_mode,
+            )
+        except Exception as exception:
+            self.logger.exception(
+                "Exception while pushing event for "
+                + "sdpSubarrayAdminMode: %s",
+                exception,
+            )
+
     class InitCommand(
         TMCBaseLeafDevice.InitCommand
     ):  # pylint: disable=too-few-public-methods
@@ -144,8 +174,16 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
                 f"{release.name},{release.version},{release.description}"
             )
             device._health_state = HealthState.OK
+            device._admin_mode = AdminMode.ONLINE
+            device._sdp_subarray_admin_mode = AdminMode.ONLINE
+            device._is_admin_mode_enabled = True
             device._version_id = release.version
-            device.set_change_event("healthState", True, False)
+            for attribute_name in [
+                "healthState",
+                "sdpSubarrayAdminMode",
+                "isAdminModeEnabled",
+            ]:
+                device.set_change_event(attribute_name, True, False)
             device._isSubsystemAvailable = False
             ApiUtil.instance().set_asynch_cb_sub_model(
                 tango.cb_sub_model.PUSH_CALLBACK
@@ -185,6 +223,29 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
     def read_sdpSubarrayObsState(self) -> ObsState:
         """Reads the current observation state of the SDP subarray"""
         return self._sdp_subarray_obs_state
+
+    @attribute(
+        dtype=AdminMode,
+        access=AttrWriteType.READ,
+        doc="Admin mode of SDP Subarray",
+    )
+    def sdpSubarrayAdminMode(self) -> AdminMode:
+        """Get the current admin mode of SDP Subarray"""
+        return self._sdp_subarray_leaf_node_admin_mode
+
+    @attribute(
+        dtype=bool,
+        access=AttrWriteType.READ_WRITE,
+        doc="Get or set the admin mode of SDP Subarray",
+    )
+    def isAdminModeEnabled(self) -> bool:
+        """Get the current admin mode of SDP subarray."""
+        return self.component_manager.is_admin_mode_enabled
+
+    @isAdminModeEnabled.write
+    def isAdminModeEnabled(self, value: bool) -> None:
+        """Set the value of isAdminModeEnabled attribute"""
+        self.component_manager.is_admin_mode_enabled = value
 
     # --------
     # Commands
@@ -461,11 +522,28 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
         result_code, unique_id = handler()
         return ([result_code], [unique_id])
 
+    @command(
+        dtype_in=AdminMode,
+        doc_in="The adminMode in enum format",
+        dtype_out="DevVarLongStringArray",
+    )
+    @DebugIt()
+    def SetAdminMode(self, argin: AdminMode):
+        """
+        This command sets the adminMode command on SDP Subarray.
+        """
+        handler = self.get_command_object("SetAdminMode")
+        result_code, message = handler(argin)
+
+        return [result_code], [message]
+
     # default ska mid
     def create_component_manager(self):
         """Returns Sdp Subarray Leaf Node component manager object"""
         cm = SdpSLNComponentManager(
-            self.SdpSubarrayFQDN,
+            _update_admin_mode_callback=self.update_admin_mode_callback,
+            _sdp_subarray_admin_mode_enabled=self.SDPSubarrayAdminModeEnabled,
+            sdp_subarray_dev_name=self.SdpSubarrayFQDN,
             logger=self.logger,
             communication_state_callback=None,
             component_state_callback=None,
@@ -512,10 +590,15 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
                     logger=None,
                 ),
             )
-        self.register_command_object(
-            "Abort",
-            self.AbortCommandsCommand(self.component_manager, self.logger),
-        )
+
+        fast_commands = {
+            "Abort": self.AbortCommandsCommand(
+                self.component_manager, self.logger
+            ),
+            "SetAdminMode": SetAdminMode(self.logger, self.component_manager),
+        }
+        for cmd_name, cmd_class in fast_commands.items():
+            self.register_command_object(cmd_name, cmd_class)
 
 
 # ----------

@@ -36,6 +36,12 @@ server:
         - name: "EventSubscriptionCheckPeriod"
           values:
           - "{{.Values.deviceServers.sdpsln.EventSubscriptionCheckPeriod}}"
+        - name: "SDPMasterAdminModeEnabled"
+          values:
+            - "{{.Values.deviceServers.sdpmln.SDPMasterAdminModeEnabled}}"
+        - name: "SDPSubarrayAdminModeEnabled"
+          values:
+            - "{{.Values.deviceServers.sdpsln.SDPSubarrayAdminModeEnabled}}"
 depends_on:
   - device: sys/database/2
 image:

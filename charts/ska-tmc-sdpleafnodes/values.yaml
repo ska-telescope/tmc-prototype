@@ -69,6 +69,7 @@ deviceServers:
     AdapterTimeOut: 2
     LivelinessCheckPeriod: 1.0
     EventSubscriptionCheckPeriod: 1.0
+    SDPSubarrayAdminModeEnabled: true
     mid:
       file: "data/sdpsubarrayleafnodemid.yaml"
       SdpSubarrayFQDN: "mid-sdp/subarray/01"
@@ -82,6 +83,7 @@ deviceServers:
     AdapterTimeOut: 2
     LivelinessCheckPeriod: 1.0
     EventSubscriptionCheckPeriod: 1.0
+    SDPMasterAdminModeEnabled: true
     mid:
       file: "data/sdpmasterleafnodemid.yaml"
       SdpMasterFQDN: "mid-sdp/control/0"
