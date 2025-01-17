@@ -1,6 +1,6 @@
 import pytest
 from ska_control_model import AdminMode
-from ska_tango_base.commands import ResultCode, TaskStatus
+from ska_tango_base.commands import ResultCode
 
 from ska_tmc_sdpmasterleafnode.commands import SetAdminMode
 from tests.settings import (
@@ -60,4 +60,3 @@ def test_feature_toggle_adminMode(tango_context, sdp_controller):
         "AdminMode functionality is disabled, "
         + "Device will function normally"
     )
-
