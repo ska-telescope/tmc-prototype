@@ -4,7 +4,6 @@ This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
 import logging
 import threading
-import time
 from logging import Logger
 from typing import Callable, Optional, Tuple
 
@@ -76,7 +75,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         super().__init__(
             logger,
             _liveliness_probe=_liveliness_probe,
-            _event_receiver=False,
+            _event_receiver=_event_receiver,
             proxy_timeout=proxy_timeout,
             event_subscription_check_period=event_subscription_check_period,
             liveliness_check_period=liveliness_check_period,
@@ -342,32 +341,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
     def handle_admin_mode_event(
         self, event: tango.EventType.CHANGE_EVENT
     ) -> None:
-        """Handle SDP controller change event"""
+        """Handle SDP controller admin mode change event"""
 
-        if self.is_admin_mode_enabled:
-            if not self.is_event_failed(event):
-                new_value = event.attr_value.value
-                self.logger.info(
-                    "Received an adminMode event with : %s for device: %s",
-                    new_value,
-                    event.device.dev_name(),
-                )
-                self.update_device_admin_mode(
-                    event.device.dev_name(), new_value
-                )
-                self.logger.info(
-                    "Admin Mode updated to :%s", AdminMode(new_value).name
-                )
-
-    def is_event_failed(self, event) -> bool:
-        """Check if event failed"""
-
-        if event.err:
-            error = event.errors[0]
-            error_msg = f"{error.reason},{error.desc}"
-            dev_info = self.get_device()
-            dev_info.last_event_arrived = time.time()
-            self.logger.error(error_msg)
-            self.update_event_failure(event.device.dev_name())
-            return True
-        return False
+        self._event_receiver.handle_admin_mode_event(event=event)

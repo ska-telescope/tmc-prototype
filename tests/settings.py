@@ -82,8 +82,9 @@ def count_faulty_devices(component_manager):
     return result
 
 
-def update_admin_mode_callback():
+def update_admin_mode_callback(admin_mode):
     """Dummy update admin mode callback function"""
+    logger.info(admin_mode)
 
 
 def create_cm(cm_class, device):

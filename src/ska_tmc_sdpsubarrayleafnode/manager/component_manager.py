@@ -147,6 +147,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :return: the longRunningCommandResult
         :rtype: spectrum
         """
+
         return self._lrc_result
 
     @lrc_result.setter

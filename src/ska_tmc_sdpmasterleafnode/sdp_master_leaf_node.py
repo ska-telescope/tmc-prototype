@@ -300,7 +300,7 @@ class SdpMasterLeafNode(TMCBaseLeafDevice):
             sdp_master_device_name=self.SdpMasterFQDN,
             logger=self.logger,
             _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
-            _event_receiver=False,
+            _event_receiver=True,
             event_subscription_check_period=self.EventSubscriptionCheckPeriod,
             liveliness_check_period=self.LivelinessCheckPeriod,
             adapter_timeout=self.AdapterTimeOut,
