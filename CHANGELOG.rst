@@ -119,6 +119,10 @@ Release for SP-142 demo
 Added
 -----
 
+[0.20.0]
+*********
+* Added AdminMode functionality.
+
 * Monitoring and control functionality with hierarchy of nodes
 * Automatic control actions on Alerts using Elettra Alarm Handler
 * LMC simulator for Dish

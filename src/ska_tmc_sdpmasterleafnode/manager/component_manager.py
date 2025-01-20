@@ -105,32 +105,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             )
             self._event_receiver.start()
 
-    @property
-    def is_admin_mode_enabled(self):
-        """Return the admin mode enabled flag.
-
-        :return: admin mode enabled flag
-        :rtype: bool
-
-        """
-
-        with self.rlock:
-            return self._is_admin_mode_enabled
-
-    @is_admin_mode_enabled.setter
-    def is_admin_mode_enabled(self, value):
-        """Set the admin mode enabled flag.
-
-        :param value: admin mode enabled flag
-        :type value: bool
-
-        """
-
-        if not isinstance(value, bool):
-            raise ValueError("is_admin_mode_enabled must be a boolean value.")
-        with self.rlock:
-            self._is_admin_mode_enabled = value
-
     def get_attribute_dict(self) -> dict:
         """Returns the common attribute dictionary for all component types.
 
@@ -358,16 +332,12 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
 
         """
 
-        with self.rlock:
-            dev_info = self.get_device()
-            dev_info.adminMode = admin_mode
-            dev_info.last_event_arrived = time.time()
-            dev_info.update_unresponsive(False)
-            self.logger.info(
-                "Admin Mode value updated to :%s", AdminMode(admin_mode).name
-            )
-            if self.update_admin_mode_callback:
-                self.update_admin_mode_callback(admin_mode)
+        super().update_device_admin_mode(device_name, admin_mode)
+        self.logger.info(
+            "Admin Mode value updated to :%s", AdminMode(admin_mode).name
+        )
+        if self.update_admin_mode_callback:
+            self.update_admin_mode_callback(admin_mode)
 
     def handle_admin_mode_event(
         self, event: tango.EventType.CHANGE_EVENT

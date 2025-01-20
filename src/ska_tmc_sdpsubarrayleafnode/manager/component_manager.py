@@ -140,30 +140,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._update_admin_mode_callback = _update_admin_mode_callback
 
     @property
-    def is_admin_mode_enabled(self):
-        """
-        Return the admin mode enabled flag.
-
-        :return: admin mode enabled flag
-        :rtype: bool
-        """
-        with self.rlock:
-            return self._is_admin_mode_enabled
-
-    @is_admin_mode_enabled.setter
-    def is_admin_mode_enabled(self, value):
-        """
-        Set the admin mode enabled flag.
-
-        :param value: admin mode enabled flag
-        :type value: bool
-        """
-        if not isinstance(value, bool):
-            raise ValueError("is_admin_mode_enabled must be a boolean value.")
-        with self.rlock:
-            self._is_admin_mode_enabled = value
-
-    @property
     def lrc_result(self) -> Tuple[str, str]:
         """
         Returns the longRunningCommandResult attribute.
@@ -707,13 +683,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :param admin_state: admin mode of the device
         :type admin_mode: AdminMode
         """
-        with self.rlock:
-            dev_info = self.get_device()
-            dev_info.adminMode = admin_mode
-            dev_info.last_event_arrived = time.time()
-            dev_info.update_unresponsive(False)
-            self.logger.info(
-                "Admin Mode value updated to :%s", AdminMode(admin_mode).name
-            )
-            if self._update_admin_mode_callback:
-                self._update_admin_mode_callback(admin_mode)
+        super().update_device_admin_mode(device_name, admin_mode)
+        self.logger.info(
+            "Admin Mode value updated to :%s", AdminMode(admin_mode).name
+        )
+        if self._update_admin_mode_callback:
+            self._update_admin_mode_callback(admin_mode)
