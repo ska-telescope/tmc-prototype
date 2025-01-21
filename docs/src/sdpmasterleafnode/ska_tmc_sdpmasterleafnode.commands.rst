@@ -46,6 +46,14 @@ ska\_tmc\_sdpmasterleafnode.commands.standby\_command module
    :undoc-members:
    :show-inheritance:
 
+ska\_tmc\_sdpmasterleafnode.commands.set\_controller\_admin\_mode\_command module
+---------------------------------------------------------------------------------
+
+.. automodule:: ska_tmc_sdpmasterleafnode.commands.set_controller_admin_mode
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

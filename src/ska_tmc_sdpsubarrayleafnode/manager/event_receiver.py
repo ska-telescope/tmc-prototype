@@ -60,20 +60,32 @@ class SdpSLNEventReceiver(EventReceiver):
         dev_info: SubArrayDeviceInfo,
         attribute_dictionary: Optional[Dict[str, str]] = None,
     ):
+        sdp_subarray_proxy = None
         try:
-            proxy = self._dev_factory.get_device(dev_info.dev_name)
-            proxy.subscribe_event(
+            sdp_subarray_proxy = self._dev_factory.get_device(
+                dev_info.dev_name
+            )
+            sdp_subarray_proxy.subscribe_event(
                 "obsState",
                 tango.EventType.CHANGE_EVENT,
                 self.handle_obs_state_event,
                 stateless=True,
             )
-        except Exception as exception:
-            self._logger.debug(
-                "Error on Device %s while event subscription. Exception: %s",
-                proxy.dev_name,
-                exception,
+            sdp_subarray_proxy.subscribe_event(
+                "adminMode",
+                tango.EventType.CHANGE_EVENT,
+                self.handle_admin_mode_event,
+                stateless=True,
             )
+            self.stop()
+        except Exception as exception:
+            if sdp_subarray_proxy:
+                self._logger.debug(
+                    "Error on Device %s while event subscription."
+                    " Exception: %s",
+                    sdp_subarray_proxy.dev_name,
+                    exception,
+                )
 
     def handle_obs_state_event(self, event):
         """

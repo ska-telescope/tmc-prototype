@@ -64,12 +64,6 @@ def sdp_master_device():
     return "mid-sdp/control/0"
 
 
-@pytest.fixture
-def csp_master_device():
-    """Return CSP Master Device"""
-    return "mid_csp/elt/master"
-
-
 # pylint: disable=redefined-outer-name
 @pytest.fixture()
 def devices_to_load():

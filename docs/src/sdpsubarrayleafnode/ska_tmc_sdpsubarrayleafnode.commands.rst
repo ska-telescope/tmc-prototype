@@ -85,6 +85,14 @@ ska\_tmc\_sdpsubarrayleafnode.commands.scan\_command module
    :undoc-members:
    :show-inheritance:
 
+ska\_tmc\_sdpsubarrayleafnode.commands.set\_sdp\_subarray\_admin\_mode module
+-----------------------------------------------------------------------------
+
+.. automodule:: ska_tmc_sdpsubarrayleafnode.commands.set_sdp_subarray_admin_mode
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Module contents
 ---------------
