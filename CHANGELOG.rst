@@ -121,7 +121,7 @@ Added
 
 [0.20.0]
 *********
-* Updated latest common repository
+* Updated latest common repository to include changes related to index error
 
 [0.20.0]
 *********
