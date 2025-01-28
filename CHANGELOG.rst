@@ -121,6 +121,10 @@ Added
 
 [0.20.0]
 *********
+* Updated latest common repository
+
+[0.20.0]
+*********
 * Added AdminMode functionality.
 
 * Monitoring and control functionality with hierarchy of nodes
