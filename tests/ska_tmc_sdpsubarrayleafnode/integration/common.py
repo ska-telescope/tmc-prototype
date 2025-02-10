@@ -25,7 +25,7 @@ def devices_to_load():
             "class": SdpSubarrayLeafNode,
             "devices": [
                 {
-                    "name": "ska_mid/tm_leaf_node/sdp_subarray01",
+                    "name": "mid-tmc/leaf-node-sdp/0",
                     "properties": {
                         "SdpSubarrayFQDN": ["mid-sdp/subarray/01"],
                     },

@@ -15,10 +15,14 @@ labels:
 
 global:
   minikube: true
-  tango_host: databaseds-tango-base-test:10000
+  TANGO_HOST: databaseds-tango-base-test:10000
   retry:
     - "--tries=10"
     - "--sleep=5"
+  mid:
+    domain: "mid-tmc"
+  low:
+    domain: "low-tmc"
 
 dsconfig:
   configuration_file: data/configuration.json
@@ -40,7 +44,7 @@ sdpleafnodes:
   image:
     registry: artefact.skao.int
     image: ska-tmc-sdpleafnodes
-    tag: 0.20.1
+    tag: 0.21.0
     pullPolicy: IfNotPresent
 
 resources:
@@ -70,6 +74,7 @@ deviceServers:
     LivelinessCheckPeriod: 1.0
     EventSubscriptionCheckPeriod: 1.0
     SDPSubarrayAdminModeEnabled: true
+    family: "subarray-leaf-node-sdp"
     mid:
       file: "data/sdpsubarrayleafnodemid.yaml"
       SdpSubarrayFQDN: "mid-sdp/subarray/01"
@@ -84,6 +89,8 @@ deviceServers:
     LivelinessCheckPeriod: 1.0
     EventSubscriptionCheckPeriod: 1.0
     SDPMasterAdminModeEnabled: true
+    family: "leaf-node-sdp"
+    member : "0"    
     mid:
       file: "data/sdpmasterleafnodemid.yaml"
       SdpMasterFQDN: "mid-sdp/control/0"
