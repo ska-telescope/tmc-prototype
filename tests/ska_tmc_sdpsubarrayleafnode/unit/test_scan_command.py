@@ -114,9 +114,8 @@ def test_scan_command_empty_input_json(tango_context, devices, task_callback):
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
 def test_scan_command_not_allowed_with_invalid_obsState(
-    tango_context, devices, task_callback
+    devices, task_callback
 ):
-    logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     scan_input_str = get_scan_input_str()
     cm.update_device_obs_state(ObsState.IDLE)

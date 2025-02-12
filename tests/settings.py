@@ -82,17 +82,28 @@ def count_faulty_devices(component_manager):
     return result
 
 
+def update_admin_mode_callback(admin_mode):
+    """Dummy update admin mode callback function"""
+    logger.info(admin_mode)
+
+
 def create_cm(cm_class, device):
     """Create Component Manager"""
     if cm_class == "SdpMLNComponentManager":
         return SdpMLNComponentManager(
-            device,
+            sdp_master_admin_mode_enabled=True,
+            _update_admin_mode_callback=update_admin_mode_callback,
+            sdp_master_device_name=device,
             logger=logger,
             _liveliness_probe=(LivelinessProbeType.NONE),
         )
 
     return SdpSLNComponentManager(
-        device, logger=logger, _liveliness_probe=LivelinessProbeType.NONE
+        _update_admin_mode_callback=update_admin_mode_callback,
+        _sdp_subarray_admin_mode_enabled=True,
+        sdp_subarray_dev_name=device,
+        logger=logger,
+        _liveliness_probe=LivelinessProbeType.NONE,
     )
 
 

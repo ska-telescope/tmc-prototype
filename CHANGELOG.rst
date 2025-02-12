@@ -10,8 +10,17 @@ This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
 Fixed
 ------
-[0.19.1]
+[0.20.3]
 *  Updated FQDNs and device servers as per ADR-9 in process of resolution of bug SKB-690 
+
+[0.19.3]
+*  Fixed SKB-592 issue with variable initialization.
+  
+[0.19.2]
+*  Update Abort() to notify observers
+
+[0.19.1]
+*  Resolved SKB-658.
 
 [0.19.0]
 *  Implemented Exception handling for End, Scan and EndScan commands.
@@ -112,6 +121,18 @@ Release for SP-142 demo
 
 Added
 -----
+[0.20.2]
+*********
+* Updated latest common  to include changes in SDP helper dish device for scan error propogation
+
+
+[0.20.1]
+*********
+* Updated latest common repository to include changes related to index error
+
+[0.20.0]
+*********
+* Added AdminMode functionality.
 
 * Monitoring and control functionality with hierarchy of nodes
 * Automatic control actions on Alerts using Elettra Alarm Handler

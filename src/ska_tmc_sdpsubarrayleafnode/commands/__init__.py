@@ -12,6 +12,7 @@ from .on_command import On
 from .release_resources_command import ReleaseAllResources
 from .restart_command import Restart
 from .scan_command import Scan
+from .set_sdp_subarray_admin_mode import SetAdminMode
 
 __all__ = [
     "On",
@@ -24,4 +25,5 @@ __all__ = [
     "ReleaseAllResources",
     "Abort",
     "Restart",
+    "SetAdminMode",
 ]

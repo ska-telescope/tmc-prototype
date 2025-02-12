@@ -27,6 +27,18 @@ server:
         - name: "LoggingLevelDefault"
           values:
             - "5"
+        - name: "AdapterTimeOut"
+          values:
+            - "{{.Values.deviceServers.sdpmln.AdapterTimeOut}}"
+        - name: "LivelinessCheckPeriod"
+          values:
+          - "{{.Values.deviceServers.sdpmln.LivelinessCheckPeriod}}"
+        - name: "EventSubscriptionCheckPeriod"
+          values:
+          - "{{.Values.deviceServers.sdpmln.EventSubscriptionCheckPeriod}}"
+        - name: "SDPMasterAdminModeEnabled"
+          values:
+            - "{{.Values.deviceServers.sdpmln.SDPMasterAdminModeEnabled}}"
 depends_on:
   - device: sys/database/2
 image:

@@ -7,6 +7,8 @@ import threading
 from logging import Logger
 from typing import Callable, Optional, Tuple
 
+import tango
+from ska_control_model import AdminMode
 from ska_ser_logging import configure_logging
 from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.base.base_component_manager import BaseComponentManager
@@ -14,7 +16,8 @@ from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
-from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
+from ska_tmc_common.v1.event_receiver import EventReceiver
+from ska_tmc_common.v1.tmc_component_manager import TmcLeafNodeComponentManager
 from tango import DevState
 
 from ska_tmc_sdpmasterleafnode.commands import Disable, Off, On, Standby
@@ -36,15 +39,18 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
 
     def __init__(
         self,
+        sdp_master_admin_mode_enabled: bool,
+        _update_admin_mode_callback: Callable,
         sdp_master_device_name: str,
         logger: Logger = LOGGER,
         _liveliness_probe: LivelinessProbeType = (
             LivelinessProbeType.SINGLE_DEVICE
         ),
-        _event_receiver: bool = False,
+        _event_receiver: bool = True,
         proxy_timeout: int = 500,
-        sleep_time: int = 1,
-        timeout: int = 30,
+        event_subscription_check_period: int = 1,
+        liveliness_check_period: int = 1,
+        adapter_timeout: int = 30,
         _update_availablity_callback: Optional[Callable[[bool], None]] = None,
     ):
         """
@@ -60,20 +66,25 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         :param _event_receiver: Optional. Object of EventReceiver class
         :param proxy_timeout: Optional. Time period to wait for event and
         responses. Default 500 milliseconds
+        :param adapter_timeout: Time period to wait for adapter creation
         :param sleep_time: Optional. Sleep time between reties. Default 1 Sec
+
         """
+
         self.sdp_master_device_name = sdp_master_device_name
         super().__init__(
             logger,
             _liveliness_probe=_liveliness_probe,
-            _event_receiver=False,
+            _event_receiver=_event_receiver,
             proxy_timeout=proxy_timeout,
-            sleep_time=sleep_time,
+            event_subscription_check_period=event_subscription_check_period,
+            liveliness_check_period=liveliness_check_period,
         )
         self._device: DeviceInfo = DeviceInfo(sdp_master_device_name)
-
-        self.timeout = timeout
+        self._is_admin_mode_enabled: bool = sdp_master_admin_mode_enabled
+        self.adapter_timeout = adapter_timeout
         self.update_availablity_callback = _update_availablity_callback
+        self.update_admin_mode_callback = _update_admin_mode_callback
         self.on_command = On(self, logger)
         self.off_command = Off(self, logger)
         self.standby_command = Standby(self, logger)
@@ -82,24 +93,57 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         if _liveliness_probe:
             self.start_liveliness_probe(_liveliness_probe)
 
+        if _event_receiver:
+            evet_subscribe_check_period = event_subscription_check_period
+            self._event_receiver = EventReceiver(
+                self,
+                logger,
+                proxy_timeout=proxy_timeout,
+                event_subscription_check_period=evet_subscribe_check_period,
+                attribute_dict=self.get_attribute_dict(),
+            )
+            self._event_receiver.start()
+
+    def get_attribute_dict(self) -> dict:
+        """Returns the common attribute dictionary for all component types.
+
+        :return: Dictionary of common attributes to be handled by
+         the EventReceiver.
+
+        """
+
+        return {"adminMode": self.handle_admin_mode_event}
+
     @property
     def sdp_master_device_name(self) -> str:
-        """Returns device name for the SDP Master Device."""
+        """Returns device name for the SDP Master Device.
+
+        :return: sdp master fqdn string
+
+        """
+
         return self._sdp_master_device_name
 
     @sdp_master_device_name.setter
     def sdp_master_device_name(self, device_name: str) -> None:
-        """Sets the device name for SDP Master Device."""
+        """Sets the device name for SDP Master Device.
+
+        :return: None
+
+        """
+
         self._sdp_master_device_name = device_name
 
     def get_device(self) -> DeviceInfo:
-        """
-        Return the device info our of the monitoring loop with name dev_name
+        """Return the device info our of the monitoring loop
+        with name dev_name
 
         :param None:
         :return: a device info
         :rtype: DeviceInfo
+
         """
+
         return DeviceInfo(self.sdp_master_device_name)
 
     def _check_if_sdp_master_is_responsive(self) -> None:
@@ -111,8 +155,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             )
 
     def is_command_allowed(self, command_name: str) -> bool:
-        """
-        Checks whether this command is allowed.
+        """Checks whether this command is allowed.
         It checks that the device is not in the FAULT and UNKNOWN state
         before executing the command and that all the
         components needed for the operation are not unresponsive.
@@ -120,6 +163,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         :return: True if this command is allowed
 
         :rtype: boolean
+
         """
 
         if command_name in ["On", "Off", "Standby", "Disable"]:
@@ -147,7 +191,9 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         """Submits the On command for execution.
 
         :rtype: tuple
+
         """
+
         task_status, response = self.submit_task(
             self.on_command.on,
             args=[self.logger],
@@ -167,7 +213,9 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         """Submits the Off command for execution.
 
         :rtype: tuple
+
         """
+
         task_status, response = self.submit_task(
             self.off_command.off,
             args=[self.logger],
@@ -187,7 +235,9 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         """Submits the Standby command for execution.
 
         :rtype: tuple
+
         """
+
         task_status, response = self.submit_task(
             self.standby_command.standby,
             args=[self.logger],
@@ -203,7 +253,9 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         """Submits the Disable command for execution.
 
         :rtype: tuple
+
         """
+
         task_status, response = self.submit_task(
             self.disable_command.disable,
             args=[self.logger],
@@ -214,8 +266,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         return task_status, response
 
     def start_communicating(self: BaseComponentManager) -> None:
-        """
-        Establish communication with the component, then start monitoring.
+        """Establish communication with the component, then start monitoring.
 
         This is the place to do things like:
 
@@ -227,8 +278,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         """
 
     def stop_communicating(self: BaseComponentManager) -> None:
-        """
-        Cease monitoring the component, and break off all
+        """Cease monitoring the component, and break off all
         communication with it.
 
         For example,
@@ -242,11 +292,14 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         self, device_info: DeviceInfo, exception: str
     ) -> None:
         """Set a device to failed and call the relative callback if available
+
         :param device_info: a device info
         :type device_info: DeviceInfo
         :param exception: an exception
         :type: Exception
+
         """
+
         with self.rlock:
             device_info.update_unresponsive(True, exception)
             if self.update_availablity_callback is not None:
@@ -254,13 +307,40 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
 
     # pylint: disable=unused-argument
     def update_responsiveness_info(self, device_name: str = "") -> None:
-        """
-        Update a device with the correct availability information.
+        """Update a device with the correct availability information.
 
         :param dev_name: name of the device
         :type dev_name: str
+
         """
         with self.rlock:
             self.get_device().update_unresponsive(False, "")
             if self.update_availablity_callback is not None:
                 self.update_availablity_callback(True)
+
+    def update_device_admin_mode(
+        self, device_name: str, admin_mode: AdminMode
+    ) -> None:
+        """Update a monitored device admin mode,
+          and call the relative callbacks if available
+
+        :param device_name: Name of the device on which admin mode is updated
+        :type device_name: str
+        :param admin_state: admin mode of the device
+        :type admin_mode: AdminMode
+
+        """
+
+        super().update_device_admin_mode(device_name, admin_mode)
+        self.logger.info(
+            "Admin Mode value updated to :%s", AdminMode(admin_mode).name
+        )
+        if self.update_admin_mode_callback:
+            self.update_admin_mode_callback(admin_mode)
+
+    def handle_admin_mode_event(
+        self, event: tango.EventType.CHANGE_EVENT
+    ) -> None:
+        """Handle SDP controller admin mode change event"""
+
+        self._event_receiver.handle_admin_mode_event(event=event)

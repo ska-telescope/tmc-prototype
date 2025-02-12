@@ -4,16 +4,19 @@ monitors and issues commands to the SDP Master.
 """
 from typing import Union
 
-from ska_control_model import HealthState
+from ska_control_model import AdminMode, HealthState
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
 from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
-from ska_tmc_common.tmc_base_leaf_device import TMCBaseLeafDevice
+from ska_tmc_common.v1.tmc_base_leaf_device import TMCBaseLeafDevice
 from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
-from ska_tmc_sdpmasterleafnode import release
+from ska_tmc_sdpmasterleafnode.commands.set_controller_admin_mode import (
+    SetAdminMode,
+)
 from ska_tmc_sdpmasterleafnode.manager import SdpMLNComponentManager
+from ska_tmc_sdpmasterleafnode.release import description, name, version
 
 __all__ = ["TmcLeafNodeSdp", "main"]
 
@@ -33,6 +36,12 @@ class TmcLeafNodeSdp(TMCBaseLeafDevice):
         doc="FQDN of the SDP Master Tango Device Server.",
     )
 
+    SDPMasterAdminModeEnabled = device_property(
+        dtype=bool,
+        doc="Toggle admin mode of SDP master leaf node",
+        default_value=True,
+    )
+
     # -----------------
     # Attributes
     # -----------------
@@ -46,16 +55,14 @@ class TmcLeafNodeSdp(TMCBaseLeafDevice):
         dtype="DevString",
         access=AttrWriteType.READ_WRITE,
     )
-    SleepTime = device_property(dtype="DevFloat", default_value=1)
-    TimeOut = device_property(dtype="DevFloat", default_value=2)
 
     # ---------------
     # General methods
     # ---------------
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         self._issubsystemavailable: bool = False
+        super().__init__(*args, **kwargs)
 
     class InitCommand(TMCBaseLeafDevice.InitCommand):
         """
@@ -78,14 +85,19 @@ class TmcLeafNodeSdp(TMCBaseLeafDevice):
             super().do()
             device = self._device
 
-            device._build_state = (
-                f"{release.name},{release.version},{release.description}"
-            )
+            device._build_state = f"{name},{version},{description}"
+            device._admin_mode = AdminMode.ONLINE
+            device._sdp_master_admin_mode = AdminMode.ONLINE
             device._health_state = HealthState.OK
-            device._version_id = release.version
+            device._version_id = version
             device._issubsystemavailable = False
             device.op_state_model.perform_action("component_on")
-            for attribute_name in ["healthState", "isSubsystemAvailable"]:
+            for attribute_name in [
+                "healthState",
+                "isSubsystemAvailable",
+                "sdpControllerAdminMode",
+                "isAdminModeEnabled",
+            ]:
                 device.set_change_event(attribute_name, True, False)
                 device.set_archive_event(attribute_name, True)
             return (ResultCode.OK, "")
@@ -104,6 +116,28 @@ class TmcLeafNodeSdp(TMCBaseLeafDevice):
                 "isSubsystemAvailable", self._issubsystemavailable
             )
 
+    def update_admin_mode_callback(self, admin_mode: AdminMode):
+        """Update SDPMLNAdminMode attribute callback"""
+        # pylint:disable=attribute-defined-outside-init
+        self._sdp_master_admin_mode = admin_mode
+
+        try:
+            self.push_change_archive_events(
+                "sdpControllerAdminMode",
+                self._sdp_master_admin_mode,
+            )
+            self.logger.info(
+                "Successfully updated and pushed sdpControllerAdminMode "
+                "attribute value to: %s",
+                self._sdp_master_admin_mode,
+            )
+        except Exception as exception:
+            self.logger.exception(
+                "Exception while pushing event for "
+                + "sdpControllerAdminMode: %s",
+                exception,
+            )
+
     def read_isSubsystemAvailable(self) -> bool:
         """Returns the TMC Sdp MasterLeafNode
         isSubsystemAvailable attribute."""
@@ -116,6 +150,29 @@ class TmcLeafNodeSdp(TMCBaseLeafDevice):
     def write_sdpMasterDevName(self, value: str) -> None:
         """Set the sdpmasterdevname attribute."""
         self.component_manager.sdp_master_device_name = value
+
+    @attribute(
+        dtype=AdminMode,
+        access=AttrWriteType.READ,
+        doc="Admin mode of SDP controller",
+    )
+    def sdpControllerAdminMode(self) -> AdminMode:
+        """Read the admin mode of SDP Controller"""
+        return self._sdp_master_admin_mode
+
+    @attribute(
+        dtype=bool,
+        access=AttrWriteType.READ_WRITE,
+        doc="Get or set the admin mode of SDP controller",
+    )
+    def isAdminModeEnabled(self) -> bool:
+        """Get the current admin mode of SDP controller."""
+        return self.component_manager.is_admin_mode_enabled
+
+    @isAdminModeEnabled.write
+    def isAdminModeEnabled(self, value: bool) -> None:
+        """Set the value of isAdminModeEnabled attribute"""
+        self.component_manager.is_admin_mode_enabled = value
 
     # --------
     # Commands
@@ -134,6 +191,21 @@ class TmcLeafNodeSdp(TMCBaseLeafDevice):
         :rtype: bool,CommandNotAllowed,DeviceUnresponsive
         """
         return self.component_manager.is_command_allowed("Off")
+
+    @command(
+        dtype_in=AdminMode,
+        doc_in="The adminMode in enum format",
+        dtype_out="DevVarLongStringArray",
+    )
+    @DebugIt()
+    def SetAdminMode(self, argin: AdminMode):
+        """
+        This command sets the adminMode command on SDP Controller.
+        """
+        handler = self.get_command_object("SetAdminMode")
+        result_code, message = handler(argin)
+
+        return [result_code], [message]
 
     @command(dtype_out="DevVarLongStringArray")
     def Off(self):
@@ -223,12 +295,15 @@ class TmcLeafNodeSdp(TMCBaseLeafDevice):
     def create_component_manager(self):
         """Returns Sdp Master Leaf Node component manager object"""
         component_manager = SdpMLNComponentManager(
-            self.SdpMasterFQDN,
+            sdp_master_admin_mode_enabled=self.SDPMasterAdminModeEnabled,
+            _update_admin_mode_callback=self.update_admin_mode_callback,
+            sdp_master_device_name=self.SdpMasterFQDN,
             logger=self.logger,
             _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
-            _event_receiver=False,
-            sleep_time=self.SleepTime,
-            timeout=self.TimeOut,
+            _event_receiver=True,
+            event_subscription_check_period=self.EventSubscriptionCheckPeriod,
+            liveliness_check_period=self.LivelinessCheckPeriod,
+            adapter_timeout=self.AdapterTimeOut,
             _update_availablity_callback=self.update_availablity_callback,
         )
         component_manager.sdp_master_device_name = self.SdpMasterFQDN or ""
@@ -254,6 +329,11 @@ class TmcLeafNodeSdp(TMCBaseLeafDevice):
                     method_name,
                     logger=self.logger,
                 ),
+            )
+
+            self.register_command_object(
+                "SetAdminMode",
+                SetAdminMode(self.logger, self.component_manager),
             )
 
 

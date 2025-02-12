@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Callable, Tuple
 from ska_ser_logging import configure_logging
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-from ska_tmc_common import TimeoutCallback
+from ska_tmc_common import TimeKeeper, TimeoutCallback
 from ska_tmc_common.v1.error_propagation_tracker import (
     error_propagation_tracker,
 )
@@ -48,6 +48,9 @@ class Configure(SdpSLNCommand):
         self.timeout_id: str = f"{time.time()}_{__class__.__name__}"
         self.timeout_callback: Callable = TimeoutCallback(
             self.timeout_id, self.logger
+        )
+        self.timekeeper = TimeKeeper(
+            self.component_manager.command_timeout, logger
         )
         self.component_manager.command_in_progress = "Configure"
 

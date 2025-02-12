@@ -10,6 +10,7 @@ import threading
 import time
 from typing import Callable, Optional, Tuple, Union
 
+from ska_control_model import AdminMode
 from ska_ser_logging import configure_logging
 from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
@@ -23,7 +24,7 @@ from ska_tmc_common.exceptions import (
     InvalidObsStateError,
 )
 from ska_tmc_common.lrcr_callback import LRCRCallback
-from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
+from ska_tmc_common.v1.tmc_component_manager import TmcLeafNodeComponentManager
 from tango import DevState
 
 from ska_tmc_sdpsubarrayleafnode.commands.abort_command import Abort
@@ -60,6 +61,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
     def __init__(
         self,
+        _update_admin_mode_callback: Callable,
+        _sdp_subarray_admin_mode_enabled: bool,
         sdp_subarray_dev_name: str,
         logger: logging.Logger = LOGGER,
         communication_state_callback: Optional[Callable[..., None]] = None,
@@ -73,8 +76,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         ] = None,
         _update_lrcr_callback: Optional[Callable[..., None]] = None,
         proxy_timeout: int = 500,
-        sleep_time: int = 1,
-        timeout: int = 30,
+        event_subscription_check_period: int = 1,
+        liveliness_check_period: int = 1,
+        adapter_timeout: int = 30,
         _update_availablity_callback: Optional[Callable[..., None]] = None,
         command_timeout: int = 30,
     ):
@@ -95,7 +99,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             communication_state_callback=communication_state_callback,
             component_state_callback=component_state_callback,
             proxy_timeout=proxy_timeout,
-            sleep_time=sleep_time,
+            event_subscription_check_period=event_subscription_check_period,
+            liveliness_check_period=liveliness_check_period,
         )
         self._device: SubArrayDeviceInfo = SubArrayDeviceInfo(
             self._sdp_subarray_dev_name, False
@@ -105,15 +110,16 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             self.start_liveliness_probe(_liveliness_probe)
 
         if _event_receiver:
+            evt_subscription_check_period = event_subscription_check_period
             self.event_receiver = SdpSLNEventReceiver(
                 self,
                 logger,
                 proxy_timeout=proxy_timeout,
-                sleep_time=sleep_time,
+                event_subscription_check_period=evt_subscription_check_period,
             )
             self.event_receiver.start()
         self._update_availablity_callback = _update_availablity_callback
-        self.timeout = timeout
+        self.adapter_timeout = adapter_timeout
         self.command_timeout = command_timeout
         self.rlock = threading.RLock()
         self.assign_id: str = ""
@@ -130,6 +136,31 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.off_command = Off(self, self.logger)
         self.command_in_progress: str = ""
         self.tracker_thread = None
+        self._is_admin_mode_enabled: bool = _sdp_subarray_admin_mode_enabled
+        self._update_admin_mode_callback = _update_admin_mode_callback
+
+    @property
+    def lrc_result(self) -> Tuple[str, str]:
+        """
+        Returns the longRunningCommandResult attribute.
+
+        :return: the longRunningCommandResult
+        :rtype: spectrum
+        """
+
+        return self._lrc_result
+
+    @lrc_result.setter
+    def lrc_result(self, value: Tuple[str, str]) -> None:
+        """
+        Sets the longRunningCommandResult value
+
+        :param value: the new longRunningCommandResult value
+        :type value: str
+        """
+        if self._lrc_result != value:
+            self._lrc_result = value
+            self._invoke_lrcr_callback()
 
     def stop(self):
         """
@@ -209,7 +240,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         Get Current device obsState
         """
-        return self.get_device().obs_state
+        with self.rlock:
+            return self.get_device().obs_state
 
     def update_command_result(self, command_name: str, value: str) -> None:
         """Updates the long running command result callback"""
@@ -232,28 +264,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 self.command_id, ResultCode.FAILED, exception_msg=value
             )
             self.observable.notify_observers(command_exception=True)
-
-    @property
-    def lrc_result(self) -> Tuple[str, str]:
-        """
-        Returns the longRunningCommandResult attribute.
-
-        :return: the longRunningCommandResult
-        :rtype: spectrum
-        """
-        return self._lrc_result
-
-    @lrc_result.setter
-    def lrc_result(self, value: Tuple[str, str]) -> None:
-        """
-        Sets the longRunningCommandResult value
-
-        :param value: the new longRunningCommandResult value
-        :type value: str
-        """
-        if self._lrc_result != value:
-            self._lrc_result = value
-            self._invoke_lrcr_callback()
 
     def _invoke_lrcr_callback(self) -> None:
         """This method calls longRunningCommandResult callback"""
@@ -603,6 +613,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             logger=self.logger,
         )
         self.abort_event.set()
+        self.observable.notify_observers(attribute_value_change=True)
         result_code, message = abort_command.do()
         self.abort_event.clear()
         self.logger.info("Abort Event cleared")
@@ -663,3 +674,19 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         * If you have subscribed to events, unsubscribe.
         * If you are running a polling loop, stop it.
         """
+
+    def update_device_admin_mode(
+        self, device_name: str, admin_mode: AdminMode
+    ) -> None:
+        """
+        Update a monitored device admin mode,
+        and call the relative callbacks if available
+        :param admin_state: admin mode of the device
+        :type admin_mode: AdminMode
+        """
+        super().update_device_admin_mode(device_name, admin_mode)
+        self.logger.info(
+            "Admin Mode value updated to :%s", AdminMode(admin_mode).name
+        )
+        if self._update_admin_mode_callback:
+            self._update_admin_mode_callback(admin_mode)
