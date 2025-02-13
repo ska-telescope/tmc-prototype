@@ -110,6 +110,10 @@ class SdpMasterLeafNode(TMCBaseLeafDevice):
     # ------------------
     def update_availablity_callback(self, availablity: bool) -> None:
         """Change event callback for isSubsystemAvailable"""
+        self.logger.info(
+            "called availablity  -%s",
+            availablity,
+        )
         if availablity != self._issubsystemavailable:
             self._issubsystemavailable = availablity
 
