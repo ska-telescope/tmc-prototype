@@ -112,8 +112,13 @@ class SdpMasterLeafNode(TMCBaseLeafDevice):
         """Change event callback for isSubsystemAvailable"""
         if availablity != self._issubsystemavailable:
             self._issubsystemavailable = availablity
+
             self.push_change_archive_events(
                 "isSubsystemAvailable", self._issubsystemavailable
+            )
+            self.logger.info(
+                "Successfully updated and pushed isSubsystemAvailable -%s",
+                self._issubsystemavailable,
             )
 
     def update_admin_mode_callback(self, admin_mode: AdminMode):
