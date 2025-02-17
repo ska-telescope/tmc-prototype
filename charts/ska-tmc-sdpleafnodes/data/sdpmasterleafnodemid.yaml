@@ -5,13 +5,13 @@ instances: ["01"]
 {{- $Domain := .Values.global.mid.domain }}
 {{- $Family := .Values.deviceServers.sdpmln.family }}
 {{- $Member := .Values.deviceServers.sdpmln.member }}
-command: "python3 /app/src/ska_tmc_sdpmasterleafnode/sdp_master_leaf_node.py"
+command: "python3 /app/src/ska_tmc_sdpmasterleafnode/sdp_master_leaf_node_mid.py"
 server:
-  name: "sdp_master_leaf_node"
+  name: "sdp_master_leaf_node_mid"
   instances:
   - name: "01"
     classes:
-    - name: "TmcLeafNodeSdp"
+    - name: "MidTmcLeafNodeSdp"
       devices:
       - name: "{{ $Domain }}/{{ $Family }}/{{ $Member }}"
         properties:
