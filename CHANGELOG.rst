@@ -121,8 +121,12 @@ Release for SP-142 demo
 
 Added
 -----
+[0.20.2]
+*********
+* Updated latest common  to include changes in SDP helper dish device for scan error propogation
 
-[0.20.0]
+
+[0.20.1]
 *********
 * Updated latest common repository to include changes related to index error
 
