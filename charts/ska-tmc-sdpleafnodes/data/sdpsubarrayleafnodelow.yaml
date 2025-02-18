@@ -2,43 +2,55 @@ name: "sdpsubarrayleafnode-test"
 function: telescope-monitoring
 domain: general-monitoring
 instances: ["01"]
+{{- $domain := .Values.global.low.domain }}
+{{- $family := .Values.deviceServers.sdpsln.family }}
+{{- $instances := .Values.deviceServers.sdpsln.instances }}
+{{- $sdpsubarray := .Values.deviceServers.sdpsln.low.SdpSubarrayFQDN }}
+{{- $sdpSubarrayFQDN := .Values.deviceServers.sdpsln.low.SdpSubarrayFQDN }}
+{{- $commandTimeOut := .Values.deviceServers.sdpsln.CommandTimeOut }}
+{{- $adapterTimeOut := .Values.deviceServers.sdpsln.AdapterTimeOut }}
+{{- $livelinessCheckPeriod := .Values.deviceServers.sdpsln.LivelinessCheckPeriod }}
+{{- $eventSubscriptionCheckPeriod := .Values.deviceServers.sdpsln.EventSubscriptionCheckPeriod }}
+{{- $sdpSubarrayAdminModeEnabled := .Values.deviceServers.sdpsln.SDPSubarrayAdminModeEnabled }}
 command: "python3 /app/src/ska_tmc_sdpsubarrayleafnode/sdp_subarray_leaf_node.py"
 server:
   name: "sdp_subarray_leaf_node"
   instances:
-  - name: "01"
-    classes:
-    - name: "SdpSubarrayLeafNode"
-      devices:
-      - name: "ska_low/tm_leaf_node/sdp_subarray01"
-        properties:
-        - name: "SdpSubarrayFQDN"
-          values:
-          - "{{.Values.deviceServers.sdpsln.low.SdpSubarrayFQDN}}"
-        - name: "SkaLevel"
-          values:
+  {{- range  $instances }}
+    - name: "{{ . }}"
+      classes:
+      - name: "SdpSubarrayLeafNode"
+        devices:
+        - name: "{{ $domain }}/{{ $family }}/{{ . }}"
+          properties:
+          - name: "SdpSubarrayFQDN"
+            values:
+            - "{{ $sdpSubarrayFQDN }}"
+          - name: "SkaLevel"
+            values:
             - "3"
-        - name: "LoggingTargetsDefault"
-          values:
+          - name: "LoggingTargetsDefault"
+            values:
             - "tango::logger"
-        - name: "LoggingLevelDefault"
-          values:
+          - name: "LoggingLevelDefault"
+            values:
             - "5"
-        - name: "CommandTimeOut"
-          values:
-            - "{{.Values.deviceServers.sdpsln.CommandTimeOut}}"
-        - name: "AdapterTimeOut"
-          values:
-            - "{{.Values.deviceServers.sdpsln.AdapterTimeOut}}"
-        - name: "LivelinessCheckPeriod"
-          values:
-          - "{{.Values.deviceServers.sdpsln.LivelinessCheckPeriod}}"
-        - name: "EventSubscriptionCheckPeriod"
-          values:
-          - "{{.Values.deviceServers.sdpsln.EventSubscriptionCheckPeriod}}"
-        - name: "SDPSubarrayAdminModeEnabled"
-          values:
-            - "{{.Values.deviceServers.sdpsln.SDPSubarrayAdminModeEnabled}}"
+          - name: "CommandTimeOut"
+            values:
+            - "{{ $commandTimeOut }}"
+          - name: "AdapterTimeOut"
+            values:
+            - "{{ $adapterTimeOut }}"
+          - name: "LivelinessCheckPeriod"
+            values:
+            - "{{ $livelinessCheckPeriod }}"
+          - name: "EventSubscriptionCheckPeriod"
+            values:
+            - "{{ $eventSubscriptionCheckPeriod }}"
+          - name: "SDPSubarrayAdminModeEnabled"
+            values:
+            - "{{ $sdpSubarrayAdminModeEnabled }}"
+  {{- end }}
 depends_on:
   - device: sys/database/2
 image:

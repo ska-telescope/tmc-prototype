@@ -20,6 +20,7 @@ This project is developing the TMC SDP Leaf Nodes component of the Telescope Mon
    :caption: SDP Master Leaf Node
 
    sdpmasterleafnode/ska_tmc_sdpmasterleafnode
+   sdpmasterleafnode/fqdns
 
 
 .. toctree::
@@ -27,6 +28,7 @@ This project is developing the TMC SDP Leaf Nodes component of the Telescope Mon
    :caption: SDP Subarray Leaf Node
 
    sdpsubarrayleafnode/ska_tmc_sdpsubarrayleafnode
+   sdpsubarrayleafnode/fqdns
 
 Indices and tables
 ------------------

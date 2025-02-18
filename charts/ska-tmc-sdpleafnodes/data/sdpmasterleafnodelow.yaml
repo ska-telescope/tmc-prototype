@@ -2,15 +2,18 @@ name: "sdpmasterleafnode-test"
 function: telescope-monitoring
 domain: general-monitoring
 instances: ["01"]
-command: "python3 /app/src/ska_tmc_sdpmasterleafnode/sdp_master_leaf_node.py"
+{{- $Domain := .Values.global.low.domain }}
+{{- $Family := .Values.deviceServers.sdpmln.family }}
+{{- $Member := .Values.deviceServers.sdpmln.member }}
+command: "python3 /app/src/ska_tmc_sdpmasterleafnode/sdp_master_leaf_node_low.py"
 server:
-  name: "sdp_master_leaf_node"
+  name: "sdp_master_leaf_node_low"
   instances:
   - name: "01"
     classes:
-    - name: "SdpMasterLeafNode"
+    - name: "LowTmcLeafNodeSdp"
       devices:
-      - name: "ska_low/tm_leaf_node/sdp_master"
+      - name: "{{ $Domain }}/{{ $Family }}/{{ $Member }}"
         properties:
         - name: "SdpMasterFQDN"
           values:

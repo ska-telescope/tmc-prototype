@@ -18,10 +18,10 @@ from ska_tmc_sdpmasterleafnode.commands.set_controller_admin_mode import (
 from ska_tmc_sdpmasterleafnode.manager import SdpMLNComponentManager
 from ska_tmc_sdpmasterleafnode.release import description, name, version
 
-__all__ = ["SdpMasterLeafNode", "main"]
+__all__ = ["TmcLeafNodeSdp", "main"]
 
 
-class SdpMasterLeafNode(TMCBaseLeafDevice):
+class TmcLeafNodeSdp(TMCBaseLeafDevice):
     """
     SDP Master Leaf node acts as a SDP contact point for Master Node and
     also to monitor
@@ -344,15 +344,15 @@ class SdpMasterLeafNode(TMCBaseLeafDevice):
 
 def main(args=None, **kwargs):
     """
-    Runs the SdpMasterLeafNodeMid.
+    Runs the TmcLeafNodeSdp.
 
     :param args: Arguments internal to TANGO
 
     :param kwargs: Arguments internal to TANGO
 
-    :return: SdpMasterLeafNodeMid TANGO object.
+    :return: TmcLeafNodeSdp TANGO object.
     """
-    return run((SdpMasterLeafNode,), args=args, **kwargs)
+    return run((TmcLeafNodeSdp,), args=args, **kwargs)
 
 
 if __name__ == "__main__":
