@@ -317,7 +317,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         with self.rlock:
             self.get_device().update_unresponsive(False, "")
             if self.update_availablity_callback is not None:
-                self.logger.info("response received")
                 self.update_availablity_callback(True)
 
     def update_device_admin_mode(
