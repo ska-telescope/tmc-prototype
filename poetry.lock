@@ -3336,34 +3336,35 @@ name = "ska-tmc-common"
 version = "0.24.9"
 description = "SKA TMC common contains common classes required for Telescope Monitoring and Control(TMC)."
 optional = false
-python-versions = "^3.10"
-files = []
-develop = false
+python-versions = ">=3.10,<4.0"
+files = [
+    {file = "ska_tmc_common-0.24.9-py3-none-any.whl", hash = "sha256:338c3f2b9926479bd4d7dc0cd895730e33e2b4a9580d1d5a8fc869c0b389168a"},
+    {file = "ska_tmc_common-0.24.9.tar.gz", hash = "sha256:ab0473ae87bdb1ca7a0f5e249b80ea00ce315c67fddb5b11ecc05433a7d580be"},
+]
 
 [package.dependencies]
 attrs = "*"
-fire = "^0.5.0"
-jsonschema = "^4.17.3"
+fire = ">=0.5.0,<0.6.0"
+jsonschema = ">=4.17.3,<5.0.0"
 jsonschema-specifications = "*"
-katpoint = "^1.0a2"
-marshmallow = "^3.14.1"
-mock = "^4.0.3"
+katpoint = ">=1.0a2,<2.0"
+marshmallow = ">=3.14.1,<4.0.0"
+mock = ">=4.0.3,<5.0.0"
 numpy = {version = ">=1.21.6", markers = "python_version == \"3.10\""}
 pytango = "9.5.0"
 referencing = "*"
 rpds-py = "*"
 ska-control-model = "*"
-ska-ser-logging = "^0.4.1"
+ska-ser-logging = ">=0.4.1,<0.5.0"
 ska-tango-base = "1.0.0"
 ska-tango-testing = "0.6.1"
-ska-telmodel = "^1.19.0"
+ska-telmodel = ">=1.19.0,<2.0.0"
 typing_extensions = "*"
 
 [package.source]
-type = "git"
-url = "https://gitlab.com/ska-telescope/ska-tmc/ska-tmc-common.git"
-reference = "sah-1670"
-resolved_reference = "62d80cadf0e2d9938a35b5f38ec1b3122506426b"
+type = "legacy"
+url = "https://artefact.skao.int/repository/pypi-internal/simple"
+reference = "ska-nexus"
 
 [[package]]
 name = "smmap"
@@ -4025,4 +4026,4 @@ reference = "PyPI-public"
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.10"
-content-hash = "bd893fbce7dbb5a2cb46f96f47be54db9e44110e2b9fc08d5c731a65f4da218a"
+content-hash = "fe71462d24a13c10969cabfd08a930f8bb0698575524d400ae2df358aa1d0509"
