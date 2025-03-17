@@ -182,7 +182,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         return self._device
 
-    def update_event_failure(self) -> None:
+    def update_event_failure(self, device_name: str) -> None:
         """Update event failures"""
         with self.lock:
             dev_info = self.get_device()
