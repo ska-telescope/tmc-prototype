@@ -189,7 +189,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             dev_info.last_event_arrived = time.time()
             dev_info.update_unresponsive(False)
 
-    def update_device_obs_state(self, obs_state: ObsState) -> None:
+    def update_device_obs_state(
+        self, device_name: str, obs_state: ObsState
+    ) -> None:
         """
         Update a monitored device obs state,
         and call the relative callbacks if available
