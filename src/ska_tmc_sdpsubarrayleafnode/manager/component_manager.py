@@ -138,6 +138,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.tracker_thread = None
         self._is_admin_mode_enabled: bool = _sdp_subarray_admin_mode_enabled
         self._update_admin_mode_callback = _update_admin_mode_callback
+        self.__start_event_processing_threads()
 
     @property
     def lrc_result(self) -> Tuple[str, str]:
@@ -169,6 +170,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         self.stop_liveliness_probe()
         self.event_receiver.stop()
+        self._stop_thread = True
 
     def get_device(self) -> SubArrayDeviceInfo:
         """
@@ -690,3 +692,11 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         if self._update_admin_mode_callback:
             self._update_admin_mode_callback(admin_mode)
+
+    def __start_event_processing_threads(self) -> None:
+        """Start all the event processing threads."""
+        for attribute in self.event_queues:
+            thread = threading.Thread(
+                target=self.process_event, args=[attribute], name=attribute
+            )
+            thread.start()

@@ -93,6 +93,8 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         if _liveliness_probe:
             self.start_liveliness_probe(_liveliness_probe)
 
+        self.__start_event_processing_threads()
+
         if _event_receiver:
             evet_subscribe_check_period = event_subscription_check_period
             self._event_receiver = EventReceiver(
@@ -288,6 +290,11 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         * If you are running a polling loop, stop it.
         """
 
+    def stop(self) -> None:
+        """Stops the event processing"""
+        self._event_receiver.stop()
+        self._stop_thread = True
+
     def update_exception_for_unresponsiveness(
         self, device_info: DeviceInfo, exception: str
     ) -> None:
@@ -344,3 +351,11 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         """Handle SDP controller admin mode change event"""
 
         self._event_receiver.handle_admin_mode_event(event=event)
+
+    def __start_event_processing_threads(self) -> None:
+        """Start all the event processing threads."""
+        for attribute in self.event_queues:
+            thread = threading.Thread(
+                target=self.process_event, args=[attribute], name=attribute
+            )
+            thread.start()
