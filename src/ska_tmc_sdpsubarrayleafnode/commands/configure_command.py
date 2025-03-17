@@ -134,10 +134,6 @@ class Configure(SdpSLNCommand):
         )
 
         try:
-            json_argument[
-                "interface"
-            ] = "https://schema.skao.int/ska-sdp-configure/0.3"
-
             self.sdp_subarray_adapter.Configure(
                 json.dumps(json_argument), self.component_manager.cmd_ended_cb
             )
