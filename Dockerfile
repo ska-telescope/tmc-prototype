@@ -7,6 +7,7 @@ FROM $BASE_IMAGE
 # Install Poetry
 USER root
 ENV SETUPTOOLS_USE_DISTUTILS=stdlib
+RUN apt-get update && apt-get install git -y
 RUN curl -sSL https://install.python-poetry.org | python3 - && \
     poetry config virtualenvs.create false
 RUN pip install ipython
