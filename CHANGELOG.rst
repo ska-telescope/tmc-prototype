@@ -10,8 +10,11 @@ This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
 Fixed
 ------
+[0.21.1]
+* Fixed SKB-732
+
 [0.21.0]
-Updated FQDN's as per ADR-9
+* Updated FQDN's as per ADR-9
 
 [0.19.3]
 *  Fixed SKB-592 issue with variable initialization.
