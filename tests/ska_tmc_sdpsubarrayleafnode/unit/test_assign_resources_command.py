@@ -43,10 +43,10 @@ def test_telescope_assign_resources_command(
     cm.assign_resources(assign_input_str, task_callback)
     task_callback.assert_against_call(status=TaskStatus.QUEUED)
     task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
-    cm.update_device_obs_state(ObsState.RESOURCING)
+    cm.update_device_obs_state(devices, ObsState.RESOURCING)
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.RESOURCING)
     time.sleep(3)
-    cm.update_device_obs_state(ObsState.IDLE)
+    cm.update_device_obs_state(devices, ObsState.IDLE)
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.IDLE)
     task_callback.assert_against_call(
         status=TaskStatus.COMPLETED,
@@ -132,7 +132,7 @@ def test_assign_resources_command_not_allowed(
     sdpsln_node = dev_factory.get_device(devices)
     sdpsln_node.SetDirectObsState(ObsState.SCANNING)
 
-    cm.update_device_obs_state(ObsState.SCANNING)
+    cm.update_device_obs_state(devices, ObsState.SCANNING)
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.SCANNING)
     cm.assign_resources(assign_input_str, task_callback=task_callback)
 

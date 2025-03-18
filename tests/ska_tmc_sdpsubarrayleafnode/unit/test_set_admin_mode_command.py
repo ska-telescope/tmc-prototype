@@ -200,7 +200,7 @@ def test_update_event_failure(sdp_subarray):
     cm.get_device = MagicMock(return_value=mock_device)
     cm.lock = MagicMock()
     # Call the method under test
-    cm.update_event_failure()
+    cm.update_event_failure(sdp_subarray)
 
     # Assert that the lock was acquired and released
     cm.lock.__enter__.assert_called_once()

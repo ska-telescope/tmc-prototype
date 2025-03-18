@@ -39,7 +39,7 @@ def test_abort_command(tango_context, devices, obsstate):
     cm = create_cm("SdpSLNComponentManager", devices)
     cm.tracker_thread = mock.Mock()
 
-    cm.update_device_obs_state(obsstate)
+    cm.update_device_obs_state(devices, obsstate)
     cm.is_command_allowed("Abort")
     logger.info(f"Abort command is allowed in {obsstate}.")
     abort_event = threading.Event()
@@ -59,7 +59,7 @@ def test_abort_command_fail_subarray(tango_context, devices):
     attrs = {"Abort.side_effect": Exception}
     sdpsubarrayrMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(devices, proxy=sdpsubarrayrMock)
-    cm.update_device_obs_state(ObsState.IDLE)
+    cm.update_device_obs_state(devices, ObsState.IDLE)
     abort_command = Abort(cm, logger=logger)
     abort_command.adapter_factory = adapter_factory
     result_code, _ = abort_command.do()
@@ -72,7 +72,7 @@ def test_abort_command_fail_subarray(tango_context, devices):
 )
 def test_abort_command_fail_check_allowed_with_invalid_obsState(devices):
     cm = create_cm("SdpSLNComponentManager", devices)
-    cm.update_device_obs_state(ObsState.EMPTY)
+    cm.update_device_obs_state(devices, ObsState.EMPTY)
     with pytest.raises(InvalidObsStateError):
         cm.is_command_allowed("Abort")
 

@@ -83,7 +83,7 @@ def test_release_all_resources_command_not_allowed_with_invalid_obsState(
 ):
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
-    cm.update_device_obs_state(ObsState.READY)
+    cm.update_device_obs_state(devices, ObsState.READY)
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.READY)
 
     cm.release_all_resources(task_callback=task_callback)
