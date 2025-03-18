@@ -1939,7 +1939,7 @@ reference = "PyPI-public"
 
 [[package]]
 name = "setuptools"
-version = "76.0.0"
+version = "76.1.0"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 category = "main"
 optional = false
@@ -2220,7 +2220,7 @@ reference = 'ska-nexus'
 
 [[package]]
 name = "ska-tmc-common"
-version = "0.24.9"
+version = "0.24.10"
 description = "SKA TMC common contains common classes required for Telescope Monitoring and Control(TMC)."
 category = "main"
 optional = false
@@ -2250,7 +2250,7 @@ typing_extensions = "*"
 type = "git"
 url = "https://gitlab.com/ska-telescope/ska-tmc/ska-tmc-common.git"
 reference = "hm-629"
-resolved_reference = "13ba93472ff1cbec020aec24e777cd8ecf28ebb1"
+resolved_reference = "52b4703e373fcf29851b0efe322fd56aaaed3abc"
 
 [[package]]
 name = "smmap"
@@ -3905,8 +3905,8 @@ schema = [
     {file = "schema-0.7.7.tar.gz", hash = "sha256:7da553abd2958a19dc2547c388cde53398b39196175a9be59ea1caf5ab0a1807"},
 ]
 setuptools = [
-    {file = "setuptools-76.0.0-py3-none-any.whl", hash = "sha256:199466a166ff664970d0ee145839f5582cb9bca7a0a3a2e795b6a9cb2308e9c6"},
-    {file = "setuptools-76.0.0.tar.gz", hash = "sha256:43b4ee60e10b0d0ee98ad11918e114c70701bc6051662a9a675a0496c1a158f4"},
+    {file = "setuptools-76.1.0-py3-none-any.whl", hash = "sha256:34750dcb17d046929f545dec9b8349fe42bf4ba13ddffee78428aec422dbfb73"},
+    {file = "setuptools-76.1.0.tar.gz", hash = "sha256:4959b9ad482ada2ba2320c8f1a8d8481d4d8d668908a7a1b84d987375cd7f5bd"},
 ]
 sgp4 = [
     {file = "sgp4-2.24-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:11c84e29891908d480dc008e9e5743720eed29ee00d6546a5851284b06d646af"},
