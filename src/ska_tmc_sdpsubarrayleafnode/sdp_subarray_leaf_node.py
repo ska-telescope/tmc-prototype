@@ -231,7 +231,7 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
     )
     def sdpSubarrayAdminMode(self) -> AdminMode:
         """Get the current admin mode of SDP Subarray"""
-        return self._sdp_subarray_leaf_node_admin_mode
+        return self._sdp_subarray_admin_mode
 
     @attribute(
         dtype=bool,
