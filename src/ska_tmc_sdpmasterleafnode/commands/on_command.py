@@ -2,7 +2,6 @@
 On command class for SdpMasterLeafNode.
 
 """
-import threading
 from logging import Logger
 from typing import Any, Optional, Tuple
 
@@ -28,7 +27,6 @@ class On(SdpMLNCommand):
         logger: Logger,
         task_callback: TaskCallbackType,
         # pylint: disable= unused-argument
-        task_abort_event: Optional[threading.Event] = None,
     ) -> None:
         """A method to invoke the On command.
         It sets the task_callback status according to command progress.

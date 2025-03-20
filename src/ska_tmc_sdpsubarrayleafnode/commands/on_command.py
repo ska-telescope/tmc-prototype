@@ -1,7 +1,6 @@
 """
 On command class for SdpSubarrayLeafNode.
 """
-import threading
 from logging import Logger
 from typing import Any, Optional, Tuple
 
@@ -24,7 +23,6 @@ class On(SdpSLNCommand):
         self,
         logger: Logger,
         task_callback: TaskCallbackType,
-        task_abort_event: Optional[threading.Event] = None,
     ) -> None:
         """A method to invoke the On command.
         It sets the task_callback status according to command progress.
@@ -33,8 +31,6 @@ class On(SdpSLNCommand):
         :type logger: logging.Logger
         :param task_callback: Update task state, defaults to None
         :type task_callback: TaskCallbackType
-        :param task_abort_event: Check for abort, defaults to None
-        :type task_abort_event: Event, optional
         """
         task_callback(status=TaskStatus.IN_PROGRESS)
         result_code, message = self.do()
