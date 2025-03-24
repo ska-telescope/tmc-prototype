@@ -138,7 +138,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.tracker_thread = None
         self._is_admin_mode_enabled: bool = _sdp_subarray_admin_mode_enabled
         self._update_admin_mode_callback = _update_admin_mode_callback
-        self.__start_event_processing_threads()
+        self.event_processing_methods = self.get_attribute_dict()
+        self.start_event_processing_threads()
 
     @property
     def lrc_result(self) -> Tuple[str, str]:
@@ -182,16 +183,14 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         return self._device
 
-    def update_event_failure(self, device_name: str) -> None:
+    def update_event_failure(self) -> None:
         """Update event failures"""
         with self.lock:
             dev_info = self.get_device()
             dev_info.last_event_arrived = time.time()
             dev_info.update_unresponsive(False)
 
-    def update_device_obs_state(
-        self, device_name: str, obs_state: ObsState
-    ) -> None:
+    def update_device_obs_state(self, obs_state: ObsState) -> None:
         """
         Update a monitored device obs state,
         and call the relative callbacks if available
@@ -679,26 +678,30 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         * If you are running a polling loop, stop it.
         """
 
-    def update_device_admin_mode(
-        self, device_name: str, admin_mode: AdminMode
-    ) -> None:
+    def update_device_admin_mode(self, admin_mode: AdminMode) -> None:
         """
         Update a monitored device admin mode,
         and call the relative callbacks if available
         :param admin_state: admin mode of the device
         :type admin_mode: AdminMode
         """
-        super().update_device_admin_mode(device_name, admin_mode)
-        self.logger.info(
-            "Admin Mode value updated to :%s", AdminMode(admin_mode).name
-        )
-        if self._update_admin_mode_callback:
-            self._update_admin_mode_callback(admin_mode)
-
-    def __start_event_processing_threads(self) -> None:
-        """Start all the event processing threads."""
-        for attribute in self.event_queues:
-            thread = threading.Thread(
-                target=self.process_event, args=[attribute], name=attribute
+        if self._is_admin_mode_enabled is True:
+            super().update_device_admin_mode(admin_mode)
+            self.logger.info(
+                "Admin Mode value updated to :%s", AdminMode(admin_mode).name
             )
-            thread.start()
+            if self._update_admin_mode_callback:
+                self._update_admin_mode_callback(admin_mode)
+
+    def get_attribute_dict(self) -> dict:
+        """
+
+        :return: Dictionary of attributes to be handled by the EventReceiver.
+        """
+
+        attributes = {
+            "obsState": self.update_device_obs_state,
+            "adminMode": self.update_device_admin_mode,
+            "longRunningCommandResult": self.update_command_result,
+        }
+        return {**attributes}

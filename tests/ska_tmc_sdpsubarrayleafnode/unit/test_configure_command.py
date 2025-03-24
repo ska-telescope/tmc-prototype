@@ -95,7 +95,7 @@ def test_configure_command_empty_input_json(
     DevFactory().get_device(devices).SetDirectObsState(ObsState.IDLE)
     cm = create_cm("SdpSLNComponentManager", devices)
     configure_input_str = ""
-    cm.update_device_obs_state(devices, ObsState.IDLE)
+    cm.update_device_obs_state(ObsState.IDLE)
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.IDLE)
     cm.configure(configure_input_str, task_callback=task_callback)
     task_callback.assert_against_call(
@@ -123,7 +123,7 @@ def test_configure_command_not_allowed_with_invalid_obsState(
 ):
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
-    cm.update_device_obs_state(devices, ObsState.EMPTY)
+    cm.update_device_obs_state(ObsState.EMPTY)
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.EMPTY)
     configure_input_str = get_configure_input_str()
     cm.configure(configure_input_str, task_callback=task_callback)

@@ -94,7 +94,7 @@ def test_scan_command_empty_input_json(tango_context, devices, task_callback):
     DevFactory().get_device(devices).SetDirectObsState(ObsState.READY)
     cm = create_cm("SdpSLNComponentManager", devices)
     scan_input_str = ""
-    cm.update_device_obs_state(devices, ObsState.READY)
+    cm.update_device_obs_state(ObsState.READY)
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.READY)
     cm.scan(scan_input_str, task_callback=task_callback)
     task_callback.assert_against_call(status=TaskStatus.QUEUED)
@@ -118,7 +118,7 @@ def test_scan_command_not_allowed_with_invalid_obsState(
 ):
     cm = create_cm("SdpSLNComponentManager", devices)
     scan_input_str = get_scan_input_str()
-    cm.update_device_obs_state(devices, ObsState.IDLE)
+    cm.update_device_obs_state(ObsState.IDLE)
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.IDLE)
     cm.scan(scan_input_str, task_callback=task_callback)
     task_callback.assert_against_call(

@@ -2,7 +2,7 @@
 import logging
 from concurrent import futures
 from time import sleep
-from typing import Dict, Optional
+from typing import List, Optional
 
 import tango
 from ska_ser_logging import configure_logging
@@ -51,13 +51,19 @@ class SdpSLNEventReceiver(EventReceiver):
             ) as executor:
                 dev_info = self._component_manager.get_device()
                 if dev_info.last_event_arrived is None:
-                    executor.submit(self.subscribe_events, dev_info)
+                    executor.submit(
+                        self.subscribe_events,
+                        dev_info=dev_info,
+                        attribute_tobe_subscribed=(
+                            self.attribute_tobe_subscribed
+                        ),
+                    )
             sleep(self._event_subscription_check_period)
 
     def subscribe_events(
         self,
         dev_info: SubArrayDeviceInfo,
-        attribute_dictionary: Optional[Dict[str, str]] = None,
+        attribute_tobe_subscribed: Optional[List[str]] = None,
     ):
         sdp_subarray_proxy = None
         try:
@@ -67,13 +73,13 @@ class SdpSLNEventReceiver(EventReceiver):
             sdp_subarray_proxy.subscribe_event(
                 "obsState",
                 tango.EventType.CHANGE_EVENT,
-                self.handle_obs_state_event,
+                self.handle_event,
                 stateless=True,
             )
             sdp_subarray_proxy.subscribe_event(
                 "adminMode",
                 tango.EventType.CHANGE_EVENT,
-                self.handle_admin_mode_event,
+                self.handle_event,
                 stateless=True,
             )
             self.stop()
