@@ -1,7 +1,8 @@
 """Restart command class for Sdp Subarray."""
 
+import threading
 from logging import Logger
-from typing import Tuple
+from typing import Optional, Tuple
 
 from ska_tango_base.base import TaskCallbackType
 from ska_tango_base.commands import ResultCode
@@ -21,6 +22,7 @@ class Restart(SdpSLNCommand):
         self,
         logger: Logger,
         task_callback: TaskCallbackType,
+        task_abort_event: Optional[threading.Event] = None,
     ) -> None:
         """This is a long-running method for a Restart command, it
         executes do hook
@@ -28,6 +30,8 @@ class Restart(SdpSLNCommand):
         :type logger: logging.Logger
         :param task_callback: Update task state, defaults to None
         :type task_callback: TaskCallbackType
+        :param task_abort_event: Check for abort, defaults to None
+        :type task_abort_event: Event, optional
         """
         # Indicate that the task has started
         task_callback(status=TaskStatus.IN_PROGRESS)

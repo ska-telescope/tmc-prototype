@@ -1,6 +1,7 @@
 """
 Standby command class for SdpMaster Leaf Node
 """
+import threading
 from logging import Logger
 from typing import Any, Optional, Tuple
 
@@ -24,6 +25,7 @@ class Standby(SdpMLNCommand):
         self,
         logger: Logger,
         task_callback: TaskCallbackType,
+        task_abort_event: Optional[threading.Event] = None,
     ) -> None:
         """A method to invoke the Standby command.
         It sets the task_callback status according to command progress.
