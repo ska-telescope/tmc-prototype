@@ -91,14 +91,6 @@ def update_availability_callaback():
     """Dummy update avalability callback function"""
 
 
-def communication_state_callback():
-    """Blank communication state callback."""
-
-
-def component_state_callback():
-    """Blank component state callback."""
-
-
 def update_sdp_subarray_obs_state_callback(dev_name):
     """Blank update SDP subarray observation state callback."""
     logger.info(dev_name)
@@ -127,8 +119,6 @@ def create_cm(cm_class, device):
     return SdpSLNComponentManager(
         _update_admin_mode_callback=update_admin_mode_callback,
         _update_availablity_callback=update_availability_callaback,
-        communication_state_callback=communication_state_callback,
-        component_state_callback=component_state_callback,
         _update_lrcr_callback=update_lrcr_callback,
         _update_sdp_subarray_obs_state_callback=(
             update_sdp_subarray_obs_state_callback
