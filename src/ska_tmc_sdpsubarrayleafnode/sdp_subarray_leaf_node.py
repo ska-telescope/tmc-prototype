@@ -148,6 +148,12 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
                 exception,
             )
 
+    def communication_state_callback(self):
+        """Empty method for communication state callback"""
+
+    def component_state_callback(self):
+        """Empty method for component state callback"""
+
     class InitCommand(
         TMCBaseLeafDevice.InitCommand
     ):  # pylint: disable=too-few-public-methods
@@ -545,8 +551,8 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
             _sdp_subarray_admin_mode_enabled=self.SDPSubarrayAdminModeEnabled,
             sdp_subarray_dev_name=self.SdpSubarrayFQDN,
             logger=self.logger,
-            communication_state_callback=None,
-            component_state_callback=None,
+            communication_state_callback=self.communication_state_callback,
+            component_state_callback=self.component_state_callback,
             _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
             _event_receiver=True,
             _update_sdp_subarray_obs_state_callback=(

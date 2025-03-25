@@ -87,12 +87,37 @@ def update_admin_mode_callback(admin_mode):
     logger.info(admin_mode)
 
 
+def update_availability_callaback():
+    """Dummy update avalability callback function"""
+
+
+def communication_state_callback():
+    """Blank communication state callback."""
+
+
+def component_state_callback():
+    """Blank component state callback."""
+
+
+def update_sdp_subarray_obs_state_callback():
+    """Blank update SDP subarray observation state callback."""
+
+
+def update_lrcr_callback():
+    """Blank update LRCR callback."""
+
+
+def update_availablity_callback():
+    """Blank update availability callback."""
+
+
 def create_cm(cm_class, device):
     """Create Component Manager"""
     if cm_class == "SdpMLNComponentManager":
         return SdpMLNComponentManager(
             sdp_master_admin_mode_enabled=True,
             _update_admin_mode_callback=update_admin_mode_callback,
+            _update_availablity_callback=update_availability_callaback,
             sdp_master_device_name=device,
             logger=logger,
             _liveliness_probe=(LivelinessProbeType.NONE),
@@ -100,6 +125,13 @@ def create_cm(cm_class, device):
 
     return SdpSLNComponentManager(
         _update_admin_mode_callback=update_admin_mode_callback,
+        _update_availablity_callback=update_availability_callaback,
+        communication_state_callback=communication_state_callback,
+        component_state_callback=component_state_callback,
+        _update_lrcr_callback=update_lrcr_callback,
+        _update_sdp_subarray_obs_state_callback=(
+            update_sdp_subarray_obs_state_callback
+        ),
         _sdp_subarray_admin_mode_enabled=True,
         sdp_subarray_dev_name=device,
         logger=logger,
