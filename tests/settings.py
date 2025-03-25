@@ -99,8 +99,9 @@ def component_state_callback():
     """Blank component state callback."""
 
 
-def update_sdp_subarray_obs_state_callback():
+def update_sdp_subarray_obs_state_callback(dev_name):
     """Blank update SDP subarray observation state callback."""
+    logger.info(dev_name)
 
 
 def update_lrcr_callback():
