@@ -64,22 +64,18 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         _update_admin_mode_callback: Callable,
         _sdp_subarray_admin_mode_enabled: bool,
         sdp_subarray_dev_name: str,
-        logger: logging.Logger = LOGGER,
-        communication_state_callback: Optional[Callable[..., None]] = None,
-        component_state_callback: Optional[Callable[..., None]] = None,
+        _update_sdp_subarray_obs_state_callback: Callable,
+        _update_lrcr_callback: Callable,
+        _update_availablity_callback: Callable,
         _liveliness_probe: LivelinessProbeType = (
             LivelinessProbeType.SINGLE_DEVICE
         ),
+        logger: logging.Logger = LOGGER,
         _event_receiver: bool = True,
-        _update_sdp_subarray_obs_state_callback: Optional[
-            Callable[..., None]
-        ] = None,
-        _update_lrcr_callback: Optional[Callable[..., None]] = None,
         proxy_timeout: int = 500,
         event_subscription_check_period: int = 1,
         liveliness_check_period: int = 1,
         adapter_timeout: int = 30,
-        _update_availablity_callback: Optional[Callable[..., None]] = None,
         command_timeout: int = 30,
     ):
         """
@@ -96,8 +92,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             logger,
             _liveliness_probe=_liveliness_probe,
             _event_receiver=False,
-            communication_state_callback=communication_state_callback,
-            component_state_callback=component_state_callback,
             proxy_timeout=proxy_timeout,
             event_subscription_check_period=event_subscription_check_period,
             liveliness_check_period=liveliness_check_period,

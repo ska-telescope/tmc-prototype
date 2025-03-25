@@ -42,6 +42,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         sdp_master_admin_mode_enabled: bool,
         _update_admin_mode_callback: Callable,
         sdp_master_device_name: str,
+        _update_availablity_callback: Callable,
         logger: Logger = LOGGER,
         _liveliness_probe: LivelinessProbeType = (
             LivelinessProbeType.SINGLE_DEVICE
@@ -51,7 +52,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         event_subscription_check_period: int = 1,
         liveliness_check_period: int = 1,
         adapter_timeout: int = 30,
-        _update_availablity_callback: Optional[Callable[[bool], None]] = None,
     ):
         """
         Initialise a new ComponentManager instance.

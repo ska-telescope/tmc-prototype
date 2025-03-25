@@ -545,8 +545,6 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
             _sdp_subarray_admin_mode_enabled=self.SDPSubarrayAdminModeEnabled,
             sdp_subarray_dev_name=self.SdpSubarrayFQDN,
             logger=self.logger,
-            communication_state_callback=None,
-            component_state_callback=None,
             _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
             _event_receiver=True,
             _update_sdp_subarray_obs_state_callback=(
