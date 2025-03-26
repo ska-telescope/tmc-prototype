@@ -21,12 +21,12 @@ def assign_resources_error_propagation(
     else:
         sdp_subarray = dev_factory.get_device("low-sdp/subarray/01")
     try:
-        unique_id, result_code = sdpsln_device.AssignResources(
+        result, unique_id = sdpsln_device.AssignResources(
             invalid_assign_input_json
         )
         logger.info(
             f"AssignResources Command ID: {unique_id} Returned result:\
-                {result_code}"
+                {result}"
         )
 
         lrcr_id = sdpsln_device.subscribe_event(
@@ -39,10 +39,9 @@ def assign_resources_error_propagation(
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["sdpSubarrayObsState"],
         )
-
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (
-                result_code[0],
+                unique_id[0],
                 '[3, "Missing eb_id in the AssignResources input json"]',
             ),
             lookahead=2,

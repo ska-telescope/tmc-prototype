@@ -2,7 +2,7 @@
 import logging
 from concurrent import futures
 from time import sleep
-from typing import List, Optional
+from typing import Callable, List, Optional
 
 import tango
 from ska_ser_logging import configure_logging
@@ -28,6 +28,7 @@ class SdpSLNEventReceiver(EventReceiver):
         self,
         component_manager,
         logger: logging.Logger = LOGGER,
+        attribute_list: Optional[dict[str, Callable]] = None,
         max_workers: int = 1,
         proxy_timeout: int = 500,
         event_subscription_check_period: int = 1,
@@ -35,6 +36,7 @@ class SdpSLNEventReceiver(EventReceiver):
         super().__init__(
             component_manager=component_manager,
             logger=logger,
+            attribute_list=attribute_list,
             max_workers=max_workers,
             proxy_timeout=proxy_timeout,
             event_subscription_check_period=event_subscription_check_period,
@@ -70,18 +72,27 @@ class SdpSLNEventReceiver(EventReceiver):
             sdp_subarray_proxy = self._dev_factory.get_device(
                 dev_info.dev_name
             )
-            sdp_subarray_proxy.subscribe_event(
-                "obsState",
-                tango.EventType.CHANGE_EVENT,
-                self.handle_event,
-                stateless=True,
-            )
-            sdp_subarray_proxy.subscribe_event(
-                "adminMode",
-                tango.EventType.CHANGE_EVENT,
-                self.handle_event,
-                stateless=True,
-            )
+
+            try:
+                for attribute in self.attribute_tobe_subscribed:
+                    self._logger.info(
+                        "Subscribing event for attribute: %s", attribute
+                    )
+                    handle_event = self.event_handling_methods[attribute]
+                    sdp_subarray_proxy.subscribe_event(
+                        attribute,
+                        tango.EventType.CHANGE_EVENT,
+                        handle_event,
+                        stateless=True,
+                    )
+            except Exception as exception:
+                self._logger.exception(
+                    "Exception occured while subscribing to events "
+                    + "for device %s: %s",
+                    dev_info.dev_name,
+                    exception,
+                )
+
             self.stop()
         except Exception as exception:
             if sdp_subarray_proxy:

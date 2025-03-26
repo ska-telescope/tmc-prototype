@@ -116,6 +116,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 logger,
                 proxy_timeout=proxy_timeout,
                 event_subscription_check_period=evt_subscription_check_period,
+                attribute_list=list(self.get_attribute_dict().keys()),
             )
             self.event_receiver.start()
         self._update_availablity_callback = _update_availablity_callback
@@ -198,6 +199,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :param obs_state: obs state of the device
         :type obs_state: ObsState
         """
+
+        self.logger.info(
+            "Obs State value updated to :%s", ObsState(obs_state).name
+        )
 
         with self.rlock:
             dev_info = self.get_device()
@@ -703,5 +708,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             "obsState": self.update_device_obs_state,
             "adminMode": self.update_device_admin_mode,
             "longRunningCommandResult": self.update_command_result,
+            "state": self.update_device_state,
+            "healthState": self.update_device_health_state,
         }
         return {**attributes}
