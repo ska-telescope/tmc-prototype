@@ -184,13 +184,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         return self._device
 
-    def update_event_failure(self) -> None:
-        """Update event failures"""
-        with self.lock:
-            dev_info = self.get_device()
-            dev_info.last_event_arrived = time.time()
-            dev_info.update_unresponsive(False)
-
     def update_device_obs_state(self, obs_state: ObsState) -> None:
         """
         Update a monitored device obs state,
@@ -199,10 +192,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :param obs_state: obs state of the device
         :type obs_state: ObsState
         """
-
-        self.logger.info(
-            "Obs State value updated to :%s", ObsState(obs_state).name
-        )
 
         with self.rlock:
             dev_info = self.get_device()
@@ -706,9 +695,11 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
         attributes = {
             "obsState": self.update_device_obs_state,
-            "adminMode": self.update_device_admin_mode,
             "longRunningCommandResult": self.update_command_result,
             "state": self.update_device_state,
             "healthState": self.update_device_health_state,
         }
+        if self.is_admin_mode_enabled:
+            attributes["adminMode"] = self.update_device_admin_mode
+
         return {**attributes}

@@ -97,7 +97,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
                 logger,
                 proxy_timeout=proxy_timeout,
                 event_subscription_check_period=evet_subscribe_check_period,
-                # attribute_dict=self.get_attribute_dict(),
                 attribute_list=list(self.get_attribute_dict().keys()),
             )
             self._event_receiver.start()
@@ -119,8 +118,10 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         attributes = {
             "state": self.update_device_state,
             "healthState": self.update_device_health_state,
-            "adminMode": self.update_device_admin_mode,
         }
+        if self.is_admin_mode_enabled:
+            attributes["adminMode"] = self.update_device_admin_mode
+
         return {**attributes}
 
     @property
