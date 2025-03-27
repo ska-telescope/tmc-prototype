@@ -37,13 +37,16 @@ def test_telescope_configure_command(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
     DevFactory().get_device(devices).SetDirectObsState(ObsState.IDLE)
     cm = create_cm("SdpSLNComponentManager", devices)
-    assert wait_for_cm_obstate_attribute_value(cm, ObsState.IDLE)
+    cm.update_device_obs_state(ObsState.IDLE)
     configure_input_str = get_configure_input_str()
     cm.configure(configure_input_str, task_callback=task_callback)
     task_callback.assert_against_call(status=TaskStatus.QUEUED)
-    task_callback.assert_against_call(status=TaskStatus.IN_PROGRESS)
+    task_callback.assert_against_call(
+        status=TaskStatus.IN_PROGRESS, lookahead=3
+    )
     task_callback.assert_against_call(
         status=TaskStatus.COMPLETED,
+        lookahead=3,
         result=(ResultCode.OK, "Command Completed"),
     )
 

@@ -141,7 +141,6 @@ def test_update_admin_mode_callback(sdp_subarray):
     )
 
 
-@pytest.mark.sdpslnfail
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "sdp_subarray", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
@@ -160,14 +159,14 @@ def test_cmd_ended_cb_with_valid_event(sdp_subarray):
     cm.logger.info.assert_called_once_with(
         "Command %s invoked successfully.", mock_event.cmd_name
     )
-    # mock_event.err = True
-    # mock_event.errors = [MagicMock(desc="Test error description")]
-    # cm.cmd_ended_cb(mock_event)
-    # cm.logger.error.assert_called_once_with(
-    #     "Error invoking command: %s failed with error : %s",
-    #     mock_event.cmd_name,
-    #     mock_event.errors,
-    # )
+    mock_event.err = True
+    mock_event.errors = [MagicMock(desc="Test error description")]
+    cm.cmd_ended_cb(mock_event)
+    cm.logger.error.assert_called_once_with(
+        "Error invoking command: %s failed with error : %s",
+        mock_event.cmd_name,
+        mock_event.errors,
+    )
 
 
 @pytest.mark.sdpsln

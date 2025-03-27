@@ -111,7 +111,6 @@ def test_update_admin_mode_callback(sdp_controller):
 
     mock_logger.info.assert_has_calls(
         [
-            # mock.call("Admin Mode value updated on device: %s", device_name),
             mock.call(
                 "Admin Mode value updated to :%s", AdminMode.ENGINEERING.name
             ),

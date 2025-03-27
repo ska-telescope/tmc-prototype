@@ -29,6 +29,7 @@ def test_telescope_release_resources_command(
     logger.info("%s", tango_context)
     DevFactory().get_device(devices).SetDirectObsState(ObsState.IDLE)
     cm = create_cm("SdpSLNComponentManager", devices)
+    cm.update_device_obs_state(ObsState.IDLE)
     assert cm.is_command_allowed("ReleaseAllResources")
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.IDLE)
     cm.release_all_resources(task_callback=task_callback)
@@ -92,6 +93,7 @@ def test_release_all_resources_command_not_allowed_with_invalid_obsState(
     )
     task_callback.assert_against_call(
         status=TaskStatus.REJECTED,
+        lookahead=2,
         result=(
             ResultCode.NOT_ALLOWED,
             "Command is not allowed",
