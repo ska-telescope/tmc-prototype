@@ -107,14 +107,14 @@ def scan_error_propagation(
     sdp_subarray.SetDefective(RESET_DEFECT)
     sdp_subarray.ClearCommandCallInfo()
 
+    sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+    sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
     tear_down(
         dev_factory,
         sdp_subarray,
         sdp_subarray_ln_proxy,
         change_event_callbacks,
     )
-    sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
-    sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
 
 
 @pytest.mark.post_deployment

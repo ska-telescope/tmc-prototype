@@ -110,7 +110,7 @@ def check_command(
     unique_id = pytest.command_result[1][0]
 
     assert unique_id.endswith(str(command_name))
-    sdpsubarrayleaf_node.subscribe_event(
+    lrcr_id = sdpsubarrayleaf_node.subscribe_event(
         "longRunningCommandResult",
         tango.EventType.CHANGE_EVENT,
         change_event_callbacks["longRunningCommandResult"],
@@ -169,6 +169,7 @@ def check_command(
     )
 
     sdpsubarrayleaf_node_dev.unsubscribe_event(obsstate_id)
+    sdpsubarrayleaf_node_dev.unsubscribe_event(lrcr_id)
 
 
 scenarios(

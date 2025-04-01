@@ -116,9 +116,9 @@ def endscan_error_propogation(
         lookahead=6,
     )
     sdp_subarray.SetDefective(RESET_DEFECT)
-    tear_down(dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks)
     sdpsln_device.unsubscribe_event(obsstate_id)
     sdpsln_device.unsubscribe_event(lrcr_id)
+    tear_down(dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks)
 
 
 @pytest.mark.post_deployment
@@ -236,14 +236,14 @@ def endscan_timeout(
         lookahead=3,
     )
     sdp_subarray.ResetDelayInfo()
+    sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+    sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
     tear_down(
         dev_factory,
         sdp_subarray,
         sdp_subarray_ln_proxy,
         change_event_callbacks,
     )
-    sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
-    sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
 
 
 @pytest.mark.post_deployment

@@ -19,18 +19,17 @@ def release_resources(
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
+    lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
+        "longRunningCommandResult",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["longRunningCommandResult"],
+    )
+    obsstate_id = sdp_subarray_ln_proxy.subscribe_event(
+        "sdpSubarrayObsState",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["sdpSubarrayObsState"],
+    )
     try:
-        lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
-            "longRunningCommandResult",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["longRunningCommandResult"],
-        )
-        obsstate_id = sdp_subarray_ln_proxy.subscribe_event(
-            "sdpSubarrayObsState",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["sdpSubarrayObsState"],
-        )
-
         result, unique_id = sdp_subarray_ln_proxy.On()
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
@@ -69,23 +68,25 @@ def release_resources(
             lookahead=4,
         )
 
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
         tear_down(
             dev_factory,
             sdp_subarray,
             sdp_subarray_ln_proxy,
             change_event_callbacks,
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
-        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
+
     except Exception as exception:
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
         tear_down(
             dev_factory,
             sdp_subarray,
             sdp_subarray_ln_proxy,
             change_event_callbacks,
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
-        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
+
         raise Exception(exception)
 
 

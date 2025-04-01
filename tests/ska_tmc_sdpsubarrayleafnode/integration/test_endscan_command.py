@@ -92,14 +92,14 @@ def endscan(sdpsaln_name, device, json_factory, change_event_callbacks):
         lookahead=8,
     )
 
+    sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+    sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
     tear_down(
         dev_factory,
         sdp_subarray,
         sdp_subarray_ln_proxy,
         change_event_callbacks,
     )
-    sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
-    sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
 
 
 @pytest.mark.post_deployment

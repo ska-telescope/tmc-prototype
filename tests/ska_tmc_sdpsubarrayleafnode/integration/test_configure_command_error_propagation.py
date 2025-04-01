@@ -30,6 +30,17 @@ def configure_error_propogation(
         sdp_subarray = dev_factory.get_device(MID_SDP_SUBARRAY)
     else:
         sdp_subarray = dev_factory.get_device(LOW_SDP_SUBARRAY)
+    lrcr_id = sdpsln_device.subscribe_event(
+        "longRunningCommandResult",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["longRunningCommandResult"],
+    )
+    obsstate_id = sdpsln_device.subscribe_event(
+        "sdpSubarrayObsState",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["sdpSubarrayObsState"],
+    )
+
     try:
         result, unique_id = sdpsln_device.AssignResources(assign_input_str)
         logger.info(
@@ -40,20 +51,11 @@ def configure_error_propogation(
         assert unique_id[0].endswith("AssignResources")
         assert result[0] == ResultCode.QUEUED
 
-        lrcr_id = sdpsln_device.subscribe_event(
-            "longRunningCommandResult",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["longRunningCommandResult"],
-        )
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], COMMAND_COMPLETED),
             lookahead=3,
         )
-        obsstate_id = sdpsln_device.subscribe_event(
-            "sdpSubarrayObsState",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["sdpSubarrayObsState"],
-        )
+
         change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
             ObsState.IDLE,
             lookahead=4,
@@ -71,19 +73,19 @@ def configure_error_propogation(
             (unique_id[0], '[3, "Missing scan_type key"]'),
             lookahead=3,
         )
+        sdpsln_device.unsubscribe_event(obsstate_id)
+        sdpsln_device.unsubscribe_event(lrcr_id)
         tear_down(
             dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks
         )
-        sdpsln_device.unsubscribe_event(obsstate_id)
-        sdpsln_device.unsubscribe_event(lrcr_id)
         sdp_subarray.ClearCommandCallInfo()
 
     except Exception as exception:
+        sdpsln_device.unsubscribe_event(obsstate_id)
+        sdpsln_device.unsubscribe_event(lrcr_id)
         tear_down(
             dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks
         )
-        sdpsln_device.unsubscribe_event(obsstate_id)
-        sdpsln_device.unsubscribe_event(lrcr_id)
         sdp_subarray.ClearCommandCallInfo()
         raise Exception(exception)
 

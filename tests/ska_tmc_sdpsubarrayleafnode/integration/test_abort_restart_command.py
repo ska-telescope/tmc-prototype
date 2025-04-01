@@ -34,21 +34,18 @@ def abort_restart_command(
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(sdp_subarray_device)
+    lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
+        "longRunningCommandResult",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["longRunningCommandResult"],
+    )
+    obsstate_id = sdp_subarray_ln_proxy.subscribe_event(
+        "sdpSubarrayObsState",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["sdpSubarrayObsState"],
+    )
     try:
-        lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
-            "longRunningCommandResult",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["longRunningCommandResult"],
-        )
-
         set_sdp_subarray_obsstate(dev_factory, obsstate, sdp_subarray)
-
-        obsstate_id = sdp_subarray_ln_proxy.subscribe_event(
-            "sdpSubarrayObsState",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["sdpSubarrayObsState"],
-        )
-
         change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
             obsstate,
             lookahead=4,
@@ -83,6 +80,8 @@ def abort_restart_command(
         sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
 
     except Exception as exception:
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
         tear_down(
             dev_factory,
             sdp_subarray,

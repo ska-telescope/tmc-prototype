@@ -28,18 +28,17 @@ def configure_timeout(
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
+    lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
+        "longRunningCommandResult",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["longRunningCommandResult"],
+    )
+    obsstate_id = sdp_subarray_ln_proxy.subscribe_event(
+        "sdpSubarrayObsState",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["sdpSubarrayObsState"],
+    )
     try:
-        lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
-            "longRunningCommandResult",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["longRunningCommandResult"],
-        )
-        obsstate_id = sdp_subarray_ln_proxy.subscribe_event(
-            "sdpSubarrayObsState",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["sdpSubarrayObsState"],
-        )
-
         result, unique_id = sdp_subarray_ln_proxy.On()
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
@@ -80,17 +79,20 @@ def configure_timeout(
             lookahead=3,
         )
         sdp_subarray.ResetDelayInfo()
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
         tear_down(
             dev_factory,
             sdp_subarray,
             sdp_subarray_ln_proxy,
             change_event_callbacks,
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
-        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
+
         sdp_subarray.ClearCommandCallInfo()
 
     except Exception as exception:
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
         tear_down(
             dev_factory,
             sdp_subarray,
@@ -98,8 +100,6 @@ def configure_timeout(
             change_event_callbacks,
         )
         sdp_subarray.ResetDelayInfo()
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
-        sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
         sdp_subarray.ClearCommandCallInfo()
         raise Exception(exception)
 

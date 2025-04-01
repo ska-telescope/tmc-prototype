@@ -1,13 +1,14 @@
 import time
 
 import pytest
+import tango
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.test_helpers.helper_sdp_subarray import HelperSdpSubarray
 
 from ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node import (
     SdpSubarrayLeafNode,
 )
-from tests.settings import logger
+from tests.settings import TIMEOUT, logger
 
 pytest.event_arrived = False
 
@@ -46,6 +47,17 @@ def checked_devices(json_model):
 def tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks):
     sdpsal_node_obsstate = sdpsal_node.read_attribute("sdpSubarrayObsState")
     logger.info(f"SDP Subarray ObsState: {sdpsal_node_obsstate.value}")
+
+    obsstate_id = sdpsal_node.subscribe_event(
+        "sdpSubarrayObsState",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["sdpSubarrayObsState"],
+    )
+    lrcr_id = sdpsal_node.subscribe_event(
+        "longRunningCommandResult",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["longRunningCommandResult"],
+    )
 
     if sdpsal_node_obsstate.value == ObsState.EMPTY:
         sdp_subarray.Off()
@@ -103,6 +115,9 @@ def tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks):
             "sdpSubarrayObsState"
         )
         logger.info(f"SDP Subarray ObsState: {sdpsal_node_obsstate.value}")
+
+    sdpsal_node.unsubscribe_event(lrcr_id)
+    sdpsal_node.unsubscribe_event(obsstate_id)
     sdp_subarray.ClearCommandCallInfo()
 
 
@@ -111,3 +126,28 @@ def set_sdp_subarray_obsstate(dev_factory, obs_state, sdp_subarray):
     sdp_subarray.SetDirectObsState(obs_state)
     time.sleep(0.1)
     logger.debug("ObsState of sdp subarray: %s", sdp_subarray.ObsState)
+
+
+def wait_for_final_sdp_subarray_obsstate(sdp_subarray_leaf_node, obs_state):
+    logger.debug(f"Waiting for SdpSubarray obsState to be {obs_state}")
+    sdp_subarray_obsstate = sdp_subarray_leaf_node.read_attribute(
+        "sdpSubarrayObsState"
+    )
+    logger.debug(f"Csp Subarray obsState is {sdp_subarray_obsstate}")
+    wait_time = 0
+    while (sdp_subarray_obsstate.value) != obs_state:
+        time.sleep(0.5)
+        sdp_subarray_obsstate = sdp_subarray_leaf_node.read_attribute(
+            "sdpSubarrayObsState"
+        )
+        logger.debug(
+            f"SDP Subarray obsState in loop: {sdp_subarray_obsstate.value}"
+        )
+        logger.debug(f"Expected Sdp Subarray obsState: {obs_state}")
+        wait_time = wait_time + 1
+        logger.debug(f"wait_time in teardown  {wait_time}")
+        if wait_time > TIMEOUT:
+            pytest.fail(
+                f"Timeout occurred in transitioning SDP Subarray\
+                     obsState to {obs_state}"
+            )

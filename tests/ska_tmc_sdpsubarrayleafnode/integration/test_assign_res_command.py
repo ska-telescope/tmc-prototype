@@ -26,25 +26,33 @@ def assign_resources(
         sdp_subarray = dev_factory.get_device(MID_SDP_SUBARRAY)
     else:
         sdp_subarray = dev_factory.get_device(LOW_SDP_SUBARRAY)
+
+    obsstate_id = sdpsal_node.subscribe_event(
+        "sdpSubarrayObsState",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["sdpSubarrayObsState"],
+    )
+    lrcr_id = sdpsal_node.subscribe_event(
+        "longRunningCommandResult",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["longRunningCommandResult"],
+    )
+
     try:
         result, unique_id = sdpsal_node.AssignResources(assign_input_str)
         logger.info(
             f"AssignResources Command ID: {unique_id} Returned \
                 result: {result}"
         )
-        obsstate_id = sdpsal_node.subscribe_event(
-            "sdpSubarrayObsState",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["sdpSubarrayObsState"],
-        )
+
         assert unique_id[0].endswith("AssignResources")
         assert result[0] == ResultCode.QUEUED
 
-        lrcr_id = sdpsal_node.subscribe_event(
-            "longRunningCommandResult",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["longRunningCommandResult"],
+        change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+            ObsState.RESOURCING,
+            lookahead=4,
         )
+
         change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
             ObsState.IDLE,
             lookahead=4,
@@ -54,18 +62,19 @@ def assign_resources(
             (unique_id[0], COMMAND_COMPLETED),
             lookahead=4,
         )
+
+        sdpsal_node.unsubscribe_event(lrcr_id)
+        sdpsal_node.unsubscribe_event(obsstate_id)
         tear_down(
             dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks
         )
 
+    except Exception as exception:
         sdpsal_node.unsubscribe_event(lrcr_id)
         sdpsal_node.unsubscribe_event(obsstate_id)
-    except Exception as exception:
         tear_down(
             dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks
         )
-        sdpsal_node.unsubscribe_event(lrcr_id)
-        sdpsal_node.unsubscribe_event(obsstate_id)
         raise Exception(exception)
 
 
