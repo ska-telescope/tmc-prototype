@@ -169,7 +169,7 @@ def check_command(
     )
 
     sdpsubarrayleaf_node_dev.unsubscribe_event(obsstate_id)
-    sdpsubarrayleaf_node_dev.unsubscribe_event(lrcr_id)
+    sdpsubarrayleaf_node.unsubscribe_event(lrcr_id)
 
 
 scenarios(
