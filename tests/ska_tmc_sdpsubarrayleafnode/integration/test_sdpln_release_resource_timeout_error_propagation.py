@@ -151,9 +151,10 @@ def release_all_resources_timeout(
         lookahead=3,
     )
     sdp_subarray.ResetDelayInfo()
-    tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks)
     sdpsal_node.unsubscribe_event(lrcr_id)
     sdpsal_node.unsubscribe_event(obsstate_id)
+    tear_down(dev_factory, sdp_subarray, sdpsal_node, change_event_callbacks)
+
     sdp_subarray.ClearCommandCallInfo()
 
 
