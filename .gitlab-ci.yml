@@ -100,3 +100,8 @@ docs-build-rtd:
   rules:
     - when: never
 
+gitlab-static-reachability:
+  script:
+    - echo "Skipping static reachability check"
+  rules:
+    - when: manual
