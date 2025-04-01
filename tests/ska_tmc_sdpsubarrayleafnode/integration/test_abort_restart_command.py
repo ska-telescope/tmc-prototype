@@ -14,6 +14,7 @@ from tests.settings import (
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     set_sdp_subarray_obsstate,
     tear_down,
+    wait_for_final_sdp_subarray_obsstate,
 )
 
 device_obsstate = [
@@ -61,6 +62,9 @@ def abort_restart_command(
             ObsState.ABORTED,
             lookahead=4,
         )
+        wait_for_final_sdp_subarray_obsstate(
+            sdp_subarray_ln_proxy, ObsState.ABORTED
+        )
 
         result, unique_id = sdp_subarray_ln_proxy.Restart()
         assert unique_id[0].endswith("Restart")
@@ -75,6 +79,9 @@ def abort_restart_command(
         change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
             ObsState.EMPTY,
             lookahead=4,
+        )
+        wait_for_final_sdp_subarray_obsstate(
+            sdp_subarray_ln_proxy, ObsState.EMPTY
         )
         sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
         sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
