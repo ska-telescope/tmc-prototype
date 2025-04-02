@@ -20,29 +20,28 @@ def assign_resources_error_propagation(
         sdp_subarray = dev_factory.get_device("mid-sdp/subarray/01")
     else:
         sdp_subarray = dev_factory.get_device("low-sdp/subarray/01")
+    lrcr_id = sdpsln_device.subscribe_event(
+        "longRunningCommandResult",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["longRunningCommandResult"],
+    )
+    obsstate_id = sdpsln_device.subscribe_event(
+        "sdpSubarrayObsState",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["sdpSubarrayObsState"],
+    )
     try:
-        unique_id, result_code = sdpsln_device.AssignResources(
+        result, unique_id = sdpsln_device.AssignResources(
             invalid_assign_input_json
         )
         logger.info(
             f"AssignResources Command ID: {unique_id} Returned result:\
-                {result_code}"
-        )
-
-        lrcr_id = sdpsln_device.subscribe_event(
-            "longRunningCommandResult",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["longRunningCommandResult"],
-        )
-        obsstate_id = sdpsln_device.subscribe_event(
-            "sdpSubarrayObsState",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["sdpSubarrayObsState"],
+                {result}"
         )
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (
-                result_code[0],
+                unique_id[0],
                 '[3, "Missing eb_id in the AssignResources input json"]',
             ),
             lookahead=2,
@@ -51,20 +50,20 @@ def assign_resources_error_propagation(
             ObsState.EMPTY,
             lookahead=4,
         )
+        sdpsln_device.unsubscribe_event(lrcr_id)
+        sdpsln_device.unsubscribe_event(obsstate_id)
         tear_down(
             dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks
         )
-        sdpsln_device.unsubscribe_event(lrcr_id)
-        sdpsln_device.unsubscribe_event(obsstate_id)
+
         sdp_subarray.ClearCommandCallInfo()
 
     except Exception as exception:
+        sdpsln_device.unsubscribe_event(lrcr_id)
+        sdpsln_device.unsubscribe_event(obsstate_id)
         tear_down(
             dev_factory, sdp_subarray, sdpsln_device, change_event_callbacks
         )
-        sdpsln_device.unsubscribe_event(lrcr_id)
-
-        sdpsln_device.unsubscribe_event(obsstate_id)
         sdp_subarray.ClearCommandCallInfo()
         raise Exception(exception)
 

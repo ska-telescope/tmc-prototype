@@ -4,7 +4,6 @@ from unittest.mock import MagicMock
 import pytest
 from ska_control_model import AdminMode
 from ska_tango_base.commands import ResultCode, TaskStatus
-from tango import EventType
 
 from ska_tmc_sdpmasterleafnode.commands import SetAdminMode
 from tests.settings import (
@@ -101,38 +100,17 @@ def test_admin_mode_offline_on_sdpmln(
 @pytest.mark.parametrize(
     "sdp_controller", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )
-def test_handle_admin_mode_event(sdp_controller):
-    """Test to check handle admin mode event function"""
-    # Create a mock event
-    mock_event_receiver = MagicMock()
-    mock_event = MagicMock()
-    mock_event.type = EventType.CHANGE_EVENT
-    cm = create_cm("SdpMLNComponentManager", sdp_controller)
-    cm._event_receiver = mock_event_receiver
-
-    # Call the function
-    cm.handle_admin_mode_event(mock_event)
-    cm._event_receiver.handle_admin_mode_event.assert_called_once_with(
-        event=mock_event
-    )
-
-
-@pytest.mark.parametrize(
-    "sdp_controller", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
-)
 def test_update_admin_mode_callback(sdp_controller):
     """Test to check update admin mode callback in component manager"""
     # Create a mock event
     mock_logger = MagicMock()
-    device_name = sdp_controller
     admin_mode = AdminMode.ENGINEERING
     cm = create_cm("SdpMLNComponentManager", sdp_controller)
     cm.logger = mock_logger
-    cm.update_device_admin_mode(device_name, admin_mode)
+    cm.update_device_admin_mode(admin_mode)
 
     mock_logger.info.assert_has_calls(
         [
-            mock.call("Admin Mode value updated on device: %s", device_name),
             mock.call(
                 "Admin Mode value updated to :%s", AdminMode.ENGINEERING.name
             ),

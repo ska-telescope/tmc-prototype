@@ -127,16 +127,12 @@ def test_update_admin_mode_callback(sdp_subarray):
     """Test for component manager admin mode callback method"""
     # Create a mock event
     mock_logger = MagicMock()
-    device_name = sdp_subarray
     admin_mode = AdminMode.ENGINEERING
     cm = create_cm("SdpMLNComponentManager", sdp_subarray)
     cm.logger = mock_logger
-    cm.update_device_admin_mode(
-        device_name=sdp_subarray, admin_mode=admin_mode
-    )
+    cm.update_device_admin_mode(admin_mode=admin_mode)
     mock_logger.info.assert_has_calls(
         [
-            mock.call("Admin Mode value updated on device: %s", device_name),
             mock.call(
                 "Admin Mode value updated to :%s", AdminMode.ENGINEERING.name
             ),

@@ -37,6 +37,7 @@ def test_telescope_scan_command(tango_context, devices, task_callback):
     DevFactory().get_device(devices).SetDirectObsState(ObsState.READY)
     cm = create_cm("SdpSLNComponentManager", devices)
     scan_input_str = get_scan_input_str()
+    cm.update_device_obs_state(ObsState.READY)
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.READY)
     cm.scan(scan_input_str, task_callback=task_callback)
     task_callback.assert_against_call(status=TaskStatus.QUEUED)

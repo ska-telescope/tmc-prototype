@@ -10,6 +10,9 @@ This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
 Fixed
 ------
+[0.21.2]
+* Removed processing from Tango event handler and perform in call backs function.
+
 [0.21.1]
 * Fixed SKB-732
 

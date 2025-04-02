@@ -7,7 +7,6 @@ import threading
 from logging import Logger
 from typing import Callable, Optional, Tuple
 
-import tango
 from ska_control_model import AdminMode
 from ska_ser_logging import configure_logging
 from ska_tango_base.base import TaskCallbackType
@@ -90,8 +89,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         self.standby_command = Standby(self, logger)
         self.disable_command = Disable(self, logger)
         self.rlock = threading.RLock()
-        if _liveliness_probe:
-            self.start_liveliness_probe(_liveliness_probe)
 
         if _event_receiver:
             evet_subscribe_check_period = event_subscription_check_period
@@ -100,9 +97,15 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
                 logger,
                 proxy_timeout=proxy_timeout,
                 event_subscription_check_period=evet_subscribe_check_period,
-                attribute_dict=self.get_attribute_dict(),
+                attribute_list=list(self.get_attribute_dict().keys()),
             )
             self._event_receiver.start()
+
+        if _liveliness_probe:
+            self.start_liveliness_probe(_liveliness_probe)
+
+        self.event_processing_methods = self.get_attribute_dict()
+        self.start_event_processing_threads()
 
     def get_attribute_dict(self) -> dict:
         """Returns the common attribute dictionary for all component types.
@@ -112,7 +115,14 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
 
         """
 
-        return {"adminMode": self.handle_admin_mode_event}
+        attributes = {
+            "state": self.update_device_state,
+            "healthState": self.update_device_health_state,
+        }
+        if self.is_admin_mode_enabled:
+            attributes["adminMode"] = self.update_device_admin_mode
+
+        return {**attributes}
 
     @property
     def sdp_master_device_name(self) -> str:
@@ -288,6 +298,11 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         * If you are running a polling loop, stop it.
         """
 
+    def stop(self) -> None:
+        """Stops the event processing"""
+        self._event_receiver.stop()
+        self._stop_thread = True
+
     def update_exception_for_unresponsiveness(
         self, device_info: DeviceInfo, exception: str
     ) -> None:
@@ -318,9 +333,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             if self.update_availablity_callback is not None:
                 self.update_availablity_callback(True)
 
-    def update_device_admin_mode(
-        self, device_name: str, admin_mode: AdminMode
-    ) -> None:
+    def update_device_admin_mode(self, admin_mode: AdminMode) -> None:
         """Update a monitored device admin mode,
           and call the relative callbacks if available
 
@@ -331,16 +344,10 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
 
         """
 
-        super().update_device_admin_mode(device_name, admin_mode)
-        self.logger.info(
-            "Admin Mode value updated to :%s", AdminMode(admin_mode).name
-        )
-        if self.update_admin_mode_callback:
-            self.update_admin_mode_callback(admin_mode)
-
-    def handle_admin_mode_event(
-        self, event: tango.EventType.CHANGE_EVENT
-    ) -> None:
-        """Handle SDP controller admin mode change event"""
-
-        self._event_receiver.handle_admin_mode_event(event=event)
+        if self.is_admin_mode_enabled is True:
+            super().update_device_admin_mode(admin_mode)
+            self.logger.info(
+                "Admin Mode value updated to :%s", AdminMode(admin_mode).name
+            )
+            if self.update_admin_mode_callback:
+                self.update_admin_mode_callback(admin_mode)

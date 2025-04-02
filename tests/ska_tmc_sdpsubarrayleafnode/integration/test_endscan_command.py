@@ -62,7 +62,7 @@ def endscan(sdpsaln_name, device, json_factory, change_event_callbacks):
     )
     change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
         ObsState.READY,
-        lookahead=4,
+        lookahead=6,
     )
 
     scan_input_str = json_factory("command_Scan")
@@ -76,7 +76,7 @@ def endscan(sdpsaln_name, device, json_factory, change_event_callbacks):
     )
     change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
         ObsState.SCANNING,
-        lookahead=4,
+        lookahead=8,
     )
 
     result, unique_id = sdp_subarray_ln_proxy.EndScan()
@@ -85,21 +85,21 @@ def endscan(sdpsaln_name, device, json_factory, change_event_callbacks):
 
     change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
         ObsState.READY,
-        lookahead=4,
+        lookahead=10,
     )
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (unique_id[0], COMMAND_COMPLETED),
         lookahead=8,
     )
 
+    sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+    sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
     tear_down(
         dev_factory,
         sdp_subarray,
         sdp_subarray_ln_proxy,
         change_event_callbacks,
     )
-    sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
-    sdp_subarray_ln_proxy.unsubscribe_event(obsstate_id)
 
 
 @pytest.mark.post_deployment

@@ -110,6 +110,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 logger,
                 proxy_timeout=proxy_timeout,
                 event_subscription_check_period=evt_subscription_check_period,
+                attribute_list=list(self.get_attribute_dict().keys()),
             )
             self.event_receiver.start()
         self._update_availablity_callback = _update_availablity_callback
@@ -132,6 +133,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.tracker_thread = None
         self._is_admin_mode_enabled: bool = _sdp_subarray_admin_mode_enabled
         self._update_admin_mode_callback = _update_admin_mode_callback
+        self.event_processing_methods = self.get_attribute_dict()
+        self.start_event_processing_threads()
 
     @property
     def lrc_result(self) -> Tuple[str, str]:
@@ -163,6 +166,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         self.stop_liveliness_probe()
         self.event_receiver.stop()
+        self._stop_thread = True
 
     def get_device(self) -> SubArrayDeviceInfo:
         """
@@ -173,13 +177,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: DeviceInfo
         """
         return self._device
-
-    def update_event_failure(self) -> None:
-        """Update event failures"""
-        with self.lock:
-            dev_info = self.get_device()
-            dev_info.last_event_arrived = time.time()
-            dev_info.update_unresponsive(False)
 
     def update_device_obs_state(self, obs_state: ObsState) -> None:
         """
@@ -669,18 +666,34 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         * If you are running a polling loop, stop it.
         """
 
-    def update_device_admin_mode(
-        self, device_name: str, admin_mode: AdminMode
-    ) -> None:
+    def update_device_admin_mode(self, admin_mode: AdminMode) -> None:
         """
         Update a monitored device admin mode,
         and call the relative callbacks if available
         :param admin_state: admin mode of the device
         :type admin_mode: AdminMode
         """
-        super().update_device_admin_mode(device_name, admin_mode)
-        self.logger.info(
-            "Admin Mode value updated to :%s", AdminMode(admin_mode).name
-        )
-        if self._update_admin_mode_callback:
-            self._update_admin_mode_callback(admin_mode)
+        if self._is_admin_mode_enabled is True:
+            super().update_device_admin_mode(admin_mode)
+            self.logger.info(
+                "Admin Mode value updated to :%s", AdminMode(admin_mode).name
+            )
+            if self._update_admin_mode_callback:
+                self._update_admin_mode_callback(admin_mode)
+
+    def get_attribute_dict(self) -> dict:
+        """
+
+        :return: Dictionary of attributes to be handled by the EventReceiver.
+        """
+
+        attributes = {
+            "obsState": self.update_device_obs_state,
+            "longRunningCommandResult": self.update_command_result,
+            "state": self.update_device_state,
+            "healthState": self.update_device_health_state,
+        }
+        if self.is_admin_mode_enabled:
+            attributes["adminMode"] = self.update_device_admin_mode
+
+        return {**attributes}

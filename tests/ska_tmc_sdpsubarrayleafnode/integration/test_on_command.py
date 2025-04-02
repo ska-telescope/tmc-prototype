@@ -18,35 +18,38 @@ def on_command(sdpsaln_fqdn, sdpsa_fqdn, change_event_callbacks):
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_fqdn)
     sdp_subarray_proxy = dev_factory.get_device(sdpsa_fqdn)
+    lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
+        "longRunningCommandResult",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["longRunningCommandResult"],
+    )
     try:
         result, unique_id = sdp_subarray_ln_proxy.On()
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         assert result[0] == ResultCode.QUEUED
-        lrcr_id = sdp_subarray_ln_proxy.subscribe_event(
-            "longRunningCommandResult",
-            tango.EventType.CHANGE_EVENT,
-            change_event_callbacks["longRunningCommandResult"],
-        )
+
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], COMMAND_COMPLETED),
             lookahead=4,
         )
 
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
         tear_down(
             dev_factory,
             sdp_subarray_proxy,
             sdp_subarray_ln_proxy,
             change_event_callbacks,
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+
     except Exception as exception:
+        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
         tear_down(
             dev_factory,
             sdp_subarray_proxy,
             sdp_subarray_ln_proxy,
             change_event_callbacks,
         )
-        sdp_subarray_ln_proxy.unsubscribe_event(lrcr_id)
+
         raise Exception(exception)
 
 

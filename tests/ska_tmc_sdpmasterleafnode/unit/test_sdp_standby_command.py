@@ -30,7 +30,7 @@ def test_standby_command(tango_context, sdp_master_device, task_callback):
         call_kwargs={"status": TaskStatus.QUEUED}
     )
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
+        call_kwargs={"status": TaskStatus.IN_PROGRESS}, lookahead=2
     )
     task_callback.assert_against_call(
         call_kwargs={
@@ -39,7 +39,8 @@ def test_standby_command(tango_context, sdp_master_device, task_callback):
                 ResultCode.OK,
                 "Command Completed",
             ),
-        }
+        },
+        lookahead=2,
     )
 
 

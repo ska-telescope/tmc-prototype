@@ -27,6 +27,7 @@ def test_telescope_end_command(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
     DevFactory().get_device(devices).SetDirectObsState(ObsState.READY)
     cm = create_cm("SdpSLNComponentManager", devices)
+    cm.update_device_obs_state(ObsState.READY)
     assert wait_for_cm_obstate_attribute_value(cm, ObsState.READY)
     assert cm.is_command_allowed("End")
     cm.end(task_callback=task_callback)
