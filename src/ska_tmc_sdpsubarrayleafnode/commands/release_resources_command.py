@@ -72,7 +72,7 @@ class ReleaseAllResources(SdpSLNCommand):
         if result_code == ResultCode.FAILED:
             return result_code, message
         try:
-            self.logger.debug(
+            self.logger.info(
                 "Invoking ReleaseAllResources command on %s",
                 self.sdp_subarray_adapter.dev_name,
             )
@@ -82,7 +82,9 @@ class ReleaseAllResources(SdpSLNCommand):
             )
         except Exception as exception:
             self.logger.exception(
-                "Command ReleaseResources invocation failed, exception: %s",
+                "Failed to invoke ReleaseResource Command "
+                + "on device: {}".format(self.sdp_subarray_adapter.dev_name)
+                + " with exception: %s",
                 exception,
             )
 

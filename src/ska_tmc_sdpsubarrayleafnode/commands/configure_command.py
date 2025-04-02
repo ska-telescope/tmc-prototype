@@ -94,12 +94,10 @@ class Configure(SdpSLNCommand):
             json_argument = json.loads(argin)
         except JSONDecodeError as json_error:
             log_msg = (
-                "Execution of Configure command is failed."
+                "Failed to execute Configure command "
                 + "Reason: JSON parsing failed with exception: {}".format(
                     json_error
                 )
-                + "The command is not executed successfully."
-                + "The device will continue with normal operation"
             )
             self.logger.exception(log_msg)
             return self.component_manager.generate_command_result(
@@ -140,7 +138,9 @@ class Configure(SdpSLNCommand):
 
         except Exception as exception:
             self.logger.exception(
-                "Command Configure invocation failed with exception: %s",
+                "Failed to invoke Configure Command "
+                + "on device: {}".format(self.sdp_subarray_adapter.dev_name)
+                + " with exception: %s",
                 exception,
             )
 
@@ -151,9 +151,7 @@ class Configure(SdpSLNCommand):
                     self.sdp_subarray_adapter.dev_name
                 )
                 + "Reason: Error in invoking the Configure command on"
-                "Sdp Subarray."
-                + "The command has NOT been executed."
-                + "This device will continue with normal operation.",
+                "Sdp Subarray.",
             )
         self.logger.info(
             "Configure command successfully invoked on Device: %s",
