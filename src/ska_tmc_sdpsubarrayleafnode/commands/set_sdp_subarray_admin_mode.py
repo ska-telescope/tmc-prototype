@@ -57,7 +57,7 @@ class SetAdminMode(SdpSLNCommand, FastCommand):
                     "Failed to invoke SetAdminMode Command "
                     + "on device: %s."
                     + " with exception: %s",
-                    self.sdp_master_adapter.dev_name,
+                    self.sdp_subarray_adapter.dev_name,
                     e,
                 )
                 return (ResultCode.FAILED, "Command Failed")
