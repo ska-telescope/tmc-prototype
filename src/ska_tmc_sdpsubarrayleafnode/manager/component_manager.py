@@ -193,7 +193,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             dev_info.last_event_arrived = time.time()
             dev_info.update_unresponsive(False)
             self.logger.info(
-                "Obs State value changed to :%s", ObsState(obs_state).name
+            "Observation state of device %s is %s",
+            dev_info.dev_name,
+            ObsState(obs_state).name,
             )
             if self._update_sdp_subarray_obs_state_callback:
                 self._update_sdp_subarray_obs_state_callback(obs_state)
@@ -248,7 +250,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             self.logger.exception(
                 f"Exception occurred in command {command_name}: {value_error}"
             )
-            self.logger.info(
+            self.logger.debug(
                 f"Updating LRCRCallback with {value} for {command_name}"
             )
             self.long_running_result_callback(
@@ -443,10 +445,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             is_cmd_allowed=self.is_command_allowed_callable("AssignResources"),
             task_callback=task_callback,
         )
-        self.logger.info(
+        self.logger.debug(
             (
-                "TaskStatus: %s and Response: %s of AssignResources "
-                "command after being queued for execution"
+                "AssignResources command status Taskstatus: %s,"
+                "Response: %s after being queued for execution"
             ),
             task_status,
             response,
@@ -468,10 +470,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             is_cmd_allowed=self.is_command_allowed_callable("Configure"),
             task_callback=task_callback,
         )
-        self.logger.info(
+        self.logger.debug(
             (
-                "TaskStatus: %s and Response: %s of Configure "
-                "command after being queued for execution"
+                "Configure command status Taskstatus: %s, Response: %s"
+                "after being queued for execution"
             ),
             task_status,
             response,
@@ -492,9 +494,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             is_cmd_allowed=self.is_command_allowed_callable("Scan"),
             task_callback=task_callback,
         )
-        self.logger.info(
+        self.logger.debug(
             (
-                "TaskStatus: %s and Response: %s of Scan command "
+                "Scan command status Taskstatus: %s, Response: %s"
                 "after being queued for execution"
             ),
             task_status,
@@ -533,10 +535,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             ),
             task_callback=task_callback,
         )
-        self.logger.info(
+        self.logger.debug(
             (
-                "TaskStatus: %s and Response: %s of ReleaseAllResources "
-                "command after being queued for execution"
+                "ReleaseAllResources command status Taskstatus: %s,"
+                "Response: %s after being queued for execution"
             ),
             task_status,
             response,
@@ -555,9 +557,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             is_cmd_allowed=self.is_command_allowed_callable("End"),
             task_callback=task_callback,
         )
-        self.logger.info(
+        self.logger.debug(
             (
-                "TaskStatus: %s and Response: %s of End command "
+                "End command status Taskstatus: %s, Response: %s"
                 "after being queued for execution"
             ),
             task_status,
@@ -580,9 +582,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             is_cmd_allowed=self.is_command_allowed_callable("EndScan"),
             task_callback=task_callback,
         )
-        self.logger.info(
+        self.logger.debug(
             (
-                "TaskStatus: %s and Response: %s of EndScan command "
+                "EndScan command status Taskstatus: %s, Response: %s"
                 "after being queued for execution"
             ),
             task_status,
@@ -625,11 +627,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             is_cmd_allowed=self.is_command_allowed_callable("Restart"),
             task_callback=task_callback,
         )
-        self.logger.info(
-            (
-                "TaskStatus: %s and Response: %s of Restart command "
-                "after being queued for execution"
-            ),
+        self.logger.debug(
+            "Restart command status Taskstatus: %s, Response: %s"
+            "after being queued for execution",
             task_status,
             response,
         )
@@ -697,3 +697,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             attributes["adminMode"] = self.update_device_admin_mode
 
         return {**attributes}
+        super().update_device_admin_mode(device_name, admin_mode)
+        self.logger.info(
+            "Admin Mode value set to :%s", AdminMode(admin_mode).name
+        )
+        if self._update_admin_mode_callback:
+            self._update_admin_mode_callback(admin_mode)

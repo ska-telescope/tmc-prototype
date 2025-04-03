@@ -53,9 +53,11 @@ class SetAdminMode(SdpSLNCommand, FastCommand):
                 )
                 self.sdp_subarray_adapter.adminMode = argin
             except Exception as e:
-                self.logger.info(
-                    "Failed to set the adminMode of the SDP Subarray."
-                    + " Error occurred is : %s",
+                self.logger.exception(
+                    "Failed to invoke SetAdminMode Command "
+                    + "on device: %s."
+                    + " with exception: %s",
+                    self.sdp_subarray_adapter.dev_name,
                     e,
                 )
                 return (ResultCode.FAILED, "Command Failed")

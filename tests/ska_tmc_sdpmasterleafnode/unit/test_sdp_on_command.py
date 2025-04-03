@@ -65,11 +65,13 @@ def test_on_command_fail_sdp_master1(
         status=TaskStatus.COMPLETED,
         result=(
             ResultCode.FAILED,
-            "On Command invocation failed on device: "
-            + f"{sdp_master_device}. with exception: ",
+            "Failed to invoke On Command "
+            + f"on device: {sdp_master_device}."
+            + " with exception: ",
         ),
-        exception="On Command invocation failed on device: "
-        + f"{sdp_master_device}. with exception: ",
+        exception="Failed to invoke On Command "
+        + f"on device: {sdp_master_device}."
+        + " with exception: ",
     )
 
 

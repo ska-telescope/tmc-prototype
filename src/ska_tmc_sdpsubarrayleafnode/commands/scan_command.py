@@ -87,11 +87,10 @@ class Scan(SdpSLNCommand):
             json_argument = json.loads(argin)
         except JSONDecodeError as json_error:
             self.logger.exception(
-                "Execution of Scan command is failed. "
-                "Reason: JSON parsing failed with exception: %s. "
-                "The command is not executed successfully. "
-                "The device will continue with normal operation.",
-                json_error,
+                "Failed to execute Scan command "
+                + "Reason: JSON parsing failed with exception: {}".format(
+                    json_error
+                )
             )
 
             return self.component_manager.generate_command_result(
@@ -124,7 +123,10 @@ class Scan(SdpSLNCommand):
             self.sdp_subarray_adapter.Scan(json.dumps(json_argument))
         except Exception as exception:
             self.logger.exception(
-                "Command Scan invocation failed with exception: %s", exception
+                "Failed to invoke Scan Command "
+                + "on device: {}".format(self.sdp_subarray_adapter.dev_name)
+                + " with exception: %s",
+                exception,
             )
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,

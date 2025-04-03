@@ -49,8 +49,10 @@ class SetAdminMode(SdpMLNCommand, FastCommand):
                 )
             except Exception as e:
                 self.logger.exception(
-                    "Failed to set the adminMode of the SDP Controller."
-                    + " Error occurred is : %s",
+                    "Failed to invoke SetAdminMode Command "
+                    + "on device: %s."
+                    + " with exception: %s",
+                    self.sdp_master_adapter.dev_name,
                     e,
                 )
                 return ResultCode.FAILED, "Command Failed"

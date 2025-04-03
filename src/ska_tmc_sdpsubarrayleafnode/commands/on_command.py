@@ -70,7 +70,10 @@ class On(SdpSLNCommand):
             self.sdp_subarray_adapter.On()
         except Exception as exception:
             self.logger.exception(
-                "Command On invocation failed with exception: %s", exception
+                "Failed to invoke On Command "
+                + "on device: {}".format(self.sdp_subarray_adapter.dev_name)
+                + " with exception: %s",
+                exception,
             )
 
             return (

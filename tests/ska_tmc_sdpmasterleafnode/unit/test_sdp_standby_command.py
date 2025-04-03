@@ -69,11 +69,13 @@ def test_standby_command_fail_sdp_master(
         status=TaskStatus.COMPLETED,
         result=(
             ResultCode.FAILED,
-            "Standby Command invocation failed on device: "
-            + f"{sdp_master_device}. with exception: ",
+            "Failed to invoke Standby Command "
+            + f"on device: {sdp_master_device}."
+            + " with exception: ",
         ),
-        exception="Standby Command invocation failed on device: "
-        + f"{sdp_master_device}. with exception: ",
+        exception="Failed to invoke Standby Command "
+        + f"on device: {sdp_master_device}."
+        + " with exception: ",
     )
 
 

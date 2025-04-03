@@ -67,7 +67,9 @@ class EndScan(SdpSLNCommand):
             self.sdp_subarray_adapter.EndScan()
         except Exception as exception:
             self.logger.exception(
-                "Command EndScan invocation failed with exception: %s",
+                "Failed to invoke EndScan Command "
+                + "on device: {}".format(self.sdp_subarray_adapter.dev_name)
+                + " with exception: %s",
                 exception,
             )
             return (
@@ -77,9 +79,7 @@ class EndScan(SdpSLNCommand):
                 "Device "
                 f"{self.sdp_subarray_adapter.dev_name} "
                 "Reason: Error in invoking "
-                "EndScan command on SDP Subarray"
-                ".The command has NOT been executed. "
-                "This device will continue with normal operation.",
+                "EndScan command on SDP Subarray",
             )
         return (
             ResultCode.OK,

@@ -143,12 +143,10 @@ class AssignResources(SdpSLNCommand):
             json_argument = json.loads(argin)
         except JSONDecodeError as json_error:
             log_msg = (
-                "Execution of AssignResources command is failed."
+                "Failed to execute AssignResources command "
                 + "Reason: JSON parsing failed with exception: {}".format(
                     json_error
                 )
-                + "The command is not executed successfully."
-                + "The device will continue with normal operation"
             )
             self.logger.exception(log_msg)
             return (
@@ -167,10 +165,11 @@ class AssignResources(SdpSLNCommand):
 
         except Exception as exception:
             self.logger.exception(
-                "Command AssignResources invocation failed with exception: %s",
+                "Failed to invoke AssignResource Command "
+                + "on device: {}".format(self.sdp_subarray_adapter.dev_name)
+                + " with exception: %s",
                 exception,
             )
-
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "The invocation of the AssignResources command is failed on"
@@ -178,9 +177,7 @@ class AssignResources(SdpSLNCommand):
                     self.sdp_subarray_adapter.dev_name
                 )
                 + "Reason: Error in calling the AssignResources command on Sdp"
-                + "Subarray."
-                + "The command has NOT been executed."
-                + "This device will continue with normal operation.",
+                + "Subarray.",
             )
 
         return (

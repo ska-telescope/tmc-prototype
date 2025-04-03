@@ -141,7 +141,7 @@ def wait_for_attribute_value(
         time.sleep(0.5)
 
         if time.time() - start_time >= 10:
-            logger.info(
+            logger.debug(
                 "The attribute value after time out is: %s",
                 device.read_attribute(attribute_name).value,
             )
@@ -155,7 +155,7 @@ def wait_for_cm_obstate_attribute_value(cm, obs_state: ObsState) -> bool:
     while cm.get_obs_state() != obs_state:
         time.sleep(0.5)
         if time.time() - start_time >= 100:
-            logger.info(
+            logger.debug(
                 "The attribute value after time out is: %s",
                 cm.get_obs_state(),
             )

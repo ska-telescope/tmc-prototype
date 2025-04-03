@@ -131,14 +131,13 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
     def update_admin_mode_callback(self, admin_mode: AdminMode) -> None:
         """Update SDP subarray admin mode attribute callback"""
         try:
-            self._sdp_subarray_admin_mode = admin_mode
+            self._sdp_subarray_admin_mode = AdminMode(admin_mode).name
             self.push_change_archive_events(
                 "sdpSubarrayAdminMode",
                 self._sdp_subarray_admin_mode,
             )
             self.logger.info(
-                "Updated and pushed sdpSubarrayAdminMode "
-                "attribute value to: %s",
+                "sdpSubarrayAdminMode attribute value updated to: %s",
                 self._sdp_subarray_admin_mode,
             )
         except Exception as exception:

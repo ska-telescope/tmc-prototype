@@ -78,7 +78,9 @@ class Restart(SdpSLNCommand):
             self.sdp_subarray_adapter.Restart()
         except Exception as exception:
             self.logger.exception(
-                "Command Restart invocation failed with exception: %s",
+                "Failed to invoke Restart Command "
+                + "on device: {}".format(self.sdp_subarray_adapter.dev_name)
+                + " with exception: %s",
                 exception,
             )
 
