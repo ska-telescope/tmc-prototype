@@ -448,7 +448,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.logger.debug(
             (
                 "AssignResources command status Taskstatus: %s,"
-                "Response: %s after being queued for execution"
+                " Response: %s after being queued for execution"
             ),
             task_status,
             response,
@@ -473,7 +473,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.logger.debug(
             (
                 "Configure command status Taskstatus: %s, Response: %s"
-                "after being queued for execution"
+                " after being queued for execution"
             ),
             task_status,
             response,
@@ -497,7 +497,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.logger.debug(
             (
                 "Scan command status Taskstatus: %s, Response: %s"
-                "after being queued for execution"
+                " after being queued for execution"
             ),
             task_status,
             response,
@@ -538,7 +538,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.logger.debug(
             (
                 "ReleaseAllResources command status Taskstatus: %s,"
-                "Response: %s after being queued for execution"
+                " Response: %s after being queued for execution"
             ),
             task_status,
             response,
@@ -560,7 +560,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.logger.debug(
             (
                 "End command status Taskstatus: %s, Response: %s"
-                "after being queued for execution"
+                " after being queued for execution"
             ),
             task_status,
             response,
@@ -585,7 +585,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.logger.debug(
             (
                 "EndScan command status Taskstatus: %s, Response: %s"
-                "after being queued for execution"
+                " after being queued for execution"
             ),
             task_status,
             response,
