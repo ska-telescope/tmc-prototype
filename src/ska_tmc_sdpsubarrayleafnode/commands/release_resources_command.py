@@ -93,7 +93,7 @@ class ReleaseAllResources(SdpSLNCommand):
                 ResultCode.FAILED,
                 "The invocation of the ReleaseAllResources command is "
                 + "failed on {} ".format(self.sdp_subarray_adapter.dev_name)
-                + "Reason: Error in invoking the ReleaseAllResourcescommand "
+                + "Reason: Error in invoking the ReleaseAllResources command "
                 + "on SdpSubarray ",
             )
 
