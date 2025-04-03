@@ -101,8 +101,9 @@ def test_telescope_end_scan_command_fail_subarray(
         status=TaskStatus.COMPLETED,
         result=(
             ResultCode.FAILED,
-            f"The invocation of the EndScan command is "
-            f"failed on SDP Subarray Device {devices} Reason: Error in "
-            "invoking EndScan command on SDP Subarray ",
+            "The invocation of the EndScan command is "
+            + f"failed on SDP Subarray Device {devices} "
+            + "Reason: Error in "
+            + "invoking EndScan command on SDP Subarray ",
         ),
     )
