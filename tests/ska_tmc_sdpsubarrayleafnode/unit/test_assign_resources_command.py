@@ -83,10 +83,11 @@ def test_assign_resources_command_fail_subarray(
         status=TaskStatus.COMPLETED,
         result=(
             ResultCode.FAILED,
-            "The invocation of the AssignResources command is failed on "
-            + f"Sdp Subarray Device {devices} "
+            "The invocation of the AssignResources command is failed "
+            + f"on Sdp Subarray Device {devices} "
             + "Reason: Error in calling the "
-            "AssignResources command on Sdp " + "Subarray.",
+            + "AssignResources command on Sdp "
+            + "Subarray.",
         ),
     )
 

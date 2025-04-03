@@ -80,8 +80,7 @@ def test_scan_command_fail_subarray(tango_context, devices, task_callback):
             ResultCode.FAILED,
             "The invocation of the Scan command is failed on SdpSubarray "
             f"Device {devices}Reason: Error in calling the Scan command on "
-            "Sdp Subarray.The command has NOT been executed."
-            "This device will continue with normal operation.",
+            "Sdp Subarray ",
         ),
     )
 

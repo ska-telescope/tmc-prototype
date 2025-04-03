@@ -131,13 +131,11 @@ class Scan(SdpSLNCommand):
             )
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-                "The invocation of the Scan command is failed on Sdp"
-                + "Subarray Device {}".format(
+                "The invocation of the Scan command is failed on Sdp "
+                + "Subarray Device {} ".format(
                     self.sdp_subarray_adapter.dev_name
                 )
-                + "Reason: Error in calling the Scan command on Sdp Subarray."
-                + "The command has NOT been executed."
-                + "This device will continue with normal operation.",
+                + "Reason: Error in calling the Scan command on Sdp Subarray ",
             )
         self.logger.info(
             "Scan command successfully invoked on: %s",

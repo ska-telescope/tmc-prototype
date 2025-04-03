@@ -75,8 +75,7 @@ def test_command_on_with_failed_sdp_subarray(
             ResultCode.FAILED,
             "The invocation of the On command is "
             + f"failed on SDP Subarray Device {devices} Reason: Error in "
-            + "invoking On command on SDP Subarray.The command has NOT been "
-            + "executed. This device will continue with normal operation.",
+            + "invoking On command on SDP Subarray ",
         ),
     )
 
