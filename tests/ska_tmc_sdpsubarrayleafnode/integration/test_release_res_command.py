@@ -94,7 +94,7 @@ def release_resources(
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
     "device",
-    [("mid-sdp/subarray/01")],
+    ["mid-sdp/subarray/01"],
 )
 def test_release_res_command_mid(device, json_factory, change_event_callbacks):
     return release_resources(

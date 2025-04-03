@@ -79,12 +79,11 @@ class End(SdpSLNCommand):
             )
             return (
                 ResultCode.FAILED,
-                f"The invocation of the End"
-                " command is failed on SDP Subarray "
-                "Device "
-                f"{self.sdp_subarray_adapter.dev_name} "
-                "Reason: Error in invoking "
-                "End command on SDP Subarray",
+                "The invocation of the End "
+                + "command is failed on SDP Subarray "
+                + f"Device {self.sdp_subarray_adapter.dev_name} "
+                + "Reason: Error in invoking "
+                + "End command on SDP Subarray",
             )
         return (
             ResultCode.OK,

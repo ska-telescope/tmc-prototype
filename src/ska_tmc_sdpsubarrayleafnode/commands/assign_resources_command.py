@@ -154,9 +154,9 @@ class AssignResources(SdpSLNCommand):
             )
 
         try:
-            json_argument[
-                "interface"
-            ] = "https://schema.skao.int/ska-sdp-assignres/0.4"
+            json_argument["interface"] = (
+                "https://schema.skao.int/ska-sdp-assignres/0.4"
+            )
 
             self.sdp_subarray_adapter.AssignResources(
                 json.dumps(json_argument), self.component_manager.cmd_ended_cb
@@ -172,7 +172,7 @@ class AssignResources(SdpSLNCommand):
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "The invocation of the AssignResources command is failed on "
-                + "Sdp Subarray Device {}".format(
+                + "Sdp Subarray Device {} ".format(
                     self.sdp_subarray_adapter.dev_name
                 )
                 + "Reason: Error in calling the "

@@ -87,7 +87,7 @@ def end_error_propogation(
     SDP_ERROR = (
         '[3,"The invocation of the End command is failed on SDP Subarray '
         + f"Device {sdp_subarray_device} Reason: Error in invoking "
-        + "End command on SDP Subarray"
+        + "End command on SDP Subarray]"
     )
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (
