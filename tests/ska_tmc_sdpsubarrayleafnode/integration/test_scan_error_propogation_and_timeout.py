@@ -122,7 +122,7 @@ def scan_error_propagation(
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
     "device",
-    ["mid-sdp/subarray/01"],
+    [("mid-sdp/subarray/01")],
 )
 def test_scan_error_propagation_command_mid(
     device, json_factory, change_event_callbacks
