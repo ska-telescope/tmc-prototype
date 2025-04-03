@@ -146,12 +146,12 @@ class Configure(SdpSLNCommand):
 
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-                "The Sdp Subarray Device has failed to invoke"
-                + "the Configure command {}".format(
+                "The Sdp Subarray Device has failed to invoke "
+                + "the Configure command {} ".format(
                     self.sdp_subarray_adapter.dev_name
                 )
-                + "Reason: Error in invoking the Configure command on"
-                "Sdp Subarray.",
+                + "Reason: Error in invoking the Configure command on "
+                "Sdp Subarray ",
             )
         self.logger.info(
             "Configure command successfully invoked on Device: %s",
