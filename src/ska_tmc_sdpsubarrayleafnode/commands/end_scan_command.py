@@ -75,8 +75,8 @@ class EndScan(SdpSLNCommand):
             )
             return (
                 ResultCode.FAILED,
-                f"The invocation of the EndScan"
-                " command is failed on SDP Subarray "
+                f"The invocation of the EndScan "
+                "command is failed on SDP Subarray "
                 "Device "
                 f"{self.sdp_subarray_adapter.dev_name} "
                 "Reason: Error in invoking "
