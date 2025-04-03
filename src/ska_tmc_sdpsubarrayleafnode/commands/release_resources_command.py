@@ -94,7 +94,7 @@ class ReleaseAllResources(SdpSLNCommand):
                 "The invocation of the ReleaseAllResources command is "
                 + "failed on {} ".format(self.sdp_subarray_adapter.dev_name)
                 + "Reason: Error in invoking the ReleaseAllResourcescommand "
-                + "on Sdp ",
+                + "on SdpSubarray ",
             )
 
         self.logger.info(
