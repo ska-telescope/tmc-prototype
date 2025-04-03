@@ -87,7 +87,7 @@ def test_assign_resources_command_fail_subarray(
             + f"on Sdp Subarray Device {devices} "
             + "Reason: Error in calling the "
             + "AssignResources command on Sdp "
-            + "Subarray.",
+            + "Subarray ",
         ),
     )
 

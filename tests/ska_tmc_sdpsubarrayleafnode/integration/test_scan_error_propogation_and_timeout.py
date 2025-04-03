@@ -93,10 +93,10 @@ def scan_error_propagation(
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
     SDP_ERROR = (
-        '[3, "The invocation of the Scan command is failed on SdpSubarray '
-        + f"Device {device} Reason: Error in calling the Scan command "
-        + 'on Sdp Subarray "]'
-    )
+    '[3, "The invocation of the Scan command is failed on Sdp '
+    + f"Subarray Device {device} "
+    + 'Reason: Error in calling the Scan command on Sdp Subarray"]'  
+)
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (
             unique_id[0],

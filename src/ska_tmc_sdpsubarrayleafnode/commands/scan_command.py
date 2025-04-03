@@ -135,7 +135,7 @@ class Scan(SdpSLNCommand):
                 + "Subarray Device {} ".format(
                     self.sdp_subarray_adapter.dev_name
                 )
-                + "Reason: Error in calling the Scan command on Sdp Subarray ",
+                + "Reason: Error in calling the Scan command on Sdp Subarray",
             )
         self.logger.info(
             "Scan command successfully invoked on: %s",
