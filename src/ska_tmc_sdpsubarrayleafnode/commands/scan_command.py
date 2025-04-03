@@ -113,9 +113,9 @@ class Scan(SdpSLNCommand):
             # pylint: disable=fixme
             # TODO: Incorporate transaction id implementation for scan
             # command across TMC.
-            json_argument["interface"] = (
-                "https://schema.skao.int/ska-sdp-scan/0.4"
-            )
+            json_argument[
+                "interface"
+            ] = "https://schema.skao.int/ska-sdp-scan/0.4"
             self.logger.debug(
                 "Input JSON for Scan command for SDP subarray %s: %s",
                 self.sdp_subarray_adapter.dev_name,
