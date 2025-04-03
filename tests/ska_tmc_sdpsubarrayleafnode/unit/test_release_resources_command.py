@@ -68,8 +68,14 @@ def test_telescope_release_resources_command_fail_subarray(
         result=(
             ResultCode.FAILED,
             "The invocation of the ReleaseAllResources "
-            + f"command is failed on {devices} Reason: Error in invoking the "
-            + "ReleaseAllResources command on SdpSubarray ",
+            + f"command is failedon {devices}Reason: Error in invoking the "
+            + "ReleaseAllResourcescommandon SdpSubarray. The command has NOT "
+            + "been executed.This device will continue with normal operation.",
+            # ResultCode.FAILED,
+            # "The invocation of the ReleaseAllResources "
+            # + f"command is failed on {devices}
+            #  Reason: Error in invoking the "
+            # + "ReleaseAllResources command on SdpSubarray ",
         ),
     )
 
