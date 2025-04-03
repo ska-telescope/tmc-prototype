@@ -175,8 +175,8 @@ class AssignResources(SdpSLNCommand):
                 + "Sdp Subarray Device {}".format(
                     self.sdp_subarray_adapter.dev_name
                 )
-                + "Reason: Error in calling the " "AssignResources command on Sdp "
-                + "Subarray.",
+                + "Reason: Error in calling the "
+                "AssignResources command on Sdp " + "Subarray.",
             )
 
         return (

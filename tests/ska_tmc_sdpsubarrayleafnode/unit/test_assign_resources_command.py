@@ -85,10 +85,11 @@ def test_assign_resources_command_fail_subarray(
             ResultCode.FAILED,
             "The invocation of the AssignResources command is failed on "
             + "Sdp Subarray Device {devices} "
-            + "Reason: Error in calling the " "AssignResources command on Sdp "
-            + "Subarray.",
+            + "Reason: Error in calling the "
+            "AssignResources command on Sdp " + "Subarray.",
         ),
     )
+
 
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
