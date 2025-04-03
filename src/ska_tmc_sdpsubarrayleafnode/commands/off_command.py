@@ -1,6 +1,7 @@
 """
 Off command class for SdpSubarrayLeafNode.
 """
+
 import threading
 from logging import Logger
 from typing import Any, Optional, Tuple

@@ -1,10 +1,12 @@
 """Event Reciever for SDP Subarray Leaf Node Manager"""
+
 import logging
 from concurrent import futures
 from time import sleep
 from typing import Callable, List, Optional
 
 import tango
+from ska_control_model import ObsState
 from ska_ser_logging import configure_logging
 from ska_tmc_common.device_info import SubArrayDeviceInfo
 from ska_tmc_common.v1.event_receiver import EventReceiver

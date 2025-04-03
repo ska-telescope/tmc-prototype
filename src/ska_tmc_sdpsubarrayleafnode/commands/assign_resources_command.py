@@ -1,6 +1,5 @@
 # flake8: noqa:E501
-"""AssignResouces command class for SDPSubarrayLeafNode.
-"""
+"""AssignResouces command class for SDPSubarrayLeafNode."""
 from __future__ import annotations
 
 import json

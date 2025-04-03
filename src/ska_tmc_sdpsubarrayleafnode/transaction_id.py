@@ -1,4 +1,5 @@
 """Transaction ID"""
+
 import functools
 import json
 import logging

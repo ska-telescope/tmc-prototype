@@ -1,6 +1,7 @@
 """
 EndScan command class for SDPSubarrayLeafNode.
 """
+
 from __future__ import annotations
 
 import logging

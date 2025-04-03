@@ -1,4 +1,5 @@
 """SDP Subarray Leaf Node Base Command Class for SDP Subarray Leaf Node"""
+
 from __future__ import annotations
 
 import logging

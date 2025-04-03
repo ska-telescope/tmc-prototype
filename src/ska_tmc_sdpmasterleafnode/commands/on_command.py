@@ -2,6 +2,7 @@
 On command class for SdpMasterLeafNode.
 
 """
+
 import threading
 from logging import Logger
 from typing import Any, Optional, Tuple

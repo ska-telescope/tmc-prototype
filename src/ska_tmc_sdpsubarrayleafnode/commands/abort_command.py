@@ -1,6 +1,7 @@
 """
 Abort Command for Sdp Subarray.
 """
+
 from typing import Tuple
 
 from ska_tango_base.commands import ResultCode

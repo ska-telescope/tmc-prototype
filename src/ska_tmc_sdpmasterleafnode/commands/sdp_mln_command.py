@@ -1,4 +1,5 @@
 """SDP Master Leaf Node Base Command Class for SDP Master Leaf Node"""
+
 from __future__ import annotations
 
 import logging

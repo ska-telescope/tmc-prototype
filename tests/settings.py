@@ -1,4 +1,5 @@
 """Common Settings for testing of SDP Leaf Node"""
+
 import json
 import logging
 import time

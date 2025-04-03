@@ -1,6 +1,7 @@
 """
 Standby command class for SdpMaster Leaf Node
 """
+
 import threading
 from logging import Logger
 from typing import Any, Optional, Tuple

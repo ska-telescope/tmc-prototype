@@ -1,4 +1,5 @@
 """Test cases for testing timeout and Error Propagation on Scan command."""
+
 import json
 from typing import Callable
 
@@ -121,7 +122,7 @@ def scan_error_propagation(
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
     "device",
-    [("mid-sdp/subarray/01")],
+    ["mid-sdp/subarray/01"],
 )
 def test_scan_error_propagation_command_mid(
     device, json_factory, change_event_callbacks
@@ -138,7 +139,7 @@ def test_scan_error_propagation_command_mid(
 @pytest.mark.SKA_low
 @pytest.mark.parametrize(
     "device",
-    [("low-sdp/subarray/01")],
+    ["low-sdp/subarray/01"],
 )
 def test_scan_error_propagation_command_low(
     device,

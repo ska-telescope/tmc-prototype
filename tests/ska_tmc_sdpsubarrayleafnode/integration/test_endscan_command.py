@@ -106,7 +106,7 @@ def endscan(sdpsaln_name, device, json_factory, change_event_callbacks):
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
     "device",
-    [("mid-sdp/subarray/01")],
+    ["mid-sdp/subarray/01"],
 )
 def test_endscan_command_mid(device, json_factory, change_event_callbacks):
     return endscan(
@@ -121,7 +121,7 @@ def test_endscan_command_mid(device, json_factory, change_event_callbacks):
 @pytest.mark.SKA_low
 @pytest.mark.parametrize(
     "device",
-    [("low-sdp/subarray/01")],
+    ["low-sdp/subarray/01"],
 )
 def test_endscan_command_low(
     device,

@@ -1,6 +1,7 @@
 """
 SetAdminMode command class for SDPMasterLeafNode.
 """
+
 from typing import Tuple
 
 from ska_control_model import AdminMode

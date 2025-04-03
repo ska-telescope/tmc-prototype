@@ -1,6 +1,7 @@
 """
 End command class for SdpSubarrayLeafNode.
 """
+
 from __future__ import annotations
 
 import logging

@@ -193,9 +193,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             dev_info.last_event_arrived = time.time()
             dev_info.update_unresponsive(False)
             self.logger.info(
-            "Observation state of device %s is %s",
-            dev_info.dev_name,
-            ObsState(obs_state).name,
+                "Observation state of device %s is %s",
+                dev_info.dev_name,
+                ObsState(obs_state).name,
             )
             if self._update_sdp_subarray_obs_state_callback:
                 self._update_sdp_subarray_obs_state_callback(obs_state)
@@ -697,9 +697,3 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             attributes["adminMode"] = self.update_device_admin_mode
 
         return {**attributes}
-        super().update_device_admin_mode(device_name, admin_mode)
-        self.logger.info(
-            "Admin Mode value set to :%s", AdminMode(admin_mode).name
-        )
-        if self._update_admin_mode_callback:
-            self._update_admin_mode_callback(admin_mode)

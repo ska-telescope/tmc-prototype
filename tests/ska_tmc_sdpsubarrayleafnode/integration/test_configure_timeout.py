@@ -1,4 +1,5 @@
 """Test cases for testing timeout on Configure command."""
+
 from typing import Callable
 
 import pytest
