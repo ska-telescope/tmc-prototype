@@ -196,9 +196,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             dev_info.last_event_arrived = time.time()
             dev_info.update_unresponsive(False)
             self.logger.info(
-                "Observation state of device %s is %s",
-                dev_info.dev_name,
-                ObsState(obs_state).name,
+            "Observation state of device %s is %s",
+            dev_info.dev_name,
+            ObsState(obs_state).name,
             )
             if self._update_sdp_subarray_obs_state_callback:
                 self._update_sdp_subarray_obs_state_callback(obs_state)
