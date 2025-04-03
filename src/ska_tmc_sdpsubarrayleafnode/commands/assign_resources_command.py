@@ -171,11 +171,11 @@ class AssignResources(SdpSLNCommand):
             )
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-                "The invocation of the AssignResources command is failed on"
+                "The invocation of the AssignResources command is failed on "
                 + "Sdp Subarray Device {}".format(
                     self.sdp_subarray_adapter.dev_name
                 )
-                + "Reason: Error in calling the AssignResources command on Sdp"
+                + "Reason: Error in calling the " "AssignResources command on Sdp "
                 + "Subarray.",
             )
 
