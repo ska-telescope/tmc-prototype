@@ -80,12 +80,13 @@ class Off(SdpSLNCommand):
             )
 
             return (
-                ResultCode.FAILED,
-                "The invocation of the Off "
-                + "command is failed on SDP Subarray "
-                + "Device "
-                + f"{self.sdp_subarray_adapter.dev_name} "
-                + "Reason: Error in invoking "
-                + "Off command on SDP Subarray ",
+                f"The invocation of the Off"
+                " command is failed on SDP Subarray "
+                "Device "
+                f"{self.sdp_subarray_adapter.dev_name} "
+                "Reason: Error in invoking "
+                "Off command on SDP Subarray"
+                ".The command has NOT been executed. "
+                "This device will continue with normal operation.",
             )
         return (ResultCode.OK, "Command Completed")

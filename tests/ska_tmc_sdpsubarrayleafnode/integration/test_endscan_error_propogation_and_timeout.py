@@ -104,7 +104,8 @@ def endscan_error_propogation(
     SDP_ERROR = (
         '[3, "The invocation of the EndScan command is failed on '
         + f"SDP Subarray Device {sdp_device} Reason: Error in invoking "
-        + 'EndScan command on SDP Subarray "]'
+        "EndScan command on SDP Subarray.The command has NOT been executed. "
+        'This device will continue with normal operation."]'
     )
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(

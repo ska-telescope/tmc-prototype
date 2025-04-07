@@ -66,9 +66,9 @@ def test_telescope_end_command_fail_subarray(
         result=(
             ResultCode.FAILED,
             "The invocation of the End command is "
-            + f"failed on SDP Subarray Device {devices} "
-            + "Reason: Error in "
-            + "invoking End command on SDP Subarray ",
+            f"failed on SDP Subarray Device {devices} Reason: Error in "
+            "invoking End command on SDP Subarray.The command has NOT been "
+            "executed. This device will continue with normal operation.",
         ),
     )
 

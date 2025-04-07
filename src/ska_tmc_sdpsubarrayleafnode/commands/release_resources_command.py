@@ -90,14 +90,6 @@ class ReleaseAllResources(SdpSLNCommand):
             )
 
             return self.component_manager.generate_command_result(
-                # ResultCode.FAILED,
-                # "The invocation of the ReleaseAllResources
-                # command is "
-                # + "failed on {} ".format(self.sdp_subarray_adapter.dev_name)
-                # + "Reason: Error in invoking the
-                # ReleaseAllResources command "
-                # + "on SdpSubarray ",
-                ResultCode.FAILED,
                 "The invocation of the ReleaseAllResources command is failed"
                 + "on {}".format(self.sdp_subarray_adapter.dev_name)
                 + "Reason: Error in invoking the ReleaseAllResourcescommand"

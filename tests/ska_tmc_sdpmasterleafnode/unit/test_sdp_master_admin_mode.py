@@ -92,7 +92,7 @@ def test_admin_mode_offline_on_sdpmln(
     )
 
     assert (
-        "Failed to invoke On Command " + "on device"
+        "On Command invocation failed on device"
         in call_kwargs["call_kwargs"]["result"][1]
     )
 

@@ -151,7 +151,9 @@ class Configure(SdpSLNCommand):
                     self.sdp_subarray_adapter.dev_name
                 )
                 + "Reason: Error in invoking the Configure command on "
-                + "Sdp Subarray ",
+                "Sdp Subarray."
+                + "The command has NOT been executed."
+                + "This device will continue with normal operation.",
             )
         self.logger.info(
             "Configure command successfully invoked on Device: %s",
