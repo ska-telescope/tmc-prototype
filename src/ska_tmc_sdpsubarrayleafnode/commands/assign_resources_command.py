@@ -50,9 +50,7 @@ class AssignResources(SdpSLNCommand):
         self.component_manager.command_in_progress = "AssignResources"
 
     @timeout_tracker
-    @error_propagation_tracker(
-        "get_obs_state", [ObsState.RESOURCING, ObsState.IDLE]
-    )
+    @error_propagation_tracker("get_obs_state", [ObsState.IDLE])
     def assign_resources(
         self,
         argin: str,
