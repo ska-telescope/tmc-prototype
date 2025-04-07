@@ -78,8 +78,9 @@ class On(SdpSLNCommand):
             )
 
             return (
-                f"The invocation of the On"
-                " command is failed on SDP Subarray "
+                ResultCode.FAILED,
+                f"The invocation of the On "
+                "command is failed on SDP Subarray "
                 "Device "
                 f"{self.sdp_subarray_adapter.dev_name} "
                 "Reason: Error in invoking "
