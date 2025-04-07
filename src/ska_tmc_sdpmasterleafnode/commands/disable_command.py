@@ -45,7 +45,8 @@ class Disable(SdpMLNCommand):
         result_code, message = self.do()
 
         logger.info(
-            "Disable command invoked on: %s: Result: %s, %s",
+            "Command Id : %s | Disable command invoked on: %s: Result: %s, %s",
+            self.component_manager.command_id,
             self.sdp_master_adapter.dev_name,
             result_code,
             message,
@@ -60,7 +61,8 @@ class Disable(SdpMLNCommand):
 
         else:
             logger.info(
-                "The Disable command is invoked successfully on %s",
+                "Command Id : %s | The Disable command is "
+                + "invoked successfully on %s",
                 self.sdp_master_adapter.dev_name,
             )
             task_callback(
@@ -84,6 +86,10 @@ class Disable(SdpMLNCommand):
                 + " failed on device: %s."
                 + " with exception: %s"
             ) % (self.sdp_master_adapter.dev_name, exception)
-            self.logger.exception(message)
+            self.logger.exception(
+                " Command Id : %s | %s ",
+                self.component_manager.command_id,
+                message,
+            )
             return (ResultCode.FAILED, message)
         return (ResultCode.OK, "Command Completed")

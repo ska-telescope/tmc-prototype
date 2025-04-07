@@ -44,7 +44,8 @@ class Standby(SdpMLNCommand):
         result_code, message = self.do()
 
         logger.info(
-            "Standby command invoked on: %s: Result: %s, %s",
+            "Command Id : %s | Standby command invoked on: %s: Result: %s, %s",
+            self.component_manager.command_id,
             self.sdp_master_adapter.dev_name,
             result_code,
             message,
@@ -59,7 +60,9 @@ class Standby(SdpMLNCommand):
 
         else:
             logger.info(
-                "The Standby command is invoked successfully on %s",
+                " Command Id : %s | The Standby command "
+                "is invoked successfully on %s",
+                self.component_manager.command_id,
                 self.sdp_master_adapter.dev_name,
             )
             task_callback(
@@ -83,6 +86,10 @@ class Standby(SdpMLNCommand):
                 + " failed on device: %s."
                 + " with exception: %s"
             ) % (self.sdp_master_adapter.dev_name, exception)
-            self.logger.exception(message)
+            self.logger.exception(
+                " Command Id : %s | %s ",
+                self.component_manager.command_id,
+                message,
+            )
             return (ResultCode.FAILED, message)
         return (ResultCode.OK, "Command Completed")

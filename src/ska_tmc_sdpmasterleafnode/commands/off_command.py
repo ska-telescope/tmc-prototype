@@ -46,7 +46,8 @@ class Off(SdpMLNCommand):
         result_code, message = self.do()
 
         logger.info(
-            "Off command invoked on: %s: Result: %s, %s",
+            " Command Id : %s | Off command invoked on: %s: Result: %s, %s",
+            self.component_manager.command_id,
             self.sdp_master_adapter.dev_name,
             result_code,
             message,
@@ -61,7 +62,9 @@ class Off(SdpMLNCommand):
 
         else:
             logger.info(
-                "The Off command is invoked successfully on Device: %s",
+                " Command Id : %s | The Off command is "
+                "invoked successfully on Device: %s",
+                self.component_manager.command_id,
                 self.sdp_master_adapter.dev_name,
             )
             task_callback(
@@ -86,6 +89,10 @@ class Off(SdpMLNCommand):
                 + " failed on device: %s."
                 + " with exception: %s"
             ) % (self.sdp_master_adapter.dev_name, exception)
-            self.logger.exception(message)
+            self.logger.exception(
+                " Command Id : %s | %s ",
+                self.component_manager.command_id,
+                message,
+            )
             return (ResultCode.FAILED, message)
         return (ResultCode.OK, "Command Completed")

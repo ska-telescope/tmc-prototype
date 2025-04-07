@@ -2857,35 +2857,34 @@ name = "ska-tmc-common"
 version = "0.25.2"
 description = "SKA TMC common contains common classes required for Telescope Monitoring and Control(TMC)."
 optional = false
-python-versions = ">=3.10,<4.0"
-files = [
-    {file = "ska_tmc_common-0.25.2-py3-none-any.whl", hash = "sha256:befb89f9480527d855f4a0f20e4c25885dfd9c6a625cadfc86e8fabc578ad3ef"},
-    {file = "ska_tmc_common-0.25.2.tar.gz", hash = "sha256:2692091f9fc93dfb48ba6553220bc3c223195d01fc77d06b2d16ed885af3435a"},
-]
+python-versions = "^3.10"
+files = []
+develop = false
 
 [package.dependencies]
 attrs = "*"
-fire = ">=0.6.0,<0.7.0"
-jsonschema = ">=4.17.3,<5.0.0"
+fire = "^0.6.0"
+jsonschema = "^4.17.3"
 jsonschema-specifications = "*"
-katpoint = ">=1.0a2,<2.0"
-marshmallow = ">=3.14.1,<4.0.0"
-mock = ">=4.0.3,<5.0.0"
+katpoint = "^1.0a2"
+marshmallow = "^3.14.1"
+mock = "^4.0.3"
 numpy = {version = ">=1.21.6", markers = "python_version == \"3.10\""}
 pytango = "9.5.0"
 referencing = "*"
 rpds-py = "*"
 ska-control-model = "*"
-ska-ser-logging = ">=0.4.1,<0.5.0"
+ska-ser-logging = "^0.4.1"
 ska-tango-base = "1.2.0"
 ska-tango-testing = "0.6.1"
-ska-telmodel = ">=1.19.0,<2.0.0"
+ska-telmodel = "^1.19.0"
 typing_extensions = "*"
 
 [package.source]
-type = "legacy"
-url = "https://artefact.skao.int/repository/pypi-internal/simple"
-reference = "ska-nexus"
+type = "git"
+url = "https://gitlab.com/ska-telescope/ska-tmc/ska-tmc-common"
+reference = "hm-639"
+resolved_reference = "2188432575b83a212adec7d8dfe67472aad11d70"
 
 [[package]]
 name = "smmap"
@@ -3371,13 +3370,13 @@ reference = "PyPI-public"
 
 [[package]]
 name = "typing-extensions"
-version = "4.13.0"
+version = "4.13.1"
 description = "Backported and Experimental Type Hints for Python 3.8+"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "typing_extensions-4.13.0-py3-none-any.whl", hash = "sha256:c8dd92cc0d6425a97c18fbb9d1954e5ff92c1ca881a309c45f06ebc0b79058e5"},
-    {file = "typing_extensions-4.13.0.tar.gz", hash = "sha256:0a4ac55a5820789d87e297727d229866c9650f6521b64206413c4fbada24d95b"},
+    {file = "typing_extensions-4.13.1-py3-none-any.whl", hash = "sha256:4b6cf02909eb5495cfbc3f6e8fd49217e6cc7944e145cdda8caa3734777f9e69"},
+    {file = "typing_extensions-4.13.1.tar.gz", hash = "sha256:98795af00fb9640edec5b8e31fc647597b4691f099ad75f469a2616be1a76dff"},
 ]
 
 [package.source]
@@ -3525,4 +3524,4 @@ reference = "PyPI-public"
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.10"
-content-hash = "db65c56a557b59f2e91195619e02e21f50da6927867d6501fe0a33fe66634b5d"
+content-hash = "a736cc3af2f292e43812e4e9dfe61fa336c26c88f249ff06a056fd47f6c8ab50"
