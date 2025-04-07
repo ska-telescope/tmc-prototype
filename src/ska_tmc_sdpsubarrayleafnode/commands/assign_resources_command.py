@@ -49,6 +49,12 @@ class AssignResources(SdpSLNCommand):
         )
         self.component_manager.command_in_progress = "AssignResources"
 
+    # It is observed that the transional obsState events are not received on
+    # SDP Subarray Leaf Node while testing with real SDP on low-software
+    # integration repository. Therefore created a spike SAH-1691 to understand
+    # the reason for the same. In the mean time, removed the transitional
+    # obsState RESOURCING check from the command tracker similar
+    # to the other observationasl commands on SDP Subarray Leaf Node.
     @timeout_tracker
     @error_propagation_tracker("get_obs_state", [ObsState.IDLE])
     def assign_resources(
