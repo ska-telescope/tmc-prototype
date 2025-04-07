@@ -80,6 +80,7 @@ class Off(SdpSLNCommand):
             )
 
             return (
+                ResultCode.FAILED,
                 f"The invocation of the Off"
                 " command is failed on SDP Subarray "
                 "Device "
