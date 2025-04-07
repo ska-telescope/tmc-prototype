@@ -120,12 +120,12 @@ class TmcLeafNodeSdp(TMCBaseLeafDevice):
     def update_admin_mode_callback(self, admin_mode: AdminMode):
         """Update SDPMLNAdminMode attribute callback"""
         # pylint:disable=attribute-defined-outside-init
-        self._sdp_master_admin_mode = AdminMode(admin_mode).name
+        self._sdp_master_admin_mode = admin_mode
 
         try:
             self.push_change_archive_events(
                 "sdpControllerAdminMode",
-                self._sdp_master_admin_mode,
+                AdminMode(admin_mode),
             )
             self.logger.info(
                 "Successfully updated and sdpControllerAdminMode "

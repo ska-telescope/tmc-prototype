@@ -82,7 +82,7 @@ class Off(SdpMLNCommand):
 
         except Exception as exception:
             message = (
-                "On Command invocation"
+                "Off Command invocation"
                 + " failed on device: %s."
                 + " with exception: %s"
             ) % (self.sdp_master_adapter.dev_name, exception)

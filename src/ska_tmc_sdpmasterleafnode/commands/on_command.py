@@ -81,8 +81,8 @@ class On(SdpMLNCommand):
 
         except Exception as exception:
             message = (
-                "Failed to invoke On Command "
-                + "on device: %s."
+                "On Command invocation"
+                + " failed on device: %s."
                 + " with exception: %s"
             ) % (self.sdp_master_adapter.dev_name, exception)
             self.logger.exception(message)
