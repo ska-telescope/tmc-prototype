@@ -79,7 +79,7 @@ def test_configure_command_fail_subarray(
         result=(
             ResultCode.FAILED,
             "The Sdp Subarray Device has failed to "
-            + f"invokethe Configure command {devices}Reason: Error in "
+            + f"invoke the Configure command {devices}Reason: Error in "
             + "invoking the Configure command onSdp Subarray.The command "
             + "has NOT been executed.This device will continue with "
             + "normal operation.",

@@ -159,6 +159,9 @@ class Configure(SdpSLNCommand):
             )
         self.logger.info(
             "Configure command successfully invoked on Device: %s",
+        )
+        self.logger.info(
+            "Configure command successfully invoked on Device: %s",
             self.sdp_subarray_adapter.dev_name,
         )
 
