@@ -164,10 +164,7 @@ class Configure(SdpSLNCommand):
                 + "The command has NOT been executed."
                 + "This device will continue with normal operation.",
             )
-        self.logger.info(
-            "Command Id : %s | "
-            + "Configure command successfully invoked on Device: %s",
-        )
+
         self.logger.info(
             "Command Id : %s | Configure command "
             "successfully invoked on Device: %s",
