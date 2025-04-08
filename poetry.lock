@@ -2178,13 +2178,13 @@ reference = "PyPI-public"
 
 [[package]]
 name = "pytest-repeat"
-version = "0.9.3"
+version = "0.9.4"
 description = "pytest plugin for repeating tests"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.9"
 files = [
-    {file = "pytest_repeat-0.9.3-py3-none-any.whl", hash = "sha256:26ab2df18226af9d5ce441c858f273121e92ff55f5bb311d25755b8d7abdd8ed"},
-    {file = "pytest_repeat-0.9.3.tar.gz", hash = "sha256:ffd3836dfcd67bb270bec648b330e20be37d2966448c4148c4092d1e8aba8185"},
+    {file = "pytest_repeat-0.9.4-py3-none-any.whl", hash = "sha256:c1738b4e412a6f3b3b9e0b8b29fcd7a423e50f87381ad9307ef6f5a8601139f3"},
+    {file = "pytest_repeat-0.9.4.tar.gz", hash = "sha256:d92ac14dfaa6ffcfe6917e5d16f0c9bc82380c135b03c2a5f412d2637f224485"},
 ]
 
 [package.dependencies]
@@ -2884,7 +2884,7 @@ typing_extensions = "*"
 type = "git"
 url = "https://gitlab.com/ska-telescope/ska-tmc/ska-tmc-common"
 reference = "hm-639"
-resolved_reference = "2188432575b83a212adec7d8dfe67472aad11d70"
+resolved_reference = "e28204d035bd5b6d60821961dba31b50271e5b8b"
 
 [[package]]
 name = "smmap"
