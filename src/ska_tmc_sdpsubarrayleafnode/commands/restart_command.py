@@ -38,7 +38,7 @@ class Restart(SdpSLNCommand):
         result_code, message = self.do()
         logger.info(
             "Command ID : %s | "
-            "Restart command invoked on: %s: Result: %s, %s",
+            "Restart command invoked on: %s: Result: %s, " + "Message: %s",
             self.component_manager.command_id,
             self.sdp_subarray_adapter.dev_name,
             result_code,

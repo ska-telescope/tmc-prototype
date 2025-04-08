@@ -41,7 +41,7 @@ class Off(SdpSLNCommand):
         result_code, message = self.do()
 
         logger.info(
-            " Off command invoked " + "on: %s: Result: %s, %s",
+            " Off command invoked " + "on: %s: Result: %s, " + "Message: %s",
             self.sdp_subarray_adapter.dev_name,
             result_code,
             message,
