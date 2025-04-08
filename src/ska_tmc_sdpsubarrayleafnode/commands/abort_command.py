@@ -37,16 +37,16 @@ class Abort(SdpSLNCommand):
             return result_code, message
         try:
             self.logger.info(
-                "Command Id : %s | Invoking Abort command on Sdp Subarray:%s",
+                "Command ID : %s | Invoking Abort command on Sdp Subarray:%s",
                 self.component_manager.command_id,
                 self.sdp_subarray_adapter.dev_name,
             )
             self.sdp_subarray_adapter.Abort()
         except Exception as exception:
             self.logger.exception(
-                "Command Id : %s | "
+                "Command ID : %s | "
                 "Failed to invoke Abort Command "
-                + "on device: %s."
+                + "on: %s."
                 + " with exception: %s",
                 self.component_manager.command_id,
                 self.sdp_subarray_adapter.dev_name,

@@ -74,7 +74,7 @@ class Off(SdpSLNCommand):
         except Exception as exception:
             self.logger.exception(
                 "Failed to invoke Off Command "
-                + "on device: {}".format(self.sdp_subarray_adapter.dev_name)
+                + "on: {}".format(self.sdp_subarray_adapter.dev_name)
                 + " with exception: %s",
                 exception,
             )

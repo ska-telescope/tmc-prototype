@@ -150,7 +150,7 @@ class AssignResources(SdpSLNCommand):
                 + "The device will continue with normal operation"
             )
             self.logger.exception(
-                "Command Id : %s | %s ",
+                "Command ID : %s | %s ",
                 self.component_manager.command_id,
                 log_msg,
             )
@@ -170,9 +170,9 @@ class AssignResources(SdpSLNCommand):
 
         except Exception as exception:
             self.logger.exception(
-                "Command Id : %s | "
+                "Command ID : %s | "
                 + "Failed to invoke AssignResource Command "
-                + "on device: {}".format(self.sdp_subarray_adapter.dev_name)
+                + "on: {}".format(self.sdp_subarray_adapter.dev_name)
                 + " with exception: %s",
                 self.component_manager.command_id,
                 exception,

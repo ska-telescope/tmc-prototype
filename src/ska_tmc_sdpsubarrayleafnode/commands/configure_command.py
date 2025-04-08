@@ -102,7 +102,7 @@ class Configure(SdpSLNCommand):
                 + "The device will continue with normal operation"
             )
             self.logger.exception(
-                "Command Id : %s | %s ",
+                "Command ID : %s | %s ",
                 self.component_manager.command_id,
                 log_msg,
             )
@@ -133,7 +133,7 @@ class Configure(SdpSLNCommand):
             )
 
         self.logger.info(
-            "Command Id : %s | " + "Invoking Configure command on: %s",
+            "Command ID : %s | " + "Invoking Configure command on: %s",
             self.component_manager.command_id,
             self.sdp_subarray_adapter.dev_name,
         )
@@ -145,7 +145,7 @@ class Configure(SdpSLNCommand):
 
         except Exception as exception:
             self.logger.exception(
-                "Command Id : %s | "
+                "Command ID : %s | "
                 "Failed to invoke Configure Command "
                 + "on device: {}".format(self.sdp_subarray_adapter.dev_name)
                 + " with exception: %s",
@@ -166,7 +166,7 @@ class Configure(SdpSLNCommand):
             )
 
         self.logger.info(
-            "Command Id : %s | Configure command "
+            "Command ID : %s | Configure command "
             "successfully invoked on Device: %s",
             self.component_manager.command_id,
             self.sdp_subarray_adapter.dev_name,
