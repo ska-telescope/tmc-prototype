@@ -10,6 +10,10 @@ This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
 Fixed
 ------
+[0.21.3]
+* Removed the transitional obsState RESOURCING check from AssignResources command tracker.
+* Spike SAH-1691 is created for further investigation.
+
 [0.21.2]
 * Removed processing from Tango event handler and perform in call backs function.
 
