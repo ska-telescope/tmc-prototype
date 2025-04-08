@@ -149,7 +149,11 @@ class AssignResources(SdpSLNCommand):
                 + "The command is not executed successfully."
                 + "The device will continue with normal operation"
             )
-            self.logger.exception(log_msg)
+            self.logger.exception(
+                "Command Id : %s | %s ",
+                self.component_manager.command_id,
+                log_msg,
+            )
             return (
                 ResultCode.FAILED,
                 f"Exception occurred while parsing the JSON: {json_error}",
@@ -166,9 +170,11 @@ class AssignResources(SdpSLNCommand):
 
         except Exception as exception:
             self.logger.exception(
-                "Failed to invoke AssignResource Command "
+                "Command Id : %s | "
+                + "Failed to invoke AssignResource Command "
                 + "on device: {}".format(self.sdp_subarray_adapter.dev_name)
                 + " with exception: %s",
+                self.component_manager.command_id,
                 exception,
             )
             return self.component_manager.generate_command_result(

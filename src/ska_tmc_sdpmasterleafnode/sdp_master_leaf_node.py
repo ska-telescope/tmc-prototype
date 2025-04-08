@@ -128,16 +128,14 @@ class TmcLeafNodeSdp(TMCBaseLeafDevice):
                 AdminMode(admin_mode),
             )
             self.logger.info(
-                "Command Id : %s | Successfully updated and "
+                "Successfully updated and "
                 "sdpControllerAdminMode attribute value is set to: %s",
-                self.component_manager.command_id,
                 self._sdp_master_admin_mode,
             )
         except Exception as exception:
             self.logger.exception(
-                "Command Id : %s | Exception while pushing event for "
+                "Exception while pushing event for "
                 + "sdpControllerAdminMode: %s",
-                self.component_manager.command_id,
                 exception,
             )
 

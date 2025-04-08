@@ -45,16 +45,14 @@ class SetAdminMode(SdpMLNCommand, FastCommand):
             try:
                 self.sdp_master_adapter.adminMode = argin
                 self.logger.info(
-                    " Command Id : %s | Invoking SetAdminMode command on %s",
-                    self.component_manager.command_id,
+                    "Invoking SetAdminMode " + "command on %s",
                     self.sdp_master_adapter.dev_name,
                 )
             except Exception as e:
                 self.logger.exception(
-                    " %s Failed to invoke SetAdminMode Command "
-                    + "on device: %s."
+                    "Failed to invoke SetAdminMode Command "
+                    + "Command on device: %s."
                     + " with exception: %s",
-                    self.component_manager.command_id,
                     self.sdp_master_adapter.dev_name,
                     e,
                 )

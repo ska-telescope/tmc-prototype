@@ -74,7 +74,9 @@ class ReleaseAllResources(SdpSLNCommand):
             return result_code, message
         try:
             self.logger.info(
-                "Invoking ReleaseAllResources command on %s",
+                "Command Id : %s | "
+                + "Invoking ReleaseAllResources command on %s",
+                self.component_manager.command_id,
                 self.sdp_subarray_adapter.dev_name,
             )
 
@@ -83,9 +85,11 @@ class ReleaseAllResources(SdpSLNCommand):
             )
         except Exception as exception:
             self.logger.exception(
-                "Failed to invoke ReleaseResource Command "
+                "Command Id : %s | "
+                + "Failed to invoke ReleaseResource Command "
                 + "on device: {}".format(self.sdp_subarray_adapter.dev_name)
                 + " with exception: %s",
+                self.component_manager.command_id,
                 exception,
             )
 
@@ -100,7 +104,9 @@ class ReleaseAllResources(SdpSLNCommand):
             )
 
         self.logger.info(
+            "Command Id : %s | "
             "ReleaseAllResources command successfully invoked on: %s",
+            self.component_manager.command_id,
             self.sdp_subarray_adapter.dev_name,
         )
 

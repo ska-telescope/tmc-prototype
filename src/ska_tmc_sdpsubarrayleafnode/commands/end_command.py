@@ -72,9 +72,11 @@ class End(SdpSLNCommand):
             self.sdp_subarray_adapter.End()
         except Exception as exception:
             self.logger.exception(
-                "Failed to invoke End Command "
+                "Command Id : %s | "
+                + "Failed to invoke End Command "
                 + "on device: {}".format(self.sdp_subarray_adapter.dev_name)
                 + " with exception: %s",
+                self.component_manager.command_id,
                 exception,
             )
             return (

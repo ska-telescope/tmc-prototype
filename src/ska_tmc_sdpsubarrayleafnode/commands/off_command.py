@@ -41,7 +41,9 @@ class Off(SdpSLNCommand):
         result_code, message = self.do()
 
         logger.info(
-            "Off command invoked on: %s: Result: %s, %s",
+            "Command Id : %s | Off command invoked "
+            + "on: %s: Result: %s, %s",
+            self.component_manager.command_id,
             self.sdp_subarray_adapter.dev_name,
             result_code,
             message,
@@ -73,9 +75,11 @@ class Off(SdpSLNCommand):
             self.sdp_subarray_adapter.Off()
         except Exception as exception:
             self.logger.exception(
-                "Failed to invoke Off Command "
+                "Command Id : %s | "
+                + "Failed to invoke Off Command "
                 + "on device: {}".format(self.sdp_subarray_adapter.dev_name)
                 + " with exception: %s",
+                self.component_manager.command_id,
                 exception,
             )
 

@@ -37,7 +37,9 @@ class Restart(SdpSLNCommand):
         task_callback(status=TaskStatus.IN_PROGRESS)
         result_code, message = self.do()
         logger.info(
+            "Command Id : %s | "
             "Restart command invoked on: %s: Result: %s, %s",
+            self.component_manager.command_id,
             self.sdp_subarray_adapter.dev_name,
             result_code,
             message,
@@ -78,9 +80,11 @@ class Restart(SdpSLNCommand):
             self.sdp_subarray_adapter.Restart()
         except Exception as exception:
             self.logger.exception(
+                "Command Id : %s | "
                 "Failed to invoke Restart Command "
                 + "on device: {}".format(self.sdp_subarray_adapter.dev_name)
                 + " with exception: %s",
+                self.component_manager.command_id,
                 exception,
             )
 
@@ -93,7 +97,9 @@ class Restart(SdpSLNCommand):
             )
 
         self.logger.info(
+            "Command Id : %s | "
             "Restart command successfully invoked on Device : %s",
+            self.component_manager.command_id,
             self.sdp_subarray_adapter.dev_name,
         )
         return (ResultCode.OK, "Command Completed")
