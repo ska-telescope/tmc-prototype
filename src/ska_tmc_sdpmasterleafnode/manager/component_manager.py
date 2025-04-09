@@ -233,8 +233,8 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             task_callback=task_callback,
         )
         self.logger.debug(
-            "Off command : Taskstatus: %s, Response: %s"
-            "after being queued for execution",
+            "Off command : Taskstatus: %s, Response: %s "
+            ", after being queued for execution",
             task_status,
             response,
         )
