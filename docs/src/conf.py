@@ -37,7 +37,6 @@ autodoc_mock_imports = [
     "ska_tmc_cdm",
     "CODEC",
     "ValidationError",
-    "ska_telmodel",
     "ska_ser_skuid",
     "transitions",
     "ska_tmc_common",
