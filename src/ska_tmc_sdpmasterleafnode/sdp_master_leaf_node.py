@@ -265,31 +265,6 @@ class TmcLeafNodeSdp(TMCBaseLeafDevice):
         return_code, unique_id = handler()
         return [[return_code], [str(unique_id)]]
 
-    def is_Disable_allowed(
-        self,
-    ) -> Union[bool, CommandNotAllowed, DeviceUnresponsive]:
-        """
-        Checks whether this command is allowed to be run in current device
-        state.
-
-        :return: True if this command is allowed to be
-            run in current device state.
-
-        :rtype: bool,CommandNotAllowed,DeviceUnresponsive
-        """
-        return self.component_manager.is_command_allowed("Disable")
-
-    @command(dtype_out="DevVarLongStringArray")
-    @DebugIt()
-    def Disable(self):
-        """
-        This command invokes Disable() command on Sdp Master.
-        """
-        handler = self.get_command_object("Disable")
-        result_code, unique_id = handler()
-
-        return [[result_code], [unique_id]]
-
         # default ska mid
 
     # pylint: disable=attribute-defined-outside-init
@@ -319,7 +294,6 @@ class TmcLeafNodeSdp(TMCBaseLeafDevice):
             ("On", "on"),
             ("Off", "off"),
             ("Standby", "standby"),
-            ("Disable", "disable"),
         ]:
             self.register_command_object(
                 command_name,

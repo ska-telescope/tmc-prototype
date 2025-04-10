@@ -14,14 +14,6 @@ ska\_tmc\_sdpmasterleafnode.commands.sdp\_mln\_command module
    :show-inheritance:
 
 
-ska\_tmc\_sdpmasterleafnode.commands.disable\_command module
-------------------------------------------------------------
-
-.. automodule:: ska_tmc_sdpmasterleafnode.commands.disable_command
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 ska\_tmc\_sdpmasterleafnode.commands.off\_command module
 --------------------------------------------------------
 

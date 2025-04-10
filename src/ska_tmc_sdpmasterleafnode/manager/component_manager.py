@@ -19,7 +19,7 @@ from ska_tmc_common.v1.event_receiver import EventReceiver
 from ska_tmc_common.v1.tmc_component_manager import TmcLeafNodeComponentManager
 from tango import DevState
 
-from ska_tmc_sdpmasterleafnode.commands import Disable, Off, On, Standby
+from ska_tmc_sdpmasterleafnode.commands import Off, On, Standby
 
 configure_logging()
 LOGGER = logging.getLogger(__name__)
@@ -87,7 +87,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         self.on_command = On(self, logger)
         self.off_command = Off(self, logger)
         self.standby_command = Standby(self, logger)
-        self.disable_command = Disable(self, logger)
         self.rlock = threading.RLock()
 
         if _event_receiver:
@@ -258,29 +257,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.logger.debug(
             "Standby command : Taskstatus: %s, Response: %s "
-            ", after being queued for execution",
-            task_status,
-            response,
-        )
-        return task_status, response
-
-    def disable(
-        self, task_callback: TaskCallbackType
-    ) -> Tuple[TaskStatus, str]:
-        """Submits the Disable command for execution.
-
-        :rtype: tuple
-
-        """
-
-        task_status, response = self.submit_task(
-            self.disable_command.disable,
-            args=[self.logger],
-            is_cmd_allowed=self._check_if_sdp_master_is_responsive(),
-            task_callback=task_callback,
-        )
-        self.logger.debug(
-            "Disable command : Taskstatus: %s, Response: %s "
             ", after being queued for execution",
             task_status,
             response,
