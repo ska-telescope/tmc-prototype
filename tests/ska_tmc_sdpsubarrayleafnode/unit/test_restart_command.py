@@ -55,9 +55,9 @@ def test_restart_command_fail_subarray(tango_context, devices, task_callback):
     adapter_factory.get_or_create_adapter(
         devices, AdapterType.SDPSUBARRAY, proxy=sdpsubarrayrMock
     )
-    end_command = Restart(cm, logger)
-    end_command.adapter_factory = adapter_factory
-    end_command.restart(logger, task_callback)
+    restart_command = Restart(cm, logger)
+    restart_command.adapter_factory = adapter_factory
+    restart_command.do()
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
