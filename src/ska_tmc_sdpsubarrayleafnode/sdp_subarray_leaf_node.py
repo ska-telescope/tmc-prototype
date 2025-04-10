@@ -138,7 +138,7 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
             )
             self.logger.info(
                 "sdpSubarrayAdminMode attribute value updated to: %s",
-                self._sdp_subarray_admin_mode,
+                AdminMode(self._sdp_subarray_admin_mode).name,
             )
         except Exception as exception:
             self.logger.exception(

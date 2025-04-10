@@ -193,7 +193,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             dev_info.last_event_arrived = time.time()
             dev_info.update_unresponsive(False)
             self.logger.info(
-                "Observation state of device %s is %s",
+                "Obs State value of device %s changed to %s",
                 dev_info.dev_name,
                 ObsState(obs_state).name,
             )
@@ -448,7 +448,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.logger.debug(
             (
                 "AssignResources command : Taskstatus: %s,"
-                " Response: %s after being queued for execution"
+                " Response: %s , after being queued for execution"
             ),
             task_status,
             response,
@@ -472,7 +472,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.logger.debug(
             (
-                "Configure command : Taskstatus: %s, Response: %s"
+                "Configure command : Taskstatus: %s, Response: %s ,"
                 " after being queued for execution"
             ),
             task_status,
@@ -496,7 +496,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.logger.debug(
             (
-                "Scan command : Taskstatus: %s, Response: %s"
+                "Scan command : Taskstatus: %s, Response: %s ,"
                 " after being queued for execution"
             ),
             task_status,
@@ -537,8 +537,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.logger.debug(
             (
-                "ReleaseAllResources command : Taskstatus: %s,"
-                " Response: %s after being queued for execution"
+                "ReleaseAllResources command : Taskstatus: %s"
+                " Response: %s , after being queued for execution"
             ),
             task_status,
             response,
@@ -559,7 +559,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.logger.debug(
             (
-                "End command : Taskstatus: %s, Response: %s"
+                "End command : Taskstatus: %s, Response: %s ,"
                 " after being queued for execution"
             ),
             task_status,
@@ -584,7 +584,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.logger.debug(
             (
-                "EndScan command : Taskstatus: %s, Response: %s"
+                "EndScan command : Taskstatus: %s, Response: %s ,"
                 " after being queued for execution"
             ),
             task_status,
@@ -628,7 +628,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             task_callback=task_callback,
         )
         self.logger.debug(
-            "Restart command : Taskstatus: %s, Response: %s"
+            "Restart command : Taskstatus: %s, Response: %s ,"
             "after being queued for execution",
             task_status,
             response,

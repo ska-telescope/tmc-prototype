@@ -6,7 +6,6 @@ from time import sleep
 from typing import Callable, List, Optional
 
 import tango
-from ska_control_model import ObsState
 from ska_ser_logging import configure_logging
 from ska_tmc_common.device_info import SubArrayDeviceInfo
 from ska_tmc_common.v1.event_receiver import EventReceiver
@@ -104,25 +103,3 @@ class SdpSLNEventReceiver(EventReceiver):
                     sdp_subarray_proxy.dev_name,
                     exception,
                 )
-
-    def handle_obs_state_event(self, event):
-        """
-        Method to handle and update the latest value of
-        obsState attribute.
-        Args:
-            event (tango.EventType): to flag the
-            change in event.
-        """
-        if event.err:
-            error = event.errors[0]
-            self._logger.error("%s %s", error.reason, error.desc)
-            self._component_manager.update_event_failure()
-            return
-        new_value = event.attr_value.value
-        dev_info = self._component_manager.get_device()
-        self._component_manager.update_device_obs_state(new_value)
-        self._logger.info(
-            "Observation state of device %s is %s",
-            dev_info.dev_name,
-            ObsState(new_value).name,
-        )

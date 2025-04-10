@@ -211,7 +211,8 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             task_callback=task_callback,
         )
         self.logger.debug(
-            "On command : Taskstatus: %s, Response: %s ",
+            "On command : Taskstatus: %s, Response: %s "
+            ", after being queued for execution",
             task_status,
             response,
         )
@@ -255,7 +256,12 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             is_cmd_allowed=self._check_if_sdp_master_is_responsive(),
             task_callback=task_callback,
         )
-        self.logger.info("Standby command queued for execution")
+        self.logger.debug(
+            "Standby command : Taskstatus: %s, Response: %s "
+            ", after being queued for execution",
+            task_status,
+            response,
+        )
         return task_status, response
 
     def disable(
@@ -273,7 +279,12 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             is_cmd_allowed=self._check_if_sdp_master_is_responsive(),
             task_callback=task_callback,
         )
-        self.logger.info("Disable command queued for execution")
+        self.logger.debug(
+            "Disable command : Taskstatus: %s, Response: %s "
+            ", after being queued for execution",
+            task_status,
+            response,
+        )
         return task_status, response
 
     def start_communicating(self: BaseComponentManager) -> None:

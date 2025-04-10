@@ -125,12 +125,12 @@ class TmcLeafNodeSdp(TMCBaseLeafDevice):
         try:
             self.push_change_archive_events(
                 "sdpControllerAdminMode",
-                AdminMode(admin_mode),
+                self._sdp_master_admin_mode,
             )
             self.logger.info(
                 "Successfully updated and "
                 "sdpControllerAdminMode attribute value is set to: %s",
-                self._sdp_master_admin_mode,
+                AdminMode(self._sdp_master_admin_mode).name,
             )
         except Exception as exception:
             self.logger.exception(
