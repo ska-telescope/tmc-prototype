@@ -1,14 +1,23 @@
 """Restart command class for Sdp Subarray."""
 
-import threading
-from logging import Logger
-from typing import Optional, Tuple
+import logging
+import time
+from typing import Callable, Dict, Optional, Tuple, Union
 
-from ska_tango_base.base import TaskCallbackType
+from ska_control_model.task_status import TaskStatus
+from ska_ser_logging.configuration import configure_logging
 from ska_tango_base.commands import ResultCode
-from ska_tango_base.executor import TaskStatus
+from ska_tango_base.control_model import ObsState
+from ska_tmc_common import TimeKeeper, TimeoutCallback, TimeoutState
+from ska_tmc_common.v1.error_propagation_tracker import (
+    error_propagation_tracker,
+)
+from ska_tmc_common.v1.timeout_tracker import timeout_tracker
 
 from ska_tmc_sdpsubarrayleafnode.commands.sdp_sln_command import SdpSLNCommand
+
+configure_logging()
+LOGGER = logging.getLogger(__name__)
 
 
 class Restart(SdpSLNCommand):
@@ -17,42 +26,56 @@ class Restart(SdpSLNCommand):
     Restarts the Sdp Subarray device.
     """
 
-    # pylint: disable=unused-argument
-    def restart(
+    def __init__(
         self,
-        logger: Logger,
-        task_callback: TaskCallbackType,
-        task_abort_event: Optional[threading.Event] = None,
+        component_manager,
+        logger: logging.Logger = LOGGER,
     ) -> None:
-        """This is a long-running method for a Restart command, it
-        executes do hook
-        :param logger: logger
-        :type logger: logging.Logger
-        :param task_callback: Update task state, defaults to None
-        :type task_callback: TaskCallbackType
-        :param task_abort_event: Check for abort, defaults to None
-        :type task_abort_event: Event, optional
-        """
-        # Indicate that the task has started
-        task_callback(status=TaskStatus.IN_PROGRESS)
-        result_code, message = self.do()
-        logger.info(
-            "Restart command invoked on: %s: Result: %s, %s",
-            self.sdp_subarray_adapter.dev_name,
-            result_code,
-            message,
+        super().__init__(component_manager, logger)
+        self.timeout_id: str = f"{time.time()}_{__class__.__name__}"
+        self.timeout_callback: Callable[
+            [str, TimeoutState], Optional[ValueError]
+        ] = TimeoutCallback(self.timeout_id, self.logger)
+        self.timekeeper = TimeKeeper(
+            self.component_manager.command_timeout, logger
         )
-        if result_code == ResultCode.FAILED:
-            task_callback(
-                status=TaskStatus.COMPLETED,
-                result=(result_code, message),
-                exception=message,
-            )
-        else:
-            task_callback(
-                status=TaskStatus.COMPLETED,
-                result=(result_code, message),
-            )
+
+    @timeout_tracker
+    @error_propagation_tracker(
+        "get_obs_state", [ObsState.RESTARTING, ObsState.EMPTY]
+    )
+    def restart(self) -> Tuple[ResultCode, str]:
+        """
+        This is a long running method for Restart command, it
+        executes do hook, invokes Restart command on the CspSubarray.
+        """
+        return self.do()
+
+    def update_task_status(
+        self,
+        **kwargs: Dict[str, Union[Tuple[ResultCode, str], TaskStatus, str]],
+    ) -> None:
+        """
+        Update the status of a task.
+
+        Args:
+            **kwargs: Keyword arguments for task status update.
+        """
+        result = kwargs.get("result")
+        status = kwargs.get("status", TaskStatus.COMPLETED)
+        message = kwargs.get("exception")
+        self.logger.debug("Result of Restart execution: %s", result[0])
+        self.logger.debug("Restart command execution status: %s", status)
+        self.logger.debug("Restart command execution message: %s", message)
+
+        if result:
+            if result[0] == ResultCode.OK and status == TaskStatus.COMPLETED:
+                self.task_callback(status=status, result=result)
+            else:
+                self.task_callback(
+                    status=status, result=result, exception=message
+                )
+        self.component_manager.command_in_progress = ""
 
     # pylint: disable=arguments-differ
     def do(self) -> Tuple[ResultCode, str]:

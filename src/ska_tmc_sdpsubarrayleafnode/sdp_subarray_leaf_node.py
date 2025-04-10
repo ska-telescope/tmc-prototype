@@ -589,14 +589,20 @@ class SdpSubarrayLeafNode(TMCBaseLeafDevice):
                 ),
             )
 
-        fast_commands = {
-            "Abort": self.AbortCommandsCommand(
-                self.component_manager, self.logger
+        # as per base classes implementation, for SKABaseDevice
+        # Abort is registered as AbortCommand
+        self.register_command_object(
+            "Abort",
+            self.AbortCommand(
+                self._command_tracker,
+                self.component_manager,
+                None,
+                self.logger,
             ),
-            "SetAdminMode": SetAdminMode(self.logger, self.component_manager),
-        }
-        for cmd_name, cmd_class in fast_commands.items():
-            self.register_command_object(cmd_name, cmd_class)
+        )
+        self.register_command_object(
+            "SetAdminMode", SetAdminMode(self.logger, self.component_manager)
+        )
 
 
 # ----------

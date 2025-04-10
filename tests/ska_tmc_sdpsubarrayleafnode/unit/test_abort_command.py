@@ -4,6 +4,7 @@ import mock
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
+from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.exceptions import DeviceUnresponsive, InvalidObsStateError
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
@@ -17,6 +18,12 @@ from tests.settings import (
     create_cm,
     logger,
 )
+
+
+def get_abort_command_obj(cm):
+    abort_command = Abort(cm, logger=logger)
+    return abort_command
+
 
 DEVICE_OBSSTATE = [
     (SDP_SUBARRAY_DEVICE_LOW, ObsState.RESOURCING),
@@ -34,18 +41,25 @@ DEVICE_OBSSTATE = [
 
 @pytest.mark.sdpsln
 @pytest.mark.parametrize("devices , obsstate", DEVICE_OBSSTATE)
-def test_abort_command(tango_context, devices, obsstate):
+def test_abort_command(tango_context, devices, obsstate, task_callback):
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
-    cm.tracker_thread = mock.Mock()
-
     cm.update_device_obs_state(obsstate)
     cm.is_command_allowed("Abort")
     logger.info(f"Abort command is allowed in {obsstate}.")
-    abort_event = threading.Event()
-    cm.abort_event = abort_event
-    result_code, _ = cm.abort_commands()
-    assert result_code == ResultCode.OK
+    abort_command = get_abort_command_obj(cm)
+    abort_command.invoke_abort(
+        task_callback=task_callback, task_abort_event=threading.Event()
+    )
+    task_callback.assert_against_call(
+        call_kwargs={"status": TaskStatus.IN_PROGRESS}
+    )
+    cm.update_device_obs_state(ObsState.ABORTING)
+    cm.update_device_obs_state(ObsState.ABORTED)
+    task_callback.assert_against_call(
+        status=TaskStatus.COMPLETED,
+        result=(ResultCode.OK, "Command Completed"),
+    )
 
 
 @pytest.mark.sdpsln

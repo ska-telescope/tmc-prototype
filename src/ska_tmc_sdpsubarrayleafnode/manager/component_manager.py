@@ -591,24 +591,70 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
         return task_status, response
 
-    def abort_commands(self) -> Tuple[ResultCode, str]:
+    def abort(self, task_callback: TaskCallbackType) -> Tuple:
         """
-        Invokes Abort command on Sdp Subarray
-        and changes the obsstate
+        Aborting the subarray.
 
-        :param task_callback: callback to be called whenever the status
-            of the task changes.
+        :return: a result code and message
         """
-        abort_command = Abort(
-            self,
-            logger=self.logger,
-        )
+        # base classes set and clear immediately, so we set to
+        # clear ongoing observers and timers.
         self.abort_event.set()
         self.observable.notify_observers(attribute_value_change=True)
-        result_code, message = abort_command.do()
         self.abort_event.clear()
-        self.logger.info("Abort Event cleared")
-        return result_code, message
+
+        def _invoke_abort_callback(
+            status=None,
+            progress=None,
+            result=None,
+            exception=None,
+        ):
+            """
+            Method for invoking abort callback
+            """
+            if progress is not None:
+                task_callback(progress=50 + progress / 2)
+
+            if status == TaskStatus.FAILED:
+                task_callback(
+                    status=status, exception=exception, result=result
+                )
+            elif status == TaskStatus.COMPLETED:
+                task_callback(status=status, progress=100, result=result)
+
+        # pylint: disable=unused-argument
+        def _abort_commands_callback(
+            status=None,
+            progress=None,
+            result=None,
+            exception=None,
+        ):
+            """
+            method for abort command callback
+            """
+            if progress is not None:
+                task_callback(progress=progress / 2)
+            if status == TaskStatus.FAILED:
+                task_callback(
+                    status=status, exception="Failed to abort commands"
+                )
+            elif status == TaskStatus.COMPLETED:
+                task_callback(
+                    progress=50,
+                )
+                abort_command = Abort(
+                    self,
+                    logger=self.logger,
+                )
+                # Send dummy task_abort_event
+                abort_command.invoke_abort(
+                    task_callback=_invoke_abort_callback,
+                    task_abort_event=threading.Event(),
+                )
+
+        # pylint: enable=unused-argument
+        self.command_in_progress = "Abort"
+        return self.abort_tasks(task_callback=_abort_commands_callback)
 
     def restart(
         self, task_callback: Optional[TaskCallbackType] = None
