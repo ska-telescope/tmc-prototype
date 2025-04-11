@@ -689,7 +689,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
         attributes = {
             "obsState": self.update_device_obs_state,
-            "longRunningCommandResult": self.update_command_result,
             "state": self.update_device_state,
             "healthState": self.update_device_health_state,
         }
