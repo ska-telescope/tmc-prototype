@@ -13,8 +13,6 @@ Feature: SdpMasterLeafNode acceptance
 		| On                   |
         | Off                  |
 		| Standby              |
-        | Disable              |
-
 
 	#Check SdpMasterLeafNode node correctly report failed and working devices defined within its scope of monitoring (internal model)
 	@XTP-4909 @post_deployment @acceptance @SKA_mid @SKA_low
