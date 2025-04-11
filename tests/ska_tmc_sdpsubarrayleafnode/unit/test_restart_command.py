@@ -64,11 +64,11 @@ def test_restart_command_fail_subarray(tango_context, devices, task_callback):
             ResultCode.FAILED,
             "Execution of Restart command is failed. Reason: Error in"
             + " invoking Restart command on Sdp Subarray -"
-            + " mid-sdp/subarray/01:",
+            + " mid-sdp/subarray/01: ",
         ),
         exception="Execution of Restart command is failed. Reason: Error in"
         + " invoking Restart command on Sdp Subarray -"
-        + " mid-sdp/subarray/01:",
+        + " mid-sdp/subarray/01: ",
     )
 
 
