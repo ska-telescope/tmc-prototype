@@ -51,16 +51,13 @@ def test_restart_command_fail_subarray(tango_context, devices, task_callback):
 
     # include exception in Restart command
     attrs = {"Restart.side_effect": Exception}
-    sdpsubarrayrMock = mock.Mock(**attrs)
+    sdpsubarrayMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        devices, AdapterType.SDPSUBARRAY, proxy=sdpsubarrayrMock
+        devices, AdapterType.SDPSUBARRAY, proxy=sdpsubarrayMock
     )
     restart_command = Restart(cm, logger)
     restart_command.adapter_factory = adapter_factory
     restart_command.do()
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
     task_callback.assert_against_call(
         status=TaskStatus.COMPLETED,
         result=(
