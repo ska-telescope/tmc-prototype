@@ -108,8 +108,8 @@ class Restart(SdpSLNCommand):
             return (
                 ResultCode.FAILED,
                 "Execution of Restart command is failed."
-                + "Reason: Error in invoking Restart\
-                 command on Sdp Subarray - "
+                + " Reason: Error in invoking Restart "
+                + "command on Sdp Subarray - "
                 + f"{self.sdp_subarray_adapter.dev_name}: {exception}",
             )
 
