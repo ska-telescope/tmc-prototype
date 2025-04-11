@@ -57,15 +57,12 @@ def test_restart_command_fail_subarray(tango_context, devices, task_callback):
     )
     restart_command = Restart(cm, logger)
     restart_command.adapter_factory = adapter_factory
-    restart_command.do()
-    task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED,
-        result=(
-            ResultCode.FAILED,
-            "Execution of Restart command is failed.Reason: Error in invoking"
-            f" Restart                 command on Sdp Subarray - {devices}: ",
-        ),
-    )
+    result_code, message = restart_command.do()
+    logger.info("ResultCode: %s", result_code)
+    logger.info("ExceptionMessage: %s", message)
+    assert result_code == ResultCode.FAILED
+    assert devices in message
+    assert 0
 
 
 @pytest.mark.sdpsln
